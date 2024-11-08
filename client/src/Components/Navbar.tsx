@@ -1,13 +1,34 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { NavLink, Outlet, Link } from "react-router-dom";
+import './Navbar.css';
+
 
 const Navbar = () => {
   return (
-      <nav>
-          <Link to={'/'}>
-            <img alt='logo'/>
+    <>
+      <nav className="navbar">
+        {/* Left side - Logo */}
+        <div className="navbar-left">
+          <Link to={"/"}>
+            <img src="your-logo.png" alt="logo" />
           </Link>
-    </nav>
-  )
-}
-export default Navbar
+        </div>
+
+        {/* Centered Search Input */}
+        <div className="navbar-center">
+          <input type="text" placeholder="Search" />
+        </div>
+
+        {/* Right side - Navigation Links */}
+        <div className="navbar-right">
+          <NavLink to={"/createPost"}>Write</NavLink>
+          <NavLink to={"/signIn"}>SignIn</NavLink>
+          <NavLink to={"/signUp"}>SignUp</NavLink>
+        </div>
+      </nav>
+      <Outlet />
+    </>
+  );
+};
+
+export default Navbar;
