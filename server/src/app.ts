@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction, RequestHandler } from 'express';
 import dotenv from 'dotenv';
+import cors from "cors";
 import createHttpError, { isHttpError } from "http-errors";
 // import { validateUser } from './middlewares/validateUser';
 import { addAbortListener } from 'events';
@@ -11,7 +12,7 @@ const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
+app.use(cors());
 app.use('/', wikiRouter)
 // Defining routes
 

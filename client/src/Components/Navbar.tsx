@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
-import './Navbar.css';
-
+import "./Navbar.css";
+import { useUser } from "../utils/UserContext";
+import { FaBell, FaUser, FaPen, FaSignOutAlt } from "react-icons/fa";
+import { removeFromSession } from "../utils/session";
 
 const Navbar = () => {
+  const { signedUser, setSignedUser } = useUser();
+
+  //sign out
+  const handleSignOut = () => {
+    removeFromSession("user");
+    setSignedUser(null);
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -21,9 +31,47 @@ const Navbar = () => {
 
         {/* Right side - Navigation Links */}
         <div className="navbar-right">
-          <NavLink to={"/createPost"}>Write</NavLink>
-          <NavLink to={"/signIn"}>SignIn</NavLink>
-          <NavLink to={"/signUp"}>SignUp</NavLink>
+          <Link to={"/createPost"}>
+            <span
+              style={{
+                color: signedUser?.access_token ? "black" : "gray",
+                textDecoration: "none",
+                cursor: signedUser?.access_token ? "pointer" : "cursor",
+              }}
+            >
+              <FaPen /> Write
+            </span>
+          </Link>
+          {/* whether the user is logged in */}
+          {signedUser?.access_token ? (
+            <>
+              <Link to={"/dashboard/notification"}>
+                <button>
+                  {" "}
+                  <FaBell />
+                </button>
+              </Link>
+              <Link to={"/profile"}>
+                <button>
+                  {" "}
+                  <FaUser />
+                </button>
+              </Link>
+              <Link to={"/profile"}>
+                <button onClick={handleSignOut}>
+                  {" "}
+                  <FaSignOutAlt />
+                  SignOut
+                  <p>@{signedUser?.username}</p>
+                </button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to={"/signIn"}>SignIn</Link>
+              <Link to={"/signUp"}>SignUp</Link>
+            </>
+          )}
         </div>
       </nav>
       <Outlet />

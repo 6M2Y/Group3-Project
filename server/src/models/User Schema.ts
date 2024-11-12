@@ -36,21 +36,23 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 // Interface for User model to define types
-interface IUser extends Document {
+export interface IUser extends Document {
   fullname: string;
   password: string;
   email: string;
   username: string,
+  google_auth: boolean,
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 // User schema definition
-const UserSchema: Schema<IUser> = new Schema(
+ const UserSchema: Schema<IUser> = new Schema(
   {
-    fullname: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    username:{type:String, unique:true}
+    fullname: { type: String, required: true },
+    password: { type: String, required: function() { return !this.google_auth; } },
+    email: { type: String, required: true, unique: true,  lowercase: true },
+     username: { type: String, unique: true },
+    google_auth: {type:Boolean, default:false}
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically
 );
