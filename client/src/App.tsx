@@ -1,12 +1,12 @@
-import React from 'react';
-import "./App.css";
+import React, { useState } from 'react';
+import './App.css';
 import Navbar from "./Components/Navbar";
-import { Route, Routes } from "react-router-dom";
-import { SignIn } from "./pages/SignIn";
-import { Signup } from "./pages/Signup";
 import Footer from './Components/Footer';
 import CreateCard from './Components/CreateCard';
 import CardList from './Components/CardList';
+import { Route, Routes } from "react-router-dom";
+import { SignIn } from "./pages/SignIn";
+import { Signup } from "./pages/Signup";
 
 type Card = {
   title: string;
@@ -75,3 +75,4 @@ function App() {
 }
 
 export default App;
+
