@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import User from '../models/User Schema';
 import { generateUserName } from '../Utils/generateUserName';
 import { validateSignupInput } from '../Utils/validateUser';
@@ -42,6 +42,7 @@ export const signupLogic = async (req: Request, res: Response): Promise<void> =>
     //data to frontend
     //const accesstoken = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY as string);//jwt token
     res.status(201).json(FormatDatatoSend(newUser)); //formats the data we want to send to the client
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     // Check for duplicate email error
     if (err.code === 11000) {
@@ -79,77 +80,27 @@ export const signin = (req: Request, res: Response): void => {
 
 };
 
-// export const signinWithGoogle = async (req: Request, res: Response): Promise<void> => {
-//   const { access_token } = req.body;
-
-//   try {
-//     // Verify the ID token from the Google authentication
-//     const googleUser = await getAuth().verifyIdToken(access_token);
-//     const { email, name, picture } = googleUser;
-// console.log(googleUser)
-//     // Check if the user already exists in the database
-//     let user = await User.findOne({ email }).select("fullname username google_auth").exec();
-
-//     if (user) {
-//       // If the user is found but not authenticated via Google, return an error
-//       if (!user.google_auth) {
-//         res.status(403).json({ error: "Please log in with password to access the account." });
-//         return
-//       }
-//     } else {
-//       // If the user doesn't exist, create a new one
-//       const username = await generateUserName(email as string);
-      
-//       user = new User({
-//         fullname:name,
-//         email,
-//         username,
-//         google_auth: true,
-//       });
-//       console.log(user)
-//       // Save the new user to the database
-//       try {
-//         await user.save().then((newUser)=>{user = newUser})
-//       } catch (err) {
-//         res.status(500).json({ error: "Database error while trying to authenticate" });
-//         return
-//       }
-//       res.status(200).json(FormatDatatoSend(user));
-//     }
-
-//     // Send the formatted user data as response
-//      res.status(200).json(FormatDatatoSend(user));
-//   } catch (err) {
-//     // Error handling for token verification or other unexpected issues
-//     console.error("Error during Google authentication:", err);
-//     res.status(500).json({ error: "Failed to authenticate using Google" });
-//     return
-//   }
-// };
-
 export const signinWithGoogle = async (req: Request, res: Response): Promise<void> => {
   const { access_token } = req.body;
 
   try {
     // Verify the ID token from the Google authentication
-    const googleUser = await getAuth().verifyIdToken(access_token);
-    const { email, name, picture } = googleUser;
+    const processedData = await getAuth().verifyIdToken(access_token);
+    const { email, name } = processedData;
 
-    console.log("Verified Google User:", googleUser); // Logging for debugging purposes
-
-    // Check if the user already exists in the database
-    let user = await User.findOne({ email }).select("fullname username google_auth").exec();
+    // Search for the user in the database by email
+    let user = await User.findOne({ email }).select("fullname username google_auth");
 
     if (user) {
-      // If the user is found but not authenticated via Google, return an error
+      // If the user is found but is not authenticated via Google, return an error
       if (!user.google_auth) {
         res.status(403).json({ error: "Please log in with password to access the account." });
         return;
       }
     } else {
-      // If the user doesn't exist, create a new one
+      // If the user doesn’t exist, create a new one
       const username = await generateUserName(email as string);
-      
+
       user = new User({
         fullname: name,
         email,
@@ -159,16 +110,16 @@ export const signinWithGoogle = async (req: Request, res: Response): Promise<voi
 
       // Save the new user to the database
       try {
-        user = await user.save(); // Directly using await for cleaner code
-      } catch (err) {
-        console.error("Error saving the new user:", err); // Detailed error logging
+        user = await user.save();
+      } catch (error) {
+        console.error("Error saving the new user:", error);
         res.status(500).json({ error: "Database error while trying to authenticate" });
         return;
       }
     }
 
-    // Send the formatted user data as response
-    res.status(200).json(FormatDatatoSend(user)); // Ensure FormatDatatoSend() is properly formatting the user data
+    // Send the formatted user data as a response
+    res.status(200).json(FormatDatatoSend(user));
   } catch (err) {
     // Error handling for token verification or other unexpected issues
     console.error("Error during Google authentication:", err);
@@ -176,52 +127,136 @@ export const signinWithGoogle = async (req: Request, res: Response): Promise<voi
   }
 };
 
-// export const signinWithGoogle = (req: Request, res: Response): void => {
-//  console.log("FUCK")
-//   let { access_token } = req.body;
- 
-//   //verify access-token generated by the googleauth
-//   getAuth().verifyIdToken(access_token).then(async (googleUser) => {
-     
-//     let { email, name, picture } = googleUser;
-   
-//     try {
+
+// export const signinWithGoogle = async (req: Request, res: Response) => {
+//   const { access_token } = req.body;
+
+  // try {
+  //   // Verify the ID token from the Google authentication
+  //   const googleUser = await getAuth().verifyIdToken(access_token);
+  //   const { email, name } = googleUser;
+
+  //   console.log("Verified Google User:", googleUser); // Logging for debugging purposes
+
+  //   // Check if the user already exists in the database
+  //   let user = await User.findOne({ email }).select("fullname username google_auth").exec();
+
+  //   if (user) {
+  //     // If the user is found but not authenticated via Google, return an error
+  //     if (!user.google_auth) {
+  //       res.status(403).json({ error: "Please log in with password to access the account." });
+  //       return;
+  //     }
+  //   } else {
+  //     // If the user doesn't exist, create a new one
+  //     const username = await generateUserName(email as string);
       
-//       // Check db with email
-//       let user = await User.findOne({ email })
-//         .select("fullname username google_auth")
-//         .exec(); // Ensure it returns a Promise<Document | null>
+  //     user = new User({
+  //       fullname: name,
+  //       email,
+  //       username,
+  //       google_auth: true,
+  //     });
 
-//       if (user) {
-//         if (!user.google_auth) {
-//           // You can now access user.google_auth safely
-//           return res.status(403).json({ "error": "Please log in with password to access the account " });
-//         }
-//       }
-//       else {
-//         // Handle new user creation
-//         let username = await generateUserName(email as string);
-//         user = new User({
-//           name,
-//           email,
-//           username,
-//           google_auth: true
+  //     // Save the new user to the database
+  //     try {
+  //       user = await user.save(); // Directly using await for cleaner code
+  //     } catch (err) {
+  //       console.error("Error saving the new user:", err); // Detailed error logging
+  //       res.status(500).json({ error: "Database error while trying to authenticate" });
+  //       return;
+  //     }
+  //   }
 
-//         });
+  //   // Send the formatted user data as response
+  //   res.status(200).json(FormatDatatoSend(user)); // Ensure FormatDatatoSend() is properly formatting the user data
+  // } catch (err) {
+  //   // Error handling for token verification or other unexpected issues
+  //   console.error("Error during Google authentication:", err);
+  //   res.status(500).json({ error: "Failed to authenticate using Google" });
+  // }
 
-//         await user.save().then((newUser) => {
-//           user = newUser;
-//         }).catch(err => {
-//           return res.status(500).json({ "error": "Db problem trying to authonticate"});
-       
-//         });
-//       }
-//       return res.status(200).json(FormatDatatoSend(user));
+  // getAuth().verifyIdToken(access_token)
+  //   .then((async (processedData) => {
+  //     let { email, name } = processedData;
+  //     //found me fullname username google_auth from User db, returns the a document or null
+  //     let user = await User.findOne({ email }).select("fullname username google_auth").then((doc) => {
+  //       return doc || null; //
+  //     }).catch(err => {
+  //       return res.status(500).json({ "Error: ": err.message });
+  //     });
+
+  //     if (user) { //login
+  //       // If the user is found but not authenticated via Google, return an error
+  //       if (!user.google_auth) {
+  //         res.status(403).json({ error: "Please log in with password to access the account." });
+  //         return;
+  //       }
+  //     } else if (!user) {
+  //       // If the user doesn't exist, create a new one
+  //       const username = await generateUserName(email as string);
+      
+  //       user = new User({
+  //         fullname: name,
+  //         email,
+  //         username,
+  //         google_auth: true,
+  //       });
+  //       //after creating the user
+  //       await user.save().then((datafromDB) => {
+  //         user = datafromDB;
+  //       }).catch(err => {
+  //         console.error("Error saving the new user:", err);
+  //       });
+
+  //     }
+  //     return res.status(200).json(FormatDatatoSend(user));
+    
+  //   }).catch(err => {
+  //     // Error handling for token verification or other unexpected issues
+  //     console.error("Error during Google authentication:", err);
+  //     res.status(500).json({ error: "Failed to authenticate using Google" });
+  //   })
+// };
+  
+// try {
+//   // Verify the ID token from the Google authentication
+//   const processedData = await getAuth().verifyIdToken(access_token);
+//   const { email, name } = processedData;
+
+//   // Search for the user in the database by email
+//   let user = await User.findOne({ email }).select("fullname username google_auth");
+
+//   if (user) {
+//     // If the user is found but is not authenticated via Google, return an error
+//     if (!user.google_auth) {
+//       return res.status(403).json({ error: "Please log in with password to access the account." });
 //     }
-//     catch (err) {
-//       res.status(500).json({ "error": "Internal problem" });
+//   } else {
+//     // If the user doesn’t exist, create a new one
+//     const username = await generateUserName(email as string);
+
+//     user = new User({
+//       fullname: name,
+//       email,
+//       username,
+//       google_auth: true,
+//     });
+//     console.log("user: " + user)
+//     // Save the new user to the database
+//     try {
+//       user = await user.save();
+//     } catch (error) {
+//       console.error("Error saving the new user:", error);
+//       return res.status(500).json({ error: "Database error while trying to authenticate" });
 //     }
-//   })
-//     .catch(err => {
-//       return res.status(500).json({ "Error": "Failed to authenticate using googl" })
-//   })};
+//   }
+
+//   // Send the formatted user data as a response
+//   return res.status(200).json(FormatDatatoSend(user));
+// } catch (err) {
+//   // Error handling for token verification or other unexpected issues
+//   console.error("Error during Google authentication:", err);
+//   return res.status(500).json({ error: "Failed to authenticate using Google" });
+// }
+// };

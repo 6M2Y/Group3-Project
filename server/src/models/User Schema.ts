@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // const mongoose = require('mongoose');
 // const bcrypt = require('bcrypt');
 

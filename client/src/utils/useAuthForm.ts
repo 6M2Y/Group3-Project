@@ -12,11 +12,6 @@ export interface UserAuthType {
     username: string,
     access_token: string | null;
   }
-  
-// interface AuthResponseData {
-//     access_token: string | null;
-//     // Add other expected fields here if necessary
-//   }
 
 export const useAuthForm = (endpoint: string) => {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -44,7 +39,7 @@ export const useAuthForm = (endpoint: string) => {
           //storing data in the session
           storeInSession("user", JSON.stringify(response.data));
           setSignedUser(response.data)
-           console.log(response.data);
+          //  console.log(response.data);
       } catch (error: any) {
         toast.error(error.response?.data?.error || "An error occurred");
       }

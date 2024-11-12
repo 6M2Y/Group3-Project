@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet, Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import "./Navbar.css";
 import { useUser } from "../utils/UserContext";
 import { FaBell, FaUser, FaPen, FaSignOutAlt } from "react-icons/fa";

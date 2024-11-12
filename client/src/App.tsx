@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import { Route, Routes } from "react-router-dom";
@@ -8,6 +8,8 @@ import Footer from "./Components/Footer";
 import { lookInSession } from "./utils/session";
 import { UserProvider } from "./utils/UserContext";
 import { Profile } from "./pages/Profile";
+import ToastNotification from "./Components/ToastContainer";
+import { CreatePost } from "./pages/CreatePost";
 
 // export const UserContext = createContext({}); //creating global user context
 
@@ -29,10 +31,11 @@ function App() {
     <UserProvider>
       <div>
         <Navbar />
+        <ToastNotification />
         <div className="main-content">
           <Routes>
             <Route path="/" element={<h1>Superheroes</h1>} />
-            <Route path="/createpost" element={<h1>Write here</h1>} />
+            <Route path="/createpost" element={<CreatePost />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />

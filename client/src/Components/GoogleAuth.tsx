@@ -51,13 +51,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { FaGoogle } from "react-icons/fa";
 import axios from "axios"; // Ensure axios is imported
 import { app } from "../Common/firebase";
+import { storeInSession } from "../utils/session";
+import { useUser } from "../utils/UserContext";
+import { UserAuthType } from "../utils/useAuthForm";
+import { toast } from "react-toastify";
 
-// Define props type
-type GoogleAuthProps = {
-  endPoint: string;
-};
+export const GoogleAuth = () => {
+  const { signedUser, setSignedUser } = useUser();
 
-export const GoogleAuth = ({ endPoint }: GoogleAuthProps) => {
   const handleGoogleClick = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -78,11 +79,16 @@ export const GoogleAuth = ({ endPoint }: GoogleAuthProps) => {
 
       // Send the token to your backend
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_WIKI_API_URL}/google-auth`, // Use endpoint dynamically
+        const response = await axios.post<UserAuthType>(
+          `${process.env.REACT_APP_WIKI_API_URL}/google-auth`, //
           googleFormData
         );
-        console.log("Backend response:", response.data); // Handle response data
+
+        //storing data in the session
+        storeInSession("user", JSON.stringify(response.data));
+        setSignedUser(response.data);
+        toast.success("Google authentication successfull");
+        // console.log("Backend response:", response.data); // Handle response data
       } catch (err) {
         console.error(err);
       }
@@ -92,8 +98,11 @@ export const GoogleAuth = ({ endPoint }: GoogleAuthProps) => {
   };
 
   return (
-    <button onClick={handleGoogleClick}>
-      <FaGoogle /> Continue with Google
-    </button>
+    <>
+      {" "}
+      <button onClick={handleGoogleClick}>
+        <FaGoogle /> Continue with Google
+      </button>
+    </>
   );
 };

@@ -20,7 +20,6 @@
 import React from "react";
 import { useAuthForm } from "../utils/useAuthForm";
 import AuthForm from "../Components/AuthForm";
-import ToastNotification from "../Components/ToastContainer";
 import { Link, Navigate } from "react-router-dom";
 import { useUser } from "../utils/UserContext";
 import { GoogleAuth } from "../Components/GoogleAuth";
@@ -45,8 +44,7 @@ const Signin: React.FC = () => {
       <p>
         Don't have an account? <Link to={"/signup"}>Join us today</Link>
       </p>
-      <GoogleAuth endPoint="signIn" />
-      <ToastNotification />
+      <GoogleAuth />
     </>
   );
 };

@@ -1,7 +1,7 @@
 import User from "../models/User Schema";
 
 
-export const generateUserName = async(email:String) => {
+export const generateUserName = async(email:string) => {
     // Generate the initial username based on the email prefix
     let username = email.split("@")[0];
     

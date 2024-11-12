@@ -1,9 +1,8 @@
-import express, { Request, Response, NextFunction, RequestHandler } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 import cors from "cors";
-import createHttpError, { isHttpError } from "http-errors";
 // import { validateUser } from './middlewares/validateUser';
-import { addAbortListener } from 'events';
+
 import wikiRouter from './router/wikiRouter';
 
 dotenv.config();  // Load environment variables
