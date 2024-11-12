@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
+import CreateCard from "./Components/CreateCard";
+import CardList from "./Components/CardList";
 import { Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import Signup from "./pages/Signup";
