@@ -1,11 +1,8 @@
-import React from 'react';
-
-const Home = () => {
-  return (
-    <div>
-      <h1>Welcome to Home</h1>
-    </div>
-  );
+import React from "react";
+export const Home = () => {
+  return <div>Home</div>;
+  //suzan
+  // list of cards
+  // from database
 };
 
-export default Home;

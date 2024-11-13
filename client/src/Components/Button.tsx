@@ -5,6 +5,7 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   id_?: string;
+  style?: React.CSSProperties; // Optional custom styles
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -14,6 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = "",
   id_,
+  style = {},
 }) => {
   return (
     <button

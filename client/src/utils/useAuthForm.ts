@@ -19,7 +19,7 @@ export const useAuthForm = (endpoint: string) => {
 
     // const { setSignedUser } = useContext(UserContext);
     const { signedUser, setSignedUser } = useUser();
-    console.log("token: " + signedUser?.access_token)
+    // console.log("token: " + signedUser?.access_token)
 
     const handleFormSubmit = async (e: React.FormEvent) => {
       

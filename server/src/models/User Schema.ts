@@ -1,38 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt');
-
-// const Schema = mongoose.Schema;
-
-// const UserSchema = new Schema({
-//   username: { type: String, required: true, unique: true },
-//   password: { type: String, required: true },
-//   email: { type: String, required: true, unique: true },
-//   createdAt: { type: Date, default: Date.now }
-// });
-
-// // Hash password before saving the user
-// userSchema.pre('save', async function (next) {
-//   const user = this;
-
-//   // Only hash the password if it has been modified or is new
-//   if (!user.isModified('password')) return next();
-
-//   try {
-//     const salt = await bcrypt.genSalt(10);        // Generate a salt
-//     user.password = await bcrypt.hash(user.password, salt); // Hash the password with the salt
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// // Compare passwords for login
-// userSchema.methods.comparePassword = async function (candidatePassword) {
-//   return bcrypt.compare(candidatePassword, this.password);
-// };
-// const User = mongoose.model('User', UserSchema);
-// module.exports = User;
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -44,6 +9,11 @@ export interface IUser extends Document {
   username: string,
   google_auth: boolean,
   comparePassword(candidatePassword: string): Promise<boolean>;
+  account_info: {
+    total_posts: number;
+    total_reads: number;
+  };
+  posts: Schema.Types.ObjectId[];
 }
 
 // User schema definition
@@ -53,7 +23,22 @@ export interface IUser extends Document {
     password: { type: String, required: function() { return !this.google_auth; } },
     email: { type: String, required: true, unique: true,  lowercase: true },
      username: { type: String, unique: true },
-    google_auth: {type:Boolean, default:false}
+     google_auth: { type: Boolean, default: false },
+     account_info:{
+      total_posts: {
+          type: Number,
+          default: 0
+      },
+      total_reads: {
+          type: Number,
+          default: 0
+      },
+  },
+  posts: {
+      type: [ Schema.Types.ObjectId ],
+      ref: 'Post',
+      default: [],
+  }
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically
 );
@@ -68,7 +53,7 @@ UserSchema.pre('save', async function (this: IUser, next) {
     next();  // Proceed to save the document
   } catch (error) {
     // Directly throw error if there's an issue
-    throw new Error('Error hashing password');
+    throw new Error('Error hashing password' + error);
   }
 });
 
