@@ -1,12 +1,14 @@
-Backend file structure
+## Backend Project Structure
+
+<pre>
 src/
-├── app.ts                  # Main app file
+├── app.ts                  # Main app file 
 ├── config/
 │   └── multerConfig.ts      # Multer configuration for file upload
 ├── controllers/
 │   ├── authController.ts    # Authentication controllers (signup, login, Google auth)
 │   ├── postController.ts    # Post controllers (save draft, publish, edit post)
-├── middlewares
+├── middlewares/
 │   └── uploadImage.ts       # Middleware to handle image upload
 ├── models/
 │   ├── PageSchema.ts        # Page Mongoose schema
@@ -14,7 +16,7 @@ src/
 ├── routes/
 │   ├── authRoutes.ts        # Routes for authentication
 │   ├── postRoutes.ts        # Routes for post operations
-│   └── mainRoutes.ts             # Combines all routes into one
+│   └── mainRoutes.ts        # Combines all routes into one
 ├── services/
 │   ├── authService.ts       # Handles user-related logic
 │   ├── postService.ts       # Handles post-related logic
@@ -23,6 +25,7 @@ src/
 │   ├── generateUserName.ts  # Helper function to generate usernames
 │   └── validateUser.ts      # Validation logic for signup
 └── server.ts                 # Entry point for the application
+</pre>
 
 
 #husk å kjøre npm install i client og server mappen
