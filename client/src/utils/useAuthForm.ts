@@ -1,5 +1,5 @@
-// src/hooks/useAuthForm.ts
-import { useState, useRef, useContext } from "react";
+
+import { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { storeInSession } from "./session";
@@ -22,7 +22,6 @@ export const useAuthForm = (endpoint: string) => {
     // console.log("token: " + signedUser?.access_token)
 
     const handleFormSubmit = async (e: React.FormEvent) => {
-      
     e.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -31,11 +30,13 @@ export const useAuthForm = (endpoint: string) => {
       setFormEntries(entries);
 
       try {
+        
         const response = await axios.post<UserAuthType>(
           `${process.env.REACT_APP_WIKI_API_URL}${endpoint}`,
           entries
         );
-          toast.success("Request successful!");
+        console.log(response)
+          toast.success("Login successful!");
           //storing data in the session
           storeInSession("user", JSON.stringify(response.data));
           setSignedUser(response.data)

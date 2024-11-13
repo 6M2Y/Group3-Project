@@ -54,6 +54,7 @@ export const signupLogic = async (req: Request, res: Response): Promise<void> =>
 };
 
 export const signin = (req: Request, res: Response): void => {
+  console.log("fsdfdsd")
   const {email, password } = req.body;
   User.findOne({ email }).then((user) => {
     if (!user)

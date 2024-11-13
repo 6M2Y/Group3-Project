@@ -6,7 +6,7 @@ import { formats, modules } from "../utils/QuillFormats";
 import Button from "../Components/Button";
 import TextArea from "../Components/TextArea";
 import InputBox from "../Components/InputBox";
-import bannerImg from "../WikiBanner/logo512.png";
+// import bannerImg from "../WikiBanner/logo512.png";
 import { toast } from "react-toastify";
 import Modal from "../Components/Modal"; // Import the new Modal component
 import axios from "axios";
@@ -164,47 +164,6 @@ const WikIEditorPage = () => {
     }
   };
 
-  // const handleSaveDraft = async () => {
-  //   if (!title.length) {
-  //     return toast.error("Title for the draft is missing");
-  //   }
-
-  //   const formData = new FormData();
-  //   if (file) formData.append("image", file);
-  //   formData.append("title", title);
-  //   formData.append("summary", summary);
-  //   formData.append("content", content);
-  //   formData.append("tags", JSON.stringify(selectedTags));
-
-  //   try {
-  //     let loadingToast = toast.loading("Saving draft started....");
-  //     axios
-  //       .post(`${process.env.REACT_APP_WIKI_API_URL}/save-draft`, formData, {
-  //         withCredentials: true,
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${signedUser?.access_token}`,
-  //         },
-  //       })
-  //       .then(() => {
-  //         setTimeout(() => {
-  //           toast.dismiss(loadingToast);
-  //         }, 1000);
-
-  //         toast.success("Draft saved successfully!");
-
-  //         setTimeout(() => {
-  //           setRedirect(true);
-  //         }, 1500);
-  //       })
-  //       .catch((error) => {
-  //         toast.error("Something went wrong. Please try again.");
-  //       });
-  //   } catch (error) {
-  //     toast.error("An error occurred while saving the post.");
-  //   }
-  // };
-
   if (redirect) return <Navigate to="/" />;
 
   return (
@@ -218,7 +177,7 @@ const WikIEditorPage = () => {
           />
         ) : (
           <img
-            src={bannerImg}
+            // src={bannerImg}
             alt="Banner"
             style={{ maxWidth: "50%", height: "40%" }}
           />
