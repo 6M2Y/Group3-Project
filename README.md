@@ -29,17 +29,16 @@ src/
 │   ├── generateUserName.ts  # Helper function to generate usernames
 │   └── validateUser.ts      # Validation logic for signup
 └── server.ts                 # Entry point for the application
-</pre>
-
 
 #husk å kjøre npm install i client og server mappen
 
 **Husk å opprette**
 .env fil ved client
-<pre>
+
 REACT_APP_WIKI_API_URL=http://localhost:4000
 REACT_APP_FIREBASE_KEY =AIzaSyAA3TXo4be2v9pIBYA6pfI2os76s2Wm-KU
-  
+
+  **Husk å opprette**
 .env fil ved server mappen
 
 MONGO_DB_CONNECTION = mongodb+srv://tenawyibza:VLuHzRorwaTF6MOa@cluster0.hivqa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 
