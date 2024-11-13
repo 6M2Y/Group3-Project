@@ -94,6 +94,7 @@ interface IVersion {
 }
 
 interface IPage extends Document {
+  author: Types.ObjectId;
   title: string;
   content: string;
   tags: string[];
@@ -108,6 +109,7 @@ interface IPage extends Document {
 // Define the Page schema
 const PageSchema: Schema<IPage> = new Schema(
   {
+    author: { type: Schema.Types.ObjectId, ref: "User" },
     title: { type: String, required: true },
     content: { type: String, required: true },
     tags: [{ type: String }],

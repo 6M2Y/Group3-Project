@@ -10,6 +10,7 @@ import bannerImg from "../WikiBanner/logo512.png";
 import { toast } from "react-toastify";
 import Modal from "../Components/Modal"; // Import the new Modal component
 import axios from "axios";
+import { useUser } from "../utils/UserContext";
 
 const WikIEditorPage = () => {
   const [title, setTitle] = useState("");
@@ -19,6 +20,8 @@ const WikIEditorPage = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const [redirect, setRedirect] = useState(false);
+
+  const { signedUser } = useUser();
 
   const availableTags = [
     "Hero",
@@ -69,6 +72,7 @@ const WikIEditorPage = () => {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${signedUser?.access_token}`,
           },
         }
       );

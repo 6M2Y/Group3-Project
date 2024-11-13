@@ -9,6 +9,11 @@ export interface IUser extends Document {
   username: string,
   google_auth: boolean,
   comparePassword(candidatePassword: string): Promise<boolean>;
+  account_info: {
+    total_posts: number;
+    total_reads: number;
+  };
+  posts: Schema.Types.ObjectId[];
 }
 
 // User schema definition
@@ -18,7 +23,22 @@ export interface IUser extends Document {
     password: { type: String, required: function() { return !this.google_auth; } },
     email: { type: String, required: true, unique: true,  lowercase: true },
      username: { type: String, unique: true },
-    google_auth: {type:Boolean, default:false}
+     google_auth: { type: Boolean, default: false },
+     account_info:{
+      total_posts: {
+          type: Number,
+          default: 0
+      },
+      total_reads: {
+          type: Number,
+          default: 0
+      },
+  },
+  posts: {
+      type: [ Schema.Types.ObjectId ],
+      ref: 'Post',
+      default: [],
+  }
   },
   { timestamps: true } // Adds `createdAt` and `updatedAt` fields automatically
 );

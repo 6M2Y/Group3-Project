@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
-import Post from "../models/PageSchema";
 
-export const saveDraftPost =  async (req: Request, res: Response) => {
+import Post from "../models/PageSchema";
+import { AuthenticatedRequest } from '../middlewares/verifyToken';
+import User from '../models/User Schema';
+
+export const saveDraftPost =  async (req: Request, res: Response): Promise<void> => {
     const { title, summary, content, tags } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : undefined;
   
@@ -24,28 +27,43 @@ export const saveDraftPost =  async (req: Request, res: Response) => {
   };
   
   // Route to publish a post
-export const publishPost = async (req: Request, res: Response) => {
-  console.log(req.body)
-    const { title, summary, content, tags } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : undefined;
+export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
   
-    try {
-      const newPost = new Post({
-        title,
-        summary,
-        content,
-        tags: JSON.parse(tags),
-        image,
-        published: true,
+  const { title, summary, content, tags } = req.body;
+  const authorId = req.user; //the token passed and verified by the jwt
+  // console.log(" req:" + req.body)  
+  const image = req.file ? `/uploads/${req.file.filename}` : undefined;
+  
+  if (!title.length) { res.status(403).json({ error: "You must providee tilte to publish" }); }
+  if (!summary.length) { res.status(403).json({ error: "You must providee summary to publish" }); }
+  if (!tags.length) { res.status(403).json({ error: "You must select a tag for your post" }); }
+  if (!content.length) { res.status(403).json({ error: "You must provide content for your post" }); }
+  
+  try {
+    const newPost = new Post({
+      author: authorId,
+      title,
+      summary,
+      content,
+      tags: JSON.parse(tags),
+      image,
+      published: true,
+    });
+  
+    newPost.save().then((post) => {
+      User.findOneAndUpdate({ _id: authorId }, { $inc: { "account_info.total_posts": 1 }, $push: { "blogs": post._id } }).then(() => {
+        return res.status(200).json({ message: "Post published successfully.", post: newPost });
       });
-  
-      await newPost.save();
-      res.status(200).json({ message: "Post published successfully.", post: newPost });
-    } catch (error) {
+    }).catch(error => {
       console.error("Error publishing post:", error);
       res.status(500).json({ message: "Failed to publish post.", error });
-    }
-  };
+      return;
+    });
+  } catch (error) {
+    console.error("Error updating post:", error);
+     res.status(500).json({ message: "Error creating the post.", error });return
+  }
+}
 
 export const editPost = async (req: Request, res: Response): Promise<void> => {
     const postId = req.params.id;
