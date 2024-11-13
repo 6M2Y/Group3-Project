@@ -4,26 +4,40 @@ import Post from "../models/PageSchema";
 import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
 
-export const saveDraftPost =  async (req: Request, res: Response): Promise<void> => {
-    const { title, summary, content, tags } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : undefined;
+export const saveDraftPost =  (req: AuthenticatedRequest, res: Response) => {
+  const { title, summary = "", content = "", tags = "[]" } = req.body;
+  const authorId = req.user; //the token passed and verified by the jwt
+  //  console.log(" req:" + req.body)  
+  const image = req.file ? `/uploads/${req.file.filename}` : undefined;
   
-    try {
-      const draft = new Post({
-        title,
-        summary,
-        content,
-        tags: JSON.parse(tags),
-        image,
-        published: false,
+  if (!title.length) { res.status(403).json({ error: "You must providee tilte to publish" }); }
+  try {
+    console.log("image" + image)
+    const draftPost = new Post({
+      author: authorId,
+      title,
+      summary,
+      content,
+      tags: JSON.parse(tags),
+      image,
+      published: false,
+    });
+  
+    draftPost.save().then((post) => {
+      
+      //find and update the user
+      User.findOneAndUpdate({ _id: authorId }, { $push: { "posts": post._id } }).then(() => {
+        return res.status(200).json({ message: "Draft saved successfully.", post: draftPost });
       });
-  
-      await draft.save();
-      res.status(200).json({ message: "Draft saved successfully.", post: draft });
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      res.status(500).json({ message: "Failed to save draft.", error });
-    }
+    }).catch(error => {
+      console.error("Error drafting:", error);
+      res.status(500).json({ message: "Failed to save the draft.", error });
+      return;
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error drafting the post.", error });
+    return
+  }
   };
   
   // Route to publish a post
@@ -51,7 +65,8 @@ export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
     });
   
     newPost.save().then((post) => {
-      User.findOneAndUpdate({ _id: authorId }, { $inc: { "account_info.total_posts": 1 }, $push: { "blogs": post._id } }).then(() => {
+      //find and update the user total nr of posts
+      User.findOneAndUpdate({ _id: authorId }, { $inc: { "account_info.total_posts": 1 }, $push: { "posts": post._id } }).then(() => {
         return res.status(200).json({ message: "Post published successfully.", post: newPost });
       });
     }).catch(error => {

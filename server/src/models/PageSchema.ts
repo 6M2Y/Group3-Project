@@ -111,12 +111,12 @@ const PageSchema: Schema<IPage> = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "User" },
     title: { type: String, required: true },
-    content: { type: String, required: true },
+    content: { type: String,  },
     tags: [{ type: String }],
     versions: [
       {
         title: { type: String, required: true },
-        content: { type: String, required: true },
+        content: { type: String, },
         tags: [{ type: String }],
         image: { type: String },
         editor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

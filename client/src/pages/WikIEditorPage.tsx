@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../utils/QuillFormats";
-import { Navigate } from "react-router-dom";
+
 import Button from "../Components/Button";
 import TextArea from "../Components/TextArea";
 import InputBox from "../Components/InputBox";
@@ -11,6 +11,11 @@ import { toast } from "react-toastify";
 import Modal from "../Components/Modal"; // Import the new Modal component
 import axios from "axios";
 import { useUser } from "../utils/UserContext";
+import { Navigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+// let navigate = useNavigate();
 
 const WikIEditorPage = () => {
   const [title, setTitle] = useState("");
@@ -54,8 +59,22 @@ const WikIEditorPage = () => {
     setShowPreview(true); // Open the preview modal
   };
 
-  const handlePublish = async () => {
+  //to handle publish
+  const handlePublish = () => {
     setShowPreview(false);
+
+    if (!title.length) {
+      return toast.error("Title is missing");
+    }
+    if (!summary.length) {
+      return toast.error("Summary is missing");
+    }
+    if (!content.length) {
+      return toast.error("Content is missing");
+    }
+    if (!selectedTags.length) {
+      return toast.error("Tags is missing");
+    }
 
     const formData = new FormData();
     if (file) formData.append("image", file);
@@ -65,8 +84,58 @@ const WikIEditorPage = () => {
     formData.append("tags", JSON.stringify(selectedTags));
 
     try {
-      const result = await axios.post(
-        `${process.env.REACT_APP_WIKI_API_URL}/publish`,
+      let loadingToast = toast.loading("publishing started....");
+      axios
+        .post(`${process.env.REACT_APP_WIKI_API_URL}/publish`, formData, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${signedUser?.access_token}`,
+          },
+        })
+        .then(() => {
+          setTimeout(() => {
+            toast.dismiss(loadingToast);
+          }, 1000);
+
+          toast.success("Post published successfully!");
+
+          setTimeout(() => {
+            setRedirect(true);
+          }, 1500);
+        })
+        .catch((error) => {
+          toast.error("Something went wrong. Please try again.");
+        });
+    } catch (error) {
+      toast.error("An error occurred while publishing the post.");
+    }
+  };
+
+  //save the draft
+
+  const handleSaveDraft = async () => {
+    if (!title.length) {
+      return toast.error("Title for the draft is missing");
+    }
+
+    const formData = new FormData();
+    if (file) formData.append("image", file);
+    if (title) formData.append("title", title);
+    if (summary) formData.append("summary", summary);
+    if (content) formData.append("content", content);
+    if (selectedTags.length)
+      formData.append("tags", JSON.stringify(selectedTags));
+
+    let loadingToast;
+
+    try {
+      // Show loading toast
+      loadingToast = toast.loading("Saving draft...");
+
+      // Await the post request for cleaner async handling
+      await axios.post(
+        `${process.env.REACT_APP_WIKI_API_URL}/save-draft`,
         formData,
         {
           withCredentials: true,
@@ -76,47 +145,65 @@ const WikIEditorPage = () => {
           },
         }
       );
+      // Dismiss loading toast and show success message
+      toast.dismiss(loadingToast);
+      toast.success("Draft saved successfully!");
 
-      if (result.status === 200) {
+      // Redirect after success
+      setTimeout(() => {
         setRedirect(true);
-        toast.success("Post published successfully!");
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
+      }, 1500);
     } catch (error) {
-      toast.error("An error occurred while publishing the post.");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Unknown error");
+      }
+      // Dismiss loading toast and show error message
+      toast.dismiss(loadingToast);
     }
   };
 
-  const handleSaveDraft = async () => {
-    const formData = new FormData();
-    if (file) formData.append("image", file);
-    formData.append("title", title);
-    formData.append("summary", summary);
-    formData.append("content", content);
-    formData.append("tags", JSON.stringify(selectedTags));
+  // const handleSaveDraft = async () => {
+  //   if (!title.length) {
+  //     return toast.error("Title for the draft is missing");
+  //   }
 
-    try {
-      const result = await axios.post(
-        "http://localhost:4000/api/posts/save-draft",
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  //   const formData = new FormData();
+  //   if (file) formData.append("image", file);
+  //   formData.append("title", title);
+  //   formData.append("summary", summary);
+  //   formData.append("content", content);
+  //   formData.append("tags", JSON.stringify(selectedTags));
 
-      if (result.status === 200) {
-        toast.info("Draft saved successfully!");
-      } else {
-        toast.error("Failed to save draft.");
-      }
-    } catch (error) {
-      toast.error("An error occurred while saving the draft.");
-    }
-  };
+  //   try {
+  //     let loadingToast = toast.loading("Saving draft started....");
+  //     axios
+  //       .post(`${process.env.REACT_APP_WIKI_API_URL}/save-draft`, formData, {
+  //         withCredentials: true,
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${signedUser?.access_token}`,
+  //         },
+  //       })
+  //       .then(() => {
+  //         setTimeout(() => {
+  //           toast.dismiss(loadingToast);
+  //         }, 1000);
+
+  //         toast.success("Draft saved successfully!");
+
+  //         setTimeout(() => {
+  //           setRedirect(true);
+  //         }, 1500);
+  //       })
+  //       .catch((error) => {
+  //         toast.error("Something went wrong. Please try again.");
+  //       });
+  //   } catch (error) {
+  //     toast.error("An error occurred while saving the post.");
+  //   }
+  // };
 
   if (redirect) return <Navigate to="/" />;
 
