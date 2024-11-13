@@ -2,9 +2,11 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from "cors";
 // import { validateUser } from './middlewares/validateUser';
+//const profileRoutes = require('./router/profileRoutes');
+
 
 import wikiRouter from './router/wikiRouter';
-
+import profileRoutes from './router/profileRoutes';
 dotenv.config();  // Load environment variables
 
 const app = express();
@@ -14,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/', wikiRouter)
 // Defining routes
-
+app.use('/', profileRoutes);
 
 // export const signUp: RequestHandler <unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
 // app.post("/signup", signupLogic, (req: Request, res: Response) => {
