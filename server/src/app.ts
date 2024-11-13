@@ -20,14 +20,14 @@ import dotenv from 'dotenv';
 import cors from "cors";
 // import { validateUser } from './middlewares/validateUser';
 
-import wikiRouter from './router/wikiRouter';
+//import wikiRouter from './router/wikiRouter';
 
 dotenv.config();  // Load environment variables
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use('/', wikiRouter)
+//app.use('/', wikiRouter)
 // Defining routes
 
 
