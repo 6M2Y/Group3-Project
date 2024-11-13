@@ -6,6 +6,7 @@ interface TextAreaProps {
   placeholder: string;
   rows: number;
   style?: React.CSSProperties; // Optional custom styles
+  maxLength?: number;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -14,6 +15,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   placeholder,
   rows,
   style = {},
+  maxLength,
 }) => {
   return (
     <textarea

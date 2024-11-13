@@ -25,6 +25,7 @@ export const saveDraftPost =  async (req: Request, res: Response) => {
   
   // Route to publish a post
 export const publishPost = async (req: Request, res: Response) => {
+  console.log(req.body)
     const { title, summary, content, tags } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : undefined;
   

@@ -29,6 +29,10 @@ const WikIEditorPage = () => {
     "Origins",
   ];
 
+  //setting character limits
+  const summaryCharacterLimit = 200,
+    titleCharacterLimit = 75;
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
@@ -59,7 +63,7 @@ const WikIEditorPage = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:4000/api/posts/publish",
+        `${process.env.REACT_APP_WIKI_API_URL}/publish`,
         formData,
         {
           withCredentials: true,
@@ -114,12 +118,20 @@ const WikIEditorPage = () => {
 
   return (
     <>
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <img
-          src={bannerImg}
-          alt="Banner"
-          style={{ maxWidth: "100%", height: "auto" }}
-        />
+      <div style={{ textAlign: "center", margin: "20px" }}>
+        {file ? (
+          <img
+            src={URL.createObjectURL(file)}
+            style={{ maxWidth: "30%", maxHeight: "10%" }}
+            alt="Selected Image"
+          />
+        ) : (
+          <img
+            src={bannerImg}
+            alt="Banner"
+            style={{ maxWidth: "50%", height: "40%" }}
+          />
+        )}
       </div>
 
       <form
@@ -143,8 +155,10 @@ const WikIEditorPage = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter post title"
+            maxLength={titleCharacterLimit}
             rows={3}
           />
+          <p>{titleCharacterLimit - title.length} characters left</p>
         </div>
 
         <div style={{ marginBottom: "20px" }}>
@@ -152,9 +166,11 @@ const WikIEditorPage = () => {
           <TextArea
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
+            maxLength={summaryCharacterLimit}
             placeholder="Enter post summary"
             rows={4}
           />
+          <p>{summaryCharacterLimit - summary.length} characters left</p>
         </div>
 
         <div style={{ marginBottom: "20px" }}>
