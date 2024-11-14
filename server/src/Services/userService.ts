@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import User from '../models/User Schema';
+import Page from '../models/PageSchema';
+import Comment from '../models/Comment Schema';
+import Tag from '../models/Tag Schema';
 import { generateUserName } from '../Utils/generateUserName';
 import { validateSignupInput } from '../Utils/validateUser';
 import bcrypt from 'bcrypt'
@@ -8,6 +11,12 @@ import admin from 'firebase-admin'; //connect to frontend firebase
 import {getAuth} from 'firebase-admin/auth'
 import * as dotenv from "dotenv";
 
+interface ProfileData {
+  user: any; // Replace 'any' with the appropriate type
+  pages: any[]; // Replace 'any' with the appropriate type
+  comments: any[]; // Replace 'any' with the appropriate type
+  tags: string[];
+}
 dotenv.config();
 
 //firebase admin
@@ -128,7 +137,17 @@ export const signinWithGoogle = async (req: Request, res: Response): Promise<voi
   }
 };
 
+export const getProfileData = async (userId: string): Promise<ProfileData | null> => {
+  const user = await User.findById(userId);
+  if (!user) {
+    return null; // Handle the case where the user is not found
+  }
+  const pages = await Page.find({ author: user._id });
+  const comments = await Comment.find({ author: user._id });
+  const tags = await Tag.find({ pages: { $in: pages.map(page => page._id) } }).distinct('name');
 
+  return { user, pages, comments, tags };
+};
 // export const signinWithGoogle = async (req: Request, res: Response) => {
 //   const { access_token } = req.body;
 

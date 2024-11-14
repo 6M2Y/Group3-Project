@@ -37,6 +37,9 @@ interface ProfileData {
   tags: string[];
 }
 
+interface PostCountResponse {
+  postCount: number;
+}
 const Profile: React.FC = () => {
   //const { signedUser } = useUser();
   //const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -46,6 +49,7 @@ const Profile: React.FC = () => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Ensure error is typed as string or null
+  const [postCount, setPostCount] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -79,7 +83,25 @@ const Profile: React.FC = () => {
       }
     };
 
+    const fetchPostCount = async () => {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${signedUser?.access_token}`, // Use the token from signedUser
+          },
+        };
+        const response = await axios.get<PostCountResponse>(
+          `http://localhost:4000/user/posts/count`,
+          config
+        );
+        setPostCount(response.data.postCount);
+      } catch (error) {
+        console.error("Error fetching post count:", error);
+      }
+    };
+
     fetchProfile();
+    fetchPostCount();
   }, [signedUser]);
 
   if (loading) {
@@ -91,35 +113,40 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>{profile?.user.username}'s Profile</h1>
+    <div style={{ textAlign: "left", margin: "20px" }}>
+      <h1>User Profile</h1>
+      <p>Username: {profile?.user.username}</p>
       <p>Email: {profile?.user.email}</p>
-
-      <h2>Pages Created</h2>
-      <ul>
-        {profile?.pages.map((page) => (
-          <li key={page._id}>
-            {page.title} ({new Date(page.createdAt).toLocaleString()})
-          </li>
-        ))}
-      </ul>
-
-      <h2>Comments</h2>
-      <ul>
-        {profile?.comments.map((comment) => (
-          <li key={comment._id}>
-            {comment.content} on {comment.page.title} (
-            {new Date(comment.createdAt).toLocaleString()})
-          </li>
-        ))}
-      </ul>
-
-      <h2>Tags Used</h2>
-      <ul>
-        {profile?.tags.map((tag) => (
-          <li key={tag}>{tag}</li>
-        ))}
-      </ul>
+      <div style={{ marginBottom: "20px" }}>
+        <h2>Posts Created:</h2>
+        <p>Total posts created: {postCount}</p>
+        <ul>
+          {profile?.pages.map((page) => (
+            <li key={page._id}>
+              {page.title} ({new Date(page.createdAt).toLocaleString()})
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div style={{ marginBottom: "20px" }}>
+        <h2>Comments:</h2>
+        <ul>
+          {profile?.comments.map((comment) => (
+            <li key={comment._id}>
+              {comment.content} on {comment.page.title} (
+              {new Date(comment.createdAt).toLocaleString()})
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div style={{ marginBottom: "20px" }}>
+        <h2>Tags Used:</h2>
+        <ul>
+          {profile?.tags.map((tag) => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

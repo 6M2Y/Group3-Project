@@ -93,7 +93,7 @@ interface IVersion {
   date: Date;
 }
 
-interface IPage extends Document {
+export interface IPage extends Document {
   author: Types.ObjectId;
   title: string;
   content: string;

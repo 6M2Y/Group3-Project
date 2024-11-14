@@ -1,8 +1,15 @@
 import { Request, Response } from 'express';
-
 import Post from "../models/PageSchema";
-import { AuthenticatedRequest } from '../middlewares/verifyToken';
+//import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
+
+
+
+// Define the AuthenticatedRequest interface
+interface AuthenticatedRequest extends Request {
+  user: string; // or the appropriate type for your user
+  file?: Express.Multer.File; // Use the correct type from multer
+}
 
 export const saveDraftPost =  (req: AuthenticatedRequest, res: Response) => {
   const { title, summary = "", content = "", tags = "[]" } = req.body;
@@ -80,7 +87,7 @@ export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
   }
 }
 
-export const editPost = async (req: Request, res: Response): Promise<void> => {
+export const editPost = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const postId = req.params.id;
     const { title, content, tags, image } = req.body;
     
@@ -119,3 +126,39 @@ export const editPost = async (req: Request, res: Response): Promise<void> => {
       res.status(500).json({ message: "Failed to update post.", error });
     }
   }
+
+
+  // Fetch all posts
+export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+      const posts = await Post.find();
+      res.status(200).json(posts);
+  } catch (error) {
+     console.error("Error fetching posts:", error);
+      res.status(500).json({ message: 'Error fetching posts' });
+  }
+};
+
+// Fetch posts for a specific user
+export const getUserPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+      const userId = req.user; // Assuming user ID is stored in req.user
+      const posts = await Post.find({ author: userId });
+      res.status(200).json(posts);
+  } catch (error) {
+     console.error("Error fetching user posts:", error);
+      res.status(500).json({ message: 'Error fetching user posts' });
+  }
+};
+
+// Add a new controller function to count posts for a specific user
+export const countUserPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user; // Assuming user ID is stored in req.user
+    const postCount = await Post.countDocuments({ author: userId });
+    res.status(200).json({ postCount });
+  } catch (error) {
+    console.error("Error counting user posts:", error);
+    res.status(500).json({ message: 'Error counting user posts' });
+  }
+};

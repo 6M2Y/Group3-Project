@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { IPage } from './Page Schema';
+import { IPage } from './PageSchema';
 
 export interface ITag extends Document {
   name: string;
