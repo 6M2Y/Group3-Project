@@ -9,9 +9,10 @@ import SignIn from "./pages/SignIn";
 import Signup from "./pages/Signup";
 import { lookInSession } from "./utils/session";
 import { UserProvider } from "./utils/UserContext";
-import Profile  from "./pages/Profile";
+import Profile from "./pages/Profile";
 import ToastNotification from "./Components/ToastContainer";
 import { CreatePost } from "./pages/CreatePost";
+import { Home } from "./pages/Home";
 
 // export const UserContext = createContext({}); //creating global user context
 
@@ -36,7 +37,7 @@ function App() {
         <ToastNotification />
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<h1>Superheroes</h1>} />
+            <Route path="/" element={<Home />} />
             <Route path="/createpost" element={<CreatePost />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />

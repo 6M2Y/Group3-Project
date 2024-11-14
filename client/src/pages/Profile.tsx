@@ -6,11 +6,11 @@
 //  return <>{signedUser?.access_token && <div>Profile</div>}</>;
 //};
 
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useUser } from "../utils/UserContext";
-import { lookInSession } from '../utils/session';
-import axios from 'axios';
+import { lookInSession } from "../utils/session";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 interface User {
   username: string;
@@ -41,7 +41,7 @@ const Profile: React.FC = () => {
   //const { signedUser } = useUser();
   //const [profile, setProfile] = useState<ProfileData | null>(null);
   //const [loading, setLoading] = useState(true);
-  //const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const { signedUser } = useUser();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,27 +49,31 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = lookInSession('user');
-      const token = user ?
-  JSON.parse(user).access_token : null;
+      const user = lookInSession("user");
+      const token = user ? JSON.parse(user).access_token : null;
       if (!token) {
-        setError('User not authenticated');
+        setError("User not authenticated");
+        //redirect to homepage
+        <Navigate to={"/"} />;
         setLoading(false);
         return;
       }
 
       try {
-        console.log('Fetching profile data...');
-        const response = await axios.get<ProfileData>('http://localhost:4000/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log('Profile data fetched:', response.data);
+        console.log("Fetching profile data...");
+        const response = await axios.get<ProfileData>(
+          "http://localhost:4000/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Profile data fetched:", response.data);
 
         setProfile(response.data);
       } catch (error) {
-        setError('Error fetching profile data');
+        setError("Error fetching profile data");
       } finally {
         setLoading(false);
       }
@@ -88,27 +92,31 @@ const Profile: React.FC = () => {
 
   return (
     <div>
-      
       <h1>{profile?.user.username}'s Profile</h1>
       <p>Email: {profile?.user.email}</p>
 
       <h2>Pages Created</h2>
       <ul>
-        {profile?.pages.map(page => (
-          <li key={page._id}>{page.title} ({new Date(page.createdAt).toLocaleString()})</li>
+        {profile?.pages.map((page) => (
+          <li key={page._id}>
+            {page.title} ({new Date(page.createdAt).toLocaleString()})
+          </li>
         ))}
       </ul>
 
       <h2>Comments</h2>
       <ul>
-        {profile?.comments.map(comment => (
-          <li key={comment._id}>{comment.content} on {comment.page.title} ({new Date(comment.createdAt).toLocaleString()})</li>
+        {profile?.comments.map((comment) => (
+          <li key={comment._id}>
+            {comment.content} on {comment.page.title} (
+            {new Date(comment.createdAt).toLocaleString()})
+          </li>
         ))}
       </ul>
 
       <h2>Tags Used</h2>
       <ul>
-        {profile?.tags.map(tag => (
+        {profile?.tags.map((tag) => (
           <li key={tag}>{tag}</li>
         ))}
       </ul>
