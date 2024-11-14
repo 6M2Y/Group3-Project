@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import "./Navbar.css";
 import { useUser } from "../utils/UserContext";
 import { FaBell, FaUser, FaPen, FaSignOutAlt } from "react-icons/fa";
@@ -7,11 +8,13 @@ import { removeFromSession } from "../utils/session";
 
 const Navbar = () => {
   const { signedUser, setSignedUser } = useUser();
+  const navigate = useNavigate();
 
   //sign out
   const handleSignOut = () => {
     removeFromSession("user");
     setSignedUser(null);
+    //navigate('/'); // Redirect to homepage
   };
 
   return (

@@ -4,6 +4,7 @@ import Post from "../models/PageSchema";
 import User from '../models/User Schema';
 
 
+
 // Define the AuthenticatedRequest interface
 interface AuthenticatedRequest extends Request {
   user: string; // or the appropriate type for your user
@@ -125,3 +126,39 @@ export const editPost = async (req: AuthenticatedRequest, res: Response): Promis
       res.status(500).json({ message: "Failed to update post.", error });
     }
   }
+
+
+  // Fetch all posts
+export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+      const posts = await Post.find();
+      res.status(200).json(posts);
+  } catch (error) {
+     console.error("Error fetching posts:", error);
+      res.status(500).json({ message: 'Error fetching posts' });
+  }
+};
+
+// Fetch posts for a specific user
+export const getUserPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+      const userId = req.user; // Assuming user ID is stored in req.user
+      const posts = await Post.find({ author: userId });
+      res.status(200).json(posts);
+  } catch (error) {
+     console.error("Error fetching user posts:", error);
+      res.status(500).json({ message: 'Error fetching user posts' });
+  }
+};
+
+// Add a new controller function to count posts for a specific user
+export const countUserPosts = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user; // Assuming user ID is stored in req.user
+    const postCount = await Post.countDocuments({ author: userId });
+    res.status(200).json({ postCount });
+  } catch (error) {
+    console.error("Error counting user posts:", error);
+    res.status(500).json({ message: 'Error counting user posts' });
+  }
+};

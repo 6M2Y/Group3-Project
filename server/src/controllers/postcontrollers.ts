@@ -10,3 +10,7 @@ interface AuthenticatedRequest extends Request {
 export const saveDraftPost = (req: Request, res: Response) => postService.saveDraftPost(req as AuthenticatedRequest, res);
 export const publishPost = (req: Request, res: Response) => postService.publishPost(req as AuthenticatedRequest, res);
 export const editPost = (req: Request, res: Response) => postService.editPost(req as AuthenticatedRequest, res);
+export const getAllPosts = (req: Request, res: Response) => postService.getAllPosts(req as AuthenticatedRequest, res);
+export const getUserPosts = (req: Request, res: Response) => postService.getUserPosts(req as AuthenticatedRequest, res);
+export const countUserPosts = (req: Request, res: Response) => postService.countUserPosts(req as AuthenticatedRequest, res);
+
