@@ -38,15 +38,7 @@ function App() {
         <ToastNotification />
         <div className="main-content">
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  isAuthenticated={isAuthenticated}
-                  userId={signedUser.access_token}
-                />
-              }
-            />
+            <Route path="/" element={<Home />} />
             <Route path="/createpost" element={<CreatePost />} />
             <Route path="/cardList" element={<CardList />} />
             <Route path="/signin" element={<SignIn />} />

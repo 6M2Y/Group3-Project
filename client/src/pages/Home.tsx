@@ -115,3 +115,4 @@ export const Home = () => {
   // list of cards
   // from database
 };
+export default Home;

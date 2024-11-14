@@ -115,9 +115,7 @@ const Navbar: React.FC = () => {
             <Link to={"/createPost"} onClick={closeMenu}>
               <FaPen /> Write
             </Link>
-            <Link to={"/dashboard/notification"} onClick={closeMenu}>
-              <FaBell /> Notifications
-            </Link>
+
             <Link to={"/profile"} onClick={closeMenu}>
               <FaUser /> Profile
             </Link>

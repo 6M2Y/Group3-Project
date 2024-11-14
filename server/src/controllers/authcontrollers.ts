@@ -23,9 +23,9 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response): Prom
         res.status(404).json({ error: 'Profile not found' });
         return;
       }
-      res.json(profileData);
+      res.json(profileData)
     } catch (err) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: 'Server error' + err});
     }
   };
   
