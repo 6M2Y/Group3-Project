@@ -1,8 +1,14 @@
 import { Request, Response } from 'express';
-
 import Post from "../models/PageSchema";
-import { AuthenticatedRequest } from '../middlewares/verifyToken';
+//import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
+
+
+// Define the AuthenticatedRequest interface
+interface AuthenticatedRequest extends Request {
+  user: string; // or the appropriate type for your user
+  file?: Express.Multer.File; // Use the correct type from multer
+}
 
 export const saveDraftPost =  (req: AuthenticatedRequest, res: Response) => {
   const { title, summary = "", content = "", tags = "[]" } = req.body;
@@ -80,7 +86,7 @@ export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
   }
 }
 
-export const editPost = async (req: Request, res: Response): Promise<void> => {
+export const editPost = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const postId = req.params.id;
     const { title, content, tags, image } = req.body;
     
