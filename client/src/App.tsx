@@ -40,6 +40,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userId={signedUser.access_token} />}  />
             <Route path="/createpost" element={<CreatePost />} />
+            <Route path="/cardList" element={<CardList />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
