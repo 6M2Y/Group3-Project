@@ -1,148 +1,157 @@
-/* Main Content Container */
+
+  /* Main Content Container */
 .main-content {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    width: 90%;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  /* Part 1: Tags Section */
-  .tags-section {
-    width: 20%;
-    background-color: #f4f4f4;
-    padding: 1rem;
-    border-radius: 5px;
-  }
-  
-  .tags-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .tag-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border-radius: 5px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-  }
-  
-  .tag-name {
-    font-weight: bold;
-  }
-  
-  .tag-count {
-    color: gray;
-  }
-  
-  /* Part 2: All Posts Section */
-  .posts-section {
-    width: 50%;
-    padding: 1rem;
-  }
-  
+  display: flex;
+  gap: 0.1rem;
+  flex-wrap: wrap;
+  width: 90%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* Part 1: Tags Section */
+.tags-section {
+  width: 15%;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  flex: 1 1 calc(33.333% - 1rem); /* Responsive width with flex-grow, flex-shrink, and flex-basis */
+}
+
+.tag-name {
+  font-weight: bold;
+}
+
+.tag-count {
+  color: gray;
+}
+
+/* Part 2: All Posts Section */
+.posts-section {
+  width: 65%;
+  padding: 1rem 0;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.post-card {
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.post-title {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.post-summary {
+  font-size: 1rem;
+  color: #555;
+}
+
+.post-author,
+.post-date {
+  font-size: 0.875rem;
+  color: #777;
+}
+
+.post-tag {
+  font-size: 0.875rem;
+  background-color: #ff5722;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  margin-top: 1rem;
+}
+
+/* Part 3: Latest Posts Section */
+.latest-posts-section {
+  width: 15%;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.latest-posts-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.latest-post {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.latest-post-title {
+  font-weight: bold;
+}
+
+.latest-post-author,
+.latest-post-date {
+  color: #777;
+  font-size: 0.875rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
   .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .post-card {
-    background-color: #fff;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-  }
-  
-  .post-image {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-  
-  .post-title {
-    font-size: 1.25rem;
-    margin: 0.5rem 0;
-  }
-  
-  .post-summary {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .post-author,
-  .post-date {
-    font-size: 0.875rem;
-    color: #777;
-  }
-  
-  .post-tag {
-    font-size: 0.875rem;
-    background-color: #ff5722;
-    color: #fff;
-    padding: 0.25rem 0.5rem;
-    border-radius: 20px;
-    margin-top: 1rem;
-  }
-  
-  /* Part 3: Latest Posts Section */
+
+  .tags-section,
   .latest-posts-section {
-    width: 20%;
-    background-color: #f4f4f4;
-    padding: 1rem;
-    border-radius: 5px;
+    width: 100%;
   }
-  
-  .latest-posts-section ul {
-    list-style-type: none;
-    padding: 0;
+
+  .posts-section {
+    width: 100%;
   }
-  
-  .latest-post {
-    padding: 0.5rem;
-    border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 968px) {
+  .tags-section,
+  .posts-section,
+  .latest-posts-section {
+    width: 100%;
   }
-  
-  .latest-post-title {
-    font-weight: bold;
+
+  .posts-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .latest-post-author,
-  .latest-post-date {
-    color: #777;
-    font-size: 0.875rem;
+
+  .tags-list {
+    justify-content: center;
   }
-  
-  /* Responsive Styles */
-  @media (max-width: 1024px) {
-    .posts-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  
-    .tags-section,
-    .latest-posts-section {
-      width: 45%;
-    }
-  
-    .posts-section {
-      width: 50%;
-    }
+
+  .tag-item {
+    flex: 1 1 calc(50% - 0.5rem);
   }
-  
-  @media (max-width: 768px) {
-    .tags-section,
-    .posts-section,
-    .latest-posts-section {
-      width: 100%;
-    }
-  
-    .posts-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
+}

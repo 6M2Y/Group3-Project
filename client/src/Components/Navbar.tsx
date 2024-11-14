@@ -1,7 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import "./Navbar.css";
+import "../Styles/Navbar.css";
 import { useUser } from "../utils/UserContext";
 import {
   FaBell,
