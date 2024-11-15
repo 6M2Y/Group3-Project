@@ -1,10 +1,43 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
 import { UserAuthType } from "../utils/useAuthForm";
 import axios from "axios";
 import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
 
+interface HomeProps {
+  isAuthenticated?: boolean; // Make isAuthenticated optional
+  userId?: string | null; // Make userId optional
+}
+
+interface Version {
+  tags: string[];
+  content: string;
+  editor: string;
+  _id: string;
+  date: string;
+}
+
+interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  versions: Version[];
+  views: number;
+  comments: string[]; // You can replace `any` with a more specific type if you have a structure for comments
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface User {
+  _id: string;
+  name: string;
+  // Add other user fields as necessary
+}
 const availableTags = [
   "Hero",
   "Villain",
@@ -14,43 +47,16 @@ const availableTags = [
   "Origins",
 ];
 
-const posts = [
+const latestPosts = [
   {
-    id: 1,
-    image: "https://via.placeholder.com/300",
-    title: "The Rise of Heroes",
-    summary:
-      "This post is about the rise of superheroes in a world full of dangers.",
-    author: "John Doe",
+    title: "The Ultimate Showdown",
+    author: "Sam Black",
+    createdAt: "2024-11-15",
+  },
+  {
+    title: "The Fall of the Universe",
+    author: "Cathy Green",
     createdAt: "2024-11-14",
-    tag: "Hero",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/300",
-    title: "Villains of the Universe",
-    summary: "A deep dive into the villains that shaped the universe.",
-    author: "Jane Doe",
-    createdAt: "2024-11-10",
-    tag: "Villain",
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/300",
-    title: "Adventure Awaits",
-    summary: "Join our heroes on a journey across dimensions.",
-    author: "Alice Smith",
-    createdAt: "2024-11-12",
-    tag: "Adventure",
-  },
-  {
-    id: 4,
-    image: "https://via.placeholder.com/300",
-    title: "The Power of Legends",
-    summary: "Exploring the untold powers of ancient legends.",
-    author: "Bob Brown",
-    createdAt: "2024-11-11",
-    tag: "Powers",
   },
 ];
 
@@ -154,16 +160,46 @@ export const Home = () => {
         {/* dynamically render the posts based on selected tag */}
         <h3>{pageState}</h3>
         <div className="posts-grid">
-          {posts.map((post) => (
-            <div className="post-card" key={post.id}>
-              <img src={post.image} alt={post.title} className="post-image" />
+          {currentPosts.map((post) => (
+            <div
+              className="post-card"
+              key={post._id}
+              onClick={() =>
+                navigate(`/postpage/${post._id}`, {
+                  state: { post, isAuthenticated, userId },
+                })
+              }
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={`http://localhost:4000${post.image}`}
+                alt={post.title}
+                className="image-300"
+              />
               <h4 className="post-title">{post.title}</h4>
-              <p className="post-summary">{post.summary}</p>
-              <p className="post-author">By {post.author}</p>
-              <p className="post-date">{post.createdAt}</p>
-              <span className="post-tag">{post.tag}</span>
+              <p className="post-summary">
+                {getFirst200Characters(post.content)}
+              </p>
+
+              <div>
+                {post.versions.map((version) => (
+                  <p>By {users[version.editor]?.name || "Loading..."}</p>
+                ))}
+              </div>
+              <p className="post-date">{formatDate(post.createdAt)}</p>
+              <span className="post-tag">{post.tags.join(", ")}</span>
             </div>
           ))}
+        </div>
+        <div className="pagination">
+          {Array.from(
+            { length: Math.ceil(posts.length / postsPerPage) },
+            (_, index) => (
+              <button key={index + 1} onClick={() => paginate(index + 1)}>
+                {index + 1}
+              </button>
+            )
+          )}
         </div>
       </div>
 
@@ -179,4 +215,5 @@ export const Home = () => {
     </div>
   );
 };
+
 export default Home;

@@ -33,6 +33,7 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
 import { UserAuthType } from "./useAuthForm";
 
+
 interface UserContextType {
   signedUser: UserAuthType | null;
   setSignedUser: React.Dispatch<React.SetStateAction<UserAuthType | null>>;
@@ -42,13 +43,14 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
   children: ReactNode;
+  value: UserContextType; // Define the value prop
 }
 
-const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+const UserProvider: React.FC<UserProviderProps> = ({ children,value }) => {
   const [signedUser, setSignedUser] = useState<UserAuthType | null>(null);
 
   return (
-    <UserContext.Provider value={{ signedUser, setSignedUser }}>
+    <UserContext.Provider value={value} >
       {children}
     </UserContext.Provider>
   );

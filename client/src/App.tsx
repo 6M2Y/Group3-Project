@@ -13,15 +13,18 @@ import Profile from "./pages/Profile";
 import ToastNotification from "./Components/ToastContainer";
 import { CreatePost } from "./pages/CreatePost";
 import Home from "./pages/Home";
+import PostPage from "./pages/PostPage";
+import { UserAuthType } from "./utils/useAuthForm";
 
 // export const UserContext = createContext({}); //creating global user context
 
 function App() {
-  const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
-    {
-      access_token: null,
-    }
-  );
+  //const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
+    //{
+      //access_token: null,
+    //}
+  //);
+  const [signedUser, setSignedUser] = useState<UserAuthType | null>(null);
 
   useEffect(() => {
     const userInSession = lookInSession("user");
@@ -30,16 +33,18 @@ function App() {
     }
   }, []);
 
-  const isAuthenticated = !!signedUser.access_token; // Determine if the user is authenticated
+  const isAuthenticated = !!signedUser?.access_token; // Determine if the user is authenticated
   return (
-    <UserProvider>
+    <UserProvider value={{ signedUser, setSignedUser }}>
       <div>
         <Navbar />
         <ToastNotification />
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<Home />} />
+            
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} userId={signedUser?.access_token}  />} />
             <Route path="/createpost" element={<CreatePost />} />
+            <Route path="/postpage/:id" element={<PostPage />} />
             <Route path="/cardList" element={<CardList />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
