@@ -17,5 +17,6 @@ export const countUserPosts = (req: Request, res: Response) => postService.count
 export const searchby_Tag = (req: Request, res: Response) => postService.searchPostsByTag(req, res)
 export const getTag_Counts = (req:Request, res:Response) => postService.getTagCounts(req,res)
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
+export const viewCount = (req: Request, res: Response) => postService.getViews(req, res);
 
 

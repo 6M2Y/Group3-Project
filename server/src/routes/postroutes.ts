@@ -18,6 +18,8 @@ postrouter.get('/user/posts/count', verifyToken, postController.countUserPosts);
 postrouter.post('/comment', verifyToken, postController.addComment);
 postrouter.get('/latest-posts', postController.get_LatestPosts);
 postrouter.get('/tags/counts', postController.getTag_Counts);
+postrouter.put('/pages/:id/views', postController.viewCount)
+
 
 
 export default postrouter;

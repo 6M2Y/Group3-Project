@@ -242,3 +242,21 @@ export const getTagCounts = async (req: Request, res: Response)=> {
      res.status(500).json({ error: "Error fetching tag counts" });
   }
 };
+
+// Increment views for a page
+export const getViews = async (req: Request, res: Response):Promise<void> => {
+  try {
+    const page = await Post.findById(req.params.id);
+    if (!page) {
+      res.status(404).json({ message: 'Page not found' }); return;
+    }
+
+    // Increment view count
+    page.views += 1;
+    await page.save();
+
+    res.status(200).json({ message: 'Page views incremented', views: page.views });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to increment views' + error });
+  }
+};
