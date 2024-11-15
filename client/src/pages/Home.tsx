@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
 import "../Styles/MainContent.css";
+import { UserAuthType } from "../utils/useAuthForm";
+import axios from "axios";
+import { toast } from "react-toastify";
+import LatestPostCard from "../Components/latestPostCard";
 
 interface HomeProps {
     isAuthenticated?: boolean; // Make isAuthenticated optional
@@ -45,6 +47,7 @@ const availableTags = [
     "Origins",
 ];
 
+
 const latestPosts = [
     {
         title: "The Ultimate Showdown",
@@ -58,6 +61,19 @@ const latestPosts = [
     },
 ];
 
+export interface latestPostType {
+  author: {
+    fullname: string;
+    email: string;
+  };
+  title: string;
+  tags: string[];
+  updatedAt: string; // ISO string for date
+}
+interface ApiResponse {
+  wikiPost: latestPostType[];
+}
+ 
 interface PostCountResponse {
     postCount: number;
 }
@@ -66,10 +82,22 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated = false, userId = null }) =
     const [posts, setPosts] = useState<Post[]>([]);
     const [users, setUsers] = useState<{ [key: string]: User }>({});
     const [currentPage, setCurrentPage] = useState(1);
+    const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+
     const postsPerPage = 6;
     const navigate = useNavigate();
 
-
+    const fetchLatestPosts = () => {
+      axios
+        .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
+        .then(({ data }) => {
+          setLatestPosts(data.wikiPost);
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        });
+    };
+  
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -89,7 +117,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated = false, userId = null }) =
                 console.error('Error fetching posts:', error);
             }
         };
-
+        fetchLatestPosts();
         fetchPosts();
     }, [isAuthenticated, userId]);
 
@@ -190,11 +218,7 @@ const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
         <h3>Latest Posts</h3>
         <ul>
           {latestPosts.map((latestPost, index) => (
-            <li key={index} className="latest-post">
-              <p className="latest-post-title">{latestPost.title}</p>
-              <p className="latest-post-author">{latestPost.author}</p>
-              <p className="latest-post-date">{latestPost.createdAt}</p>
-            </li>
+            <LatestPostCard content={latestPost} key={index} />
           ))}
         </ul>
       </div>

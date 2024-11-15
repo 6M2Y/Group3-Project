@@ -12,6 +12,7 @@ export const publishPost = (req: Request, res: Response) => postService.publishP
 export const editPost = (req: Request, res: Response) => postService.editPost(req as AuthenticatedRequest, res);
 export const getAllPosts = (req: Request, res: Response) => postService.getAllPosts(req as AuthenticatedRequest, res);
 export const getUserPosts = (req: Request, res: Response) => postService.getUserPosts(req as AuthenticatedRequest, res);
+export const get_LatestPosts = (req: Request, res: Response) => postService.getLatestPosts(req, res);
 export const countUserPosts = (req: Request, res: Response) => postService.countUserPosts(req as AuthenticatedRequest, res);
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
 

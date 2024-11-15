@@ -41,12 +41,12 @@
   
   .nav-link:hover {
     text-decoration: underline;
-  }
+  } */
 
 /* Main Navbar Container */
 /* Navbar container */
 /* Navbar container */
-:root {
+ :root {
   --primary-color: #ff6f61;
   --secondary-color: #ffffff;
   --background-color: #222;
@@ -200,3 +200,6 @@
     width: 200px;
   }
 }
+
+
+

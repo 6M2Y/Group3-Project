@@ -166,6 +166,7 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
+<<<<<<< HEAD
 //Add a new controller function to add a comment to a post
 export const addComment = async (req: AuthenticatedRequest, res: Response) :
  Promise<void> => {
@@ -194,4 +195,21 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) :
     console.error('Error adding comment:', error);
     res.status(500).json({ message: 'Failed to add comment', error });
   }
+=======
+//get latest posts
+
+export const getLatestPosts = (req: Request, res: Response) => { 
+
+  Post.find({ published: true }) // Fetch published posts
+    .populate("author", "fullname email -_id") // Include author details
+    .sort({ "updatedAt": -1 }) // Sort by latest updated
+    .select("title tags updatedAt -_id") // Select specific fields
+    .limit(5) // Limit to 5 results
+    .then(wikiPost => {
+        return res.status(200).json({ wikiPost }); // Return results
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message }); // Handle errors
+    });
+>>>>>>> 0399b4e86a85ca6cc49c0e2451afa7bd5f07eaff
 };

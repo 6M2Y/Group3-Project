@@ -14,5 +14,9 @@ postrouter.put('/edit/:id', postController.editPost);
 postrouter.get('/posts', postController.getAllPosts);
 postrouter.get('/user/posts', verifyToken, postController.getUserPosts);
 postrouter.get('/user/posts/count', verifyToken, postController.countUserPosts);
+<<<<<<< HEAD
 postrouter.post('/comment', verifyToken, postController.addComment);
+=======
+postrouter.get('/latest-posts', postController.get_LatestPosts);
+>>>>>>> 0399b4e86a85ca6cc49c0e2451afa7bd5f07eaff
 export default postrouter;
