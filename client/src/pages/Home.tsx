@@ -85,6 +85,11 @@ export const Home = () => {
     fetchLatestPosts();
   }, []);
 
+  const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const tag = e.currentTarget.innerText.split(" ")[0].toLowerCase();
+    console.log("Selected tag:", tag);
+  };
+
   return (
     <div className="main-content">
       {/* Part 1: Tags Section */}
@@ -92,10 +97,10 @@ export const Home = () => {
         <h3>Tags</h3>
         <div className="tags-list">
           {availableTags.map((tag, index) => (
-            <div className="tag-item" key={index}>
-              <span className="tag-name">{tag}</span>
+            <button onClick={loadByTag} className="tag-button" key={index}>
+              {tag}
               <span className="tag-count">(12 posts)</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -128,9 +133,5 @@ export const Home = () => {
       </div>
     </div>
   );
-  // return <div>Home</div>;
-  //suzan
-  // list of cards
-  // from database
 };
 export default Home;

@@ -10,36 +10,58 @@
 }
 
 /* Part 1: Tags Section */
+/* Part 1: Tags Section */
 .tags-section {
   width: 15%;
   background-color: #f4f4f4;
   padding: 1rem;
   border-radius: 5px;
+  text-align: center;
 }
 
+/* Adjust layout of tags */
 .tags-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
-.tag-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  border-radius: 5px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  flex: 1 1 calc(33.333% - 1rem); /* Responsive width with flex-grow, flex-shrink, and flex-basis */
-}
-
-.tag-name {
+/* Style for each tag button */
+.tag-button {
+  background: none;
+  color: rgb(29, 28, 28);
+  font-size: 1rem;
   font-weight: bold;
+  border: 1px solid #ddd;;
+  border-radius: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease; /* Smooth transition for hover and active */
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.tag-count {
-  color: gray;
+.tag-button:hover {
+  /* background-color: #525353;  */
+  transform: scale(1); /* Slightly enlarge the button */
 }
+
+/* The tag count is shown beside the button text */
+.tag-count {
+  font-size: 0.75rem;
+  color: #535252; /* Lighter color for count */
+  margin-left: 10px;
+}
+
+/* Add a subtle shadow when the button is hovered */
+.tag-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
 
 /* Part 2: All Posts Section */
 .posts-section {
@@ -106,7 +128,7 @@
 }
 
 .latest-post {
-  padding: 0.5rem;
+  padding: 0.2rem;
   border-bottom: 1px solid #ddd;
 }
 
