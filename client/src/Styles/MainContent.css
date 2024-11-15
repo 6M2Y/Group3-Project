@@ -67,6 +67,12 @@
   border-radius: 5px;
 }
 
+.image-300 {
+  width: 300px;
+  height: 300px;
+  border-radius: 5px;
+  object-fit: cover; /* This ensures the image covers the area without distortion */
+}
 .post-title {
   font-size: 1.25rem;
   margin: 0.5rem 0;
@@ -83,6 +89,14 @@
   color: #777;
 }
 
+.dates {
+  display: flex;
+  gap: 10px; /* Adjust the gap as needed */
+}
+
+.dates span {
+  display: inline-block;
+}
 .post-tag {
   font-size: 0.875rem;
   background-color: #ff5722;
@@ -120,6 +134,26 @@
   font-size: 0.875rem;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .posts-grid {
@@ -132,6 +166,10 @@
   }
 
   .posts-section {
+    width: 100%;
+  }
+  .image-300
+  {
     width: 100%;
   }
 }

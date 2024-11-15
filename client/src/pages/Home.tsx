@@ -1,101 +1,191 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import "../Styles/MainContent.css";
 
-const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
-];
+interface HomeProps {
+    isAuthenticated?: boolean; // Make isAuthenticated optional
+  userId?: string | null; // Make userId optional
+}
 
-const posts = [
-  {
-    id: 1,
-    image: "https://via.placeholder.com/300",
-    title: "The Rise of Heroes",
-    summary:
-      "This post is about the rise of superheroes in a world full of dangers.",
-    author: "John Doe",
-    createdAt: "2024-11-14",
-    tag: "Hero",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/300",
-    title: "Villains of the Universe",
-    summary: "A deep dive into the villains that shaped the universe.",
-    author: "Jane Doe",
-    createdAt: "2024-11-10",
-    tag: "Villain",
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/300",
-    title: "Adventure Awaits",
-    summary: "Join our heroes on a journey across dimensions.",
-    author: "Alice Smith",
-    createdAt: "2024-11-12",
-    tag: "Adventure",
-  },
-  {
-    id: 4,
-    image: "https://via.placeholder.com/300",
-    title: "The Power of Legends",
-    summary: "Exploring the untold powers of ancient legends.",
-    author: "Bob Brown",
-    createdAt: "2024-11-11",
-    tag: "Powers",
-  },
+interface Version {
+    tags: string[];
+    content: string;
+    editor: string;
+    _id: string;
+    date: string;
+}
+
+interface Post {
+    _id: string;
+    title: string;
+    content: string;
+    tags: string[];
+    versions: Version[];
+    views: number;
+    comments: string[]; // You can replace `any` with a more specific type if you have a structure for comments
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
+interface User {
+    _id: string;
+    name: string;
+    // Add other user fields as necessary
+}
+const availableTags = [
+    "Hero",
+    "Villain",
+    "Adventure",
+    "Powers",
+    "Universe",
+    "Origins",
 ];
 
 const latestPosts = [
-  {
-    title: "The Ultimate Showdown",
-    author: "Sam Black",
-    createdAt: "2024-11-15",
-  },
-  {
-    title: "The Fall of the Universe",
-    author: "Cathy Green",
-    createdAt: "2024-11-14",
-  },
+    {
+        title: "The Ultimate Showdown",
+        author: "Sam Black",
+        createdAt: "2024-11-15",
+    },
+    {
+        title: "The Fall of the Universe",
+        author: "Cathy Green",
+        createdAt: "2024-11-14",
+    },
 ];
-export const Home = () => {
-  return (
-    <div className="main-content">
-      {/* Part 1: Tags Section */}
-      <div className="tags-section">
-        <h3>Tags</h3>
-        <div className="tags-list">
-          {availableTags.map((tag, index) => (
-            <div className="tag-item" key={index}>
-              <span className="tag-name">{tag}</span>
-              <span className="tag-count">(12 posts)</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Part 2: All Posts */}
-      <div className="posts-section">
-        <h3>All Posts</h3>
+interface PostCountResponse {
+    postCount: number;
+}
+
+const Home: React.FC<HomeProps> = ({ isAuthenticated = false, userId = null }) => {
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [users, setUsers] = useState<{ [key: string]: User }>({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 6;
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                console.log('User ID:', userId); // Log the userId to verify its value
+                const config = isAuthenticated ? {
+                    headers: {
+                        Authorization: `Bearer ${userId}`, // Replace with your actual token
+                    },
+                } : {};
+                console.log("here");
+                const response = isAuthenticated
+                    ? await axios.get<Post[]>(`http://localhost:4000/user/posts`, config)
+                    : await axios.get<Post[]>(`http://localhost:4000/posts`);
+                console.log('Fetching All Posts...');
+                setPosts(response.data);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        };
+
+        fetchPosts();
+    }, [isAuthenticated, userId]);
+
+    const fetchUser = async (userId: string) => {
+        if (!users[userId]) {
+            try {
+                const response = await axios.get<User>(`http://localhost:4000/users/${userId}`);
+                setUsers(prevUsers => ({ ...prevUsers, [userId]: response.data }));
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        posts.forEach(post => {
+            post.versions.forEach(version => {
+                fetchUser(version.editor);
+            });
+        });
+    }, [posts]);
+
+    //clean up the content before displaying it.
+    const stripHtmlTags = (str: string) => {
+        return str.replace(/<\/?[^>]+(>|$)/g, "");
+    };
+//To extract just the date from the createdAt field
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const getFirst200Characters = (content: string) => {
+  const strippedContent = stripHtmlTags(content);
+  return strippedContent.length > 200 ? strippedContent.substring(0, 200) + '...' : strippedContent;
+};
+// Calculate the posts to display on the current page
+const indexOfLastPost = currentPage * postsPerPage;
+const indexOfFirstPost = indexOfLastPost - postsPerPage;
+const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+// Change page
+const paginate = (pageNumber: number) => setCurrentPage(pageNumber);    
+
+    return (
+        <div className="main-content">
+        {/* Part 1: Tags Section */}
+        <div className="tags-section">
+          <h3>Tags</h3>
+          <div className="tags-list">
+            {availableTags.map((tag, index) => (
+              <div className="tag-item" key={index}>
+                <span className="tag-name">{tag}</span>
+                <span className="tag-count">(12 posts)</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+            
+                   
+
+
+ {/* Part 2: All Posts */}
+ <div className="posts-section">
+        <h3>All Posts For You</h3>
         <div className="posts-grid">
-          {posts.map((post) => (
-            <div className="post-card" key={post.id}>
-              <img src={post.image} alt={post.title} className="post-image" />
+          {currentPosts.map((post) => (
+            <div className="post-card" key={post._id} onClick={() => navigate(`/postpage/${post._id}`,{ state: { post, isAuthenticated, userId } })} style={{ cursor: 'pointer' }}>
+              <img src={`http://localhost:4000${post.image}`} alt={post.title} className="image-300" />
               <h4 className="post-title">{post.title}</h4>
-              <p className="post-summary">{post.summary}</p>
-              <p className="post-author">By {post.author}</p>
-              <p className="post-date">{post.createdAt}</p>
-              <span className="post-tag">{post.tag}</span>
+              <p className="post-summary">{getFirst200Characters(post.content)}</p>
+              
+              <div>{post.versions.map((version) => (
+                                    <p>By {users[version.editor]?.name || 'Loading...'}</p>
+                            ))}</div>
+              <p className="post-date">{formatDate(post.createdAt)}</p>              
+              <span className="post-tag">{post.tags.join(', ')}</span>
             </div>
+            
           ))}
         </div>
-      </div>
+        <div className='pagination'>
+                {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
+                    <button key={index + 1} onClick={() => paginate(index + 1)}>
+                        {index + 1}
+                    </button>
+                ))}
+        </div>
+</div>
 
-      {/* Part 3: Latest Posts */}
+
+            {/* Part 3: Latest Posts */}
       <div className="latest-posts-section">
         <h3>Latest Posts</h3>
         <ul>
@@ -108,11 +198,8 @@ export const Home = () => {
           ))}
         </ul>
       </div>
-    </div>
-  );
-  // return <div>Home</div>;
-  //suzan
-  // list of cards
-  // from database
+</div>
+    );
 };
+
 export default Home;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/User Schema';
 import Page from '../models/PageSchema';
-import Comment from '../models/Comment Schema';
+import Comment from '../models/CommentSchema';
 import Tag from '../models/Tag Schema';
 import { generateUserName } from '../Utils/generateUserName';
 import { validateSignupInput } from '../Utils/validateUser';

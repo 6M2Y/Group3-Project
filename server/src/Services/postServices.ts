@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import Post from "../models/PageSchema";
 //import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
+import Comment from '../models/CommentSchema';
+import mongoose from 'mongoose';
+
 
 
 
@@ -160,5 +163,35 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
   } catch (error) {
     console.error("Error counting user posts:", error);
     res.status(500).json({ message: 'Error counting user posts' });
+  }
+};
+
+//Add a new controller function to add a comment to a post
+export const addComment = async (req: AuthenticatedRequest, res: Response) :
+ Promise<void> => {
+  const { postId, content } = req.body;
+  const authorId = req.user;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+       res.status(404).json({ message: 'Post not found' });
+       return;
+    }
+
+    const newComment = new Comment({
+      postId: new mongoose.Types.ObjectId(postId),
+      author: new mongoose.Types.ObjectId(authorId),
+      content
+    });
+    await newComment.save();
+
+    post.comments.push(newComment.id);
+    await post.save();
+
+    res.status(200).json({ message: 'Comment added successfully', post });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ message: 'Failed to add comment', error });
   }
 };

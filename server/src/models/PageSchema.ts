@@ -83,6 +83,7 @@
 // export default Page;
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
+
 // Define the interface for the Page schema
 interface IVersion {
   title: string;
@@ -124,7 +125,7 @@ const PageSchema: Schema<IPage> = new Schema(
       },
     ],
     views: { type: Number, default: 0 },
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+    comments:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     image: { type: String, required: false },
