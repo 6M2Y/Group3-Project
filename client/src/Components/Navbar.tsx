@@ -60,8 +60,9 @@ const Navbar: React.FC = () => {
         <div className="navbar-left">
           <Link to={"/"}>
             <img src="your-logo.png" alt="" />
+
+            <span className="logo">SuperBlog</span>
           </Link>
-          <span className="logo">SuperBlog</span>
         </div>
 
         {/* Centered Search Input */}
