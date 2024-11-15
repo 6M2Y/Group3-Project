@@ -179,3 +179,34 @@ export const getLatestPosts = (req: Request, res: Response) => {
         return res.status(500).json({ error: err.message }); // Handle errors
     });
 };
+
+export const searchPostsByTag = (req: Request, res: Response) => {
+  const {tag} = req.body;
+  const  findQuery = { tags: tag, published: true }
+
+  Post.find(findQuery) // Fetch published posts
+    .populate("author", "fullname email -_id") // Include author details
+    .sort({ "updatedAt": -1 }) // Sort by latest updated
+    .select("title tags content summary updatedAt") // Select specific fields
+    .limit(5) // Limit to 5 results
+    .then(wikiPost => {
+        return res.status(200).json({ wikiPost }); // Return results
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message }); // Handle errors
+    });
+};
+
+export const getTagCounts = async (req: Request, res: Response)=> {
+  try {
+    const tagCounts = await Post.aggregate([
+      { $unwind: "$tags" }, 
+      { $group: { _id: "$tags", count: { $sum: 1 } } }, 
+      { $project: { tag: "$_id", count: 1, _id: 0 } }, 
+    ]);
+   res.json(tagCounts);
+  } catch (error) {
+    console.error(error);
+     res.status(500).json({ error: "Error fetching tag counts" });
+  }
+};

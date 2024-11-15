@@ -14,4 +14,6 @@ export const getAllPosts = (req: Request, res: Response) => postService.getAllPo
 export const getUserPosts = (req: Request, res: Response) => postService.getUserPosts(req as AuthenticatedRequest, res);
 export const get_LatestPosts = (req: Request, res: Response) => postService.getLatestPosts(req, res);
 export const countUserPosts = (req: Request, res: Response) => postService.countUserPosts(req as AuthenticatedRequest, res);
+export const searchby_Tag = (req: Request, res: Response) => postService.searchPostsByTag(req, res)
+export const getTag_Counts = (req:Request, res:Response) => postService.getTagCounts(req,res)
 

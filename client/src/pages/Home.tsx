@@ -67,8 +67,17 @@ interface ApiResponse {
   wikiPost: latestPostType[];
 }
 
+interface TagCount {
+  tag: string;
+  count: number;
+}
+
 export const Home = () => {
   const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
+    []
+  );
+  const [pageState, setPageState] = useState("All Posts");
 
   const fetchLatestPosts = () => {
     axios
@@ -81,12 +90,37 @@ export const Home = () => {
       });
   };
 
+  const fetchTagCounts = async () => {
+    try {
+      const response = await axios.get<TagCount[]>(
+        `${process.env.REACT_APP_WIKI_API_URL}/tags/counts`
+      );
+
+      const mergedTagCounts = availableTags.map((tag) => {
+        // Look for the tag in the API response
+        const apiTag = response.data.find((t) => t.tag === tag);
+
+        // If found, use its count. Otherwise, set count to 0.
+        return { tag, count: apiTag ? apiTag.count : 0 };
+      });
+      setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
+      console.log(response.data);
+    } catch (error) {
+      {
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  };
+
   useEffect(() => {
     fetchLatestPosts();
+    fetchTagCounts();
   }, []);
 
   const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const tag = e.currentTarget.innerText.split(" ")[0].toLowerCase();
+    const tag = e.currentTarget.textContent
+      ?.match(/^[^\(]*/)?.[0]
+      .toLowerCase();
     console.log("Selected tag:", tag);
   };
 
@@ -96,18 +130,29 @@ export const Home = () => {
       <div className="tags-section">
         <h3>Tags</h3>
         <div className="tags-list">
-          {availableTags.map((tag, index) => (
+          {tagCounts.map(({ tag, count }) => (
+            <button
+              onClick={loadByTag} // Replace with `loadByTag` or similar function
+              className="tag-button"
+              key={tag}
+            >
+              {tag}
+              <span className="tag-count">({count} posts)</span>
+            </button>
+          ))}
+          {/* {availableTags.map((tag, index) => (
             <button onClick={loadByTag} className="tag-button" key={index}>
               {tag}
               <span className="tag-count">(12 posts)</span>
             </button>
-          ))}
+          ))} */}
         </div>
       </div>
 
       {/* Part 2: All Posts */}
       <div className="posts-section">
-        <h3>All Posts</h3>
+        {/* dynamically render the posts based on selected tag */}
+        <h3>{pageState}</h3>
         <div className="posts-grid">
           {posts.map((post) => (
             <div className="post-card" key={post.id}>
