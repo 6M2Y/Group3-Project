@@ -88,43 +88,48 @@ export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
 }
 
 export const editPost = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-    const postId = req.params.id;
-    const { title, content, tags, image } = req.body;
+    // const postId = req.params.id;
+    // const { title, summary, content, tags, image, published } = req.body;
+    // const authorId = req.user; //the token passed and verified by the jwt
     
-    try {
-      // Find the post by its ID
-      const post = await Post.findById(postId);
-      if (!post) {
-         res.status(404).json({ message: "Post not found." });return
-      }
+    // try {
+    //   // Find the post by its ID
+    //   const post = await Post.findById(postId);
+    //   if (!post) {
+    //      res.status(404).json({ message: "Post not found." });return
+    //   }
   
-      // Add the new version to the versions array with updated fields
+    //   // Add the new version to the versions array with updated fields
     //   const newVersion = {
-    //     title: title || post.title, // If no title is provided, keep the current one
+    //     title: title || post.title, 
     //     content: content || post.content,
+    //     summary:summary ||post.summary,
     //     tags: tags || post.tags,
-    //     image: image || post.image, // If no image is provided, keep the current one
-    //     editor: req.user._id, // Assuming you have the user data in `req.user`
+    //     image: image || post.image,
+    //     published:published ||post.published,
+    //     editor: authorId, 
     //     date: new Date(),
     //   };
   
-      // Push the new version into the versions array
+    //   // Push the new version into the versions array
     //   post.versions.push(newVersion);
   
-      // Update the post with the new content and version
-      post.title = title || post.title;
-      post.content = content || post.content;
-      post.tags = tags || post.tags;
-      post.image = image || post.image;
+    //   // Update the post with the new content and version
+    //   post.title = title || post.title;
+    //   post.content = content || post.content;
+    //   post.summary = content || post.summary
+    //   post.tags = tags || post.tags;
+    //   post.image = image || post.image;
   
-      // Save the updated post
-      await post.save();
+    //   // Save the updated post
+    //   await post.save();
   
-      res.status(200).json({ message: "Post updated successfully.", post });
-    } catch (error) {
-      console.error("Error updating post:", error);
-      res.status(500).json({ message: "Failed to update post.", error });
-    }
+    //   res.status(200).json({ message: "Post updated successfully.", post });
+    // } catch (error) {
+    //   console.error("Error updating post:", error);
+    //   res.status(500).json({ message: "Failed to update post.", error });
+    // }
+  res.json({ "coder": "Suzan" });
   }
 
 

@@ -98,7 +98,7 @@ interface IVersion {
 export interface IPage extends Document {
   author: Types.ObjectId;
   title: string;
-  summar: string;
+  summary: string;
   content: string;
   tags: string[];
   versions: IVersion[];
@@ -124,6 +124,7 @@ const PageSchema: Schema<IPage> = new Schema(
         content: { type: String, },
         tags: [{ type: String }],
         image: { type: String },
+        published: {type:Boolean},
         editor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         date: { type: Date, default: Date.now },
       },
