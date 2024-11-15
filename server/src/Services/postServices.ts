@@ -91,48 +91,43 @@ export const publishPost = (req: AuthenticatedRequest, res: Response)=> {
 }
 
 export const editPost = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-    // const postId = req.params.id;
-    // const { title, summary, content, tags, image, published } = req.body;
-    // const authorId = req.user; //the token passed and verified by the jwt
+    const postId = req.params.id;
+    const { title, content, tags, image } = req.body;
     
-    // try {
-    //   // Find the post by its ID
-    //   const post = await Post.findById(postId);
-    //   if (!post) {
-    //      res.status(404).json({ message: "Post not found." });return
-    //   }
+    try {
+      // Find the post by its ID
+      const post = await Post.findById(postId);
+      if (!post) {
+         res.status(404).json({ message: "Post not found." });return
+      }
   
-    //   // Add the new version to the versions array with updated fields
+      // Add the new version to the versions array with updated fields
     //   const newVersion = {
-    //     title: title || post.title, 
+    //     title: title || post.title, // If no title is provided, keep the current one
     //     content: content || post.content,
-    //     summary:summary ||post.summary,
     //     tags: tags || post.tags,
-    //     image: image || post.image,
-    //     published:published ||post.published,
-    //     editor: authorId, 
+    //     image: image || post.image, // If no image is provided, keep the current one
+    //     editor: req.user._id, // Assuming you have the user data in `req.user`
     //     date: new Date(),
     //   };
   
-    //   // Push the new version into the versions array
+      // Push the new version into the versions array
     //   post.versions.push(newVersion);
   
-    //   // Update the post with the new content and version
-    //   post.title = title || post.title;
-    //   post.content = content || post.content;
-    //   post.summary = content || post.summary
-    //   post.tags = tags || post.tags;
-    //   post.image = image || post.image;
+      // Update the post with the new content and version
+      post.title = title || post.title;
+      post.content = content || post.content;
+      post.tags = tags || post.tags;
+      post.image = image || post.image;
   
-    //   // Save the updated post
-    //   await post.save();
+      // Save the updated post
+      await post.save();
   
-    //   res.status(200).json({ message: "Post updated successfully.", post });
-    // } catch (error) {
-    //   console.error("Error updating post:", error);
-    //   res.status(500).json({ message: "Failed to update post.", error });
-    // }
-  res.json({ "coder": "Suzan" });
+      res.status(200).json({ message: "Post updated successfully.", post });
+    } catch (error) {
+      console.error("Error updating post:", error);
+      res.status(500).json({ message: "Failed to update post.", error });
+    }
   }
 
 
@@ -171,7 +166,6 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-<<<<<<< HEAD
 //Add a new controller function to add a comment to a post
 export const addComment = async (req: AuthenticatedRequest, res: Response) :
  Promise<void> => {
@@ -200,7 +194,7 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) :
     console.error('Error adding comment:', error);
     res.status(500).json({ message: 'Failed to add comment', error });
   }
-=======
+};
 //get latest posts
 
 export const getLatestPosts = (req: Request, res: Response) => { 
@@ -216,5 +210,35 @@ export const getLatestPosts = (req: Request, res: Response) => {
     .catch(err => {
         return res.status(500).json({ error: err.message }); // Handle errors
     });
->>>>>>> 0399b4e86a85ca6cc49c0e2451afa7bd5f07eaff
+};
+
+export const searchPostsByTag = (req: Request, res: Response) => {
+  const {tag} = req.body;
+  const  findQuery = { tags: tag, published: true }
+
+  Post.find(findQuery) // Fetch published posts
+    .populate("author", "fullname email -_id") // Include author details
+    .sort({ "updatedAt": -1 }) // Sort by latest updated
+    .select("title tags content summary updatedAt") // Select specific fields
+    .limit(5) // Limit to 5 results
+    .then(wikiPost => {
+        return res.status(200).json({ wikiPost }); // Return results
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message }); // Handle errors
+    });
+};
+
+export const getTagCounts = async (req: Request, res: Response)=> {
+  try {
+    const tagCounts = await Post.aggregate([
+      { $unwind: "$tags" }, 
+      { $group: { _id: "$tags", count: { $sum: 1 } } }, 
+      { $project: { tag: "$_id", count: 1, _id: 0 } }, 
+    ]);
+   res.json(tagCounts);
+  } catch (error) {
+    console.error(error);
+     res.status(500).json({ error: "Error fetching tag counts" });
+  }
 };

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
 import { UserAuthType } from "../utils/useAuthForm";
-import axios from "axios";
 import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
 
@@ -47,19 +47,6 @@ const availableTags = [
   "Origins",
 ];
 
-const latestPosts = [
-  {
-    title: "The Ultimate Showdown",
-    author: "Sam Black",
-    createdAt: "2024-11-15",
-  },
-  {
-    title: "The Fall of the Universe",
-    author: "Cathy Green",
-    createdAt: "2024-11-14",
-  },
-];
-
 export interface latestPostType {
   author: {
     fullname: string;
@@ -78,12 +65,24 @@ interface TagCount {
   count: number;
 }
 
-export const Home = () => {
+interface PostCountResponse {
+  postCount: number;
+}
+
+const Home: React.FC<HomeProps> = ({
+  isAuthenticated = false,
+  userId = null,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<{ [key: string]: User }>({});
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
   const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
     []
   );
-  const [pageState, setPageState] = useState("All Posts");
+  const postsPerPage = 6;
+  const navigate = useNavigate();
 
   const fetchLatestPosts = () => {
     axios
@@ -119,6 +118,52 @@ export const Home = () => {
   };
 
   useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        console.log("User ID:", userId); // Log the userId to verify its value
+        const config = isAuthenticated
+          ? {
+              headers: {
+                Authorization: `Bearer ${userId}`, // Replace with your actual token
+              },
+            }
+          : {};
+        console.log("here");
+        const response = isAuthenticated
+          ? await axios.get<Post[]>(`http://localhost:4000/user/posts`, config)
+          : await axios.get<Post[]>(`http://localhost:4000/posts`);
+        console.log("Fetching All Posts...");
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, [isAuthenticated, userId]);
+
+  const fetchUser = async (userId: string) => {
+    if (!users[userId]) {
+      try {
+        const response = await axios.get<User>(
+          `http://localhost:4000/users/${userId}`
+        );
+        setUsers((prevUsers) => ({ ...prevUsers, [userId]: response.data }));
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    posts.forEach((post) => {
+      post.versions.forEach((version) => {
+        fetchUser(version.editor);
+      });
+    });
+  }, [posts]);
+
+  useEffect(() => {
     fetchLatestPosts();
     fetchTagCounts();
   }, []);
@@ -129,6 +174,33 @@ export const Home = () => {
       .toLowerCase();
     console.log("Selected tag:", tag);
   };
+
+  //clean up the content before displaying it.
+  const stripHtmlTags = (str: string) => {
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  //To extract just the date from the createdAt field
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getFirst200Characters = (content: string) => {
+    const strippedContent = stripHtmlTags(content);
+    return strippedContent.length > 200
+      ? strippedContent.substring(0, 200) + "..."
+      : strippedContent;
+  };
+  // Calculate the posts to display on the current page
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="main-content">
@@ -157,8 +229,7 @@ export const Home = () => {
 
       {/* Part 2: All Posts */}
       <div className="posts-section">
-        {/* dynamically render the posts based on selected tag */}
-        <h3>{pageState}</h3>
+        <h3>All Posts For You</h3>
         <div className="posts-grid">
           {currentPosts.map((post) => (
             <div
