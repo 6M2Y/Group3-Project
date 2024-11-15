@@ -87,8 +87,10 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 interface IVersion {
   title: string;
   content: string;
+  summary: string;
   tags: string[];
   image: string | undefined;
+  published: boolean;
   editor: Types.ObjectId;
   date: Date;
 }
@@ -96,11 +98,13 @@ interface IVersion {
 export interface IPage extends Document {
   author: Types.ObjectId;
   title: string;
+  summar: string;
   content: string;
   tags: string[];
   versions: IVersion[];
   views: number;
   comments: Types.ObjectId[];
+  published: boolean;
   createdAt: Date;
   updatedAt: Date;
   image?: string;
@@ -116,6 +120,7 @@ const PageSchema: Schema<IPage> = new Schema(
     versions: [
       {
         title: { type: String, required: true },
+        summary:{type:String},
         content: { type: String, },
         tags: [{ type: String }],
         image: { type: String },
@@ -124,6 +129,7 @@ const PageSchema: Schema<IPage> = new Schema(
       },
     ],
     views: { type: Number, default: 0 },
+    published: {type:Boolean},
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

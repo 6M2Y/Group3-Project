@@ -1,5 +1,9 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import "../Styles/MainContent.css";
+import { UserAuthType } from "../utils/useAuthForm";
+import axios from "axios";
+import { toast } from "react-toastify";
+import LatestPostCard from "../Components/latestPostCard";
 
 const availableTags = [
   "Hero",
@@ -50,19 +54,37 @@ const posts = [
   },
 ];
 
-const latestPosts = [
-  {
-    title: "The Ultimate Showdown",
-    author: "Sam Black",
-    createdAt: "2024-11-15",
-  },
-  {
-    title: "The Fall of the Universe",
-    author: "Cathy Green",
-    createdAt: "2024-11-14",
-  },
-];
+export interface latestPostType {
+  author: {
+    fullname: string;
+    email: string;
+  };
+  title: string;
+  tags: string[];
+  updatedAt: string; // ISO string for date
+}
+interface ApiResponse {
+  wikiPost: latestPostType[];
+}
+
 export const Home = () => {
+  const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+
+  const fetchLatestPosts = () => {
+    axios
+      .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
+      .then(({ data }) => {
+        setLatestPosts(data.wikiPost);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchLatestPosts();
+  }, []);
+
   return (
     <div className="main-content">
       {/* Part 1: Tags Section */}
@@ -100,11 +122,7 @@ export const Home = () => {
         <h3>Latest Posts</h3>
         <ul>
           {latestPosts.map((latestPost, index) => (
-            <li key={index} className="latest-post">
-              <p className="latest-post-title">{latestPost.title}</p>
-              <p className="latest-post-author">{latestPost.author}</p>
-              <p className="latest-post-date">{latestPost.createdAt}</p>
-            </li>
+            <LatestPostCard content={latestPost} key={index} />
           ))}
         </ul>
       </div>

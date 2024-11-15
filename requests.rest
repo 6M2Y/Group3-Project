@@ -1,7 +1,1 @@
-post http://localhost:4000/signin
-Content-Type: application/json
-
-{
-    "email":"testg@ffff.com",
-    "password": "Test1"
-}
+GET http://localhost:4000/latest-posts

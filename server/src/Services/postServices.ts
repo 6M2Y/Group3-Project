@@ -162,3 +162,20 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
     res.status(500).json({ message: 'Error counting user posts' });
   }
 };
+
+//get latest posts
+
+export const getLatestPosts = (req: Request, res: Response) => { 
+
+  Post.find({ published: true }) // Fetch published posts
+    .populate("author", "fullname email -_id") // Include author details
+    .sort({ "updatedAt": -1 }) // Sort by latest updated
+    .select("title tags updatedAt -_id") // Select specific fields
+    .limit(5) // Limit to 5 results
+    .then(wikiPost => {
+        return res.status(200).json({ wikiPost }); // Return results
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message }); // Handle errors
+    });
+};

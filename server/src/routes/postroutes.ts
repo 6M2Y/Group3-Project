@@ -14,4 +14,5 @@ postrouter.put('/edit/:id', postController.editPost);
 postrouter.get('/posts', postController.getAllPosts);
 postrouter.get('/user/posts', verifyToken, postController.getUserPosts);
 postrouter.get('/user/posts/count', verifyToken, postController.countUserPosts);
+postrouter.get('/latest-posts', postController.get_LatestPosts);
 export default postrouter;
