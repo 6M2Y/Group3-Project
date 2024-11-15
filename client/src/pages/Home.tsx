@@ -222,8 +222,8 @@ const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
           ))}
         </ul>
       </div>
-</div>
-    );
+    </div>
+  );
 };
 
 export default Home;
