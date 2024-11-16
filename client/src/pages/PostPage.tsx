@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
+import { lookInSession } from "../utils/session";
+import { useUser } from "../utils/UserContext";
 
 interface PostPageProps {
   isAuthenticated: boolean;
@@ -38,9 +40,12 @@ interface User {
 }
 
 interface AddCommentResponse {
-  message: string;
-  comment: Comment;
+  _id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
 const availableTags = [
   "Hero",
   "Villain",
@@ -62,18 +67,44 @@ const PostPage: React.FC = () => {
     post: any;
     isAuthenticated: boolean;
   };
+  console.log("comments" + post.comments);
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState<Comment[]>(post.comments);
+  //    const [comments, setComments] = useState<Comment[]>(post.comments);
+  //   const [comments, setComments] = useState<Comment[]>(post.comments || []);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
 
+  const { signedUser } = useUser();
+  //   //try
+  const [comments, setComments] = useState<AddCommentResponse[]>([]);
+  const [loadingComments, setLoadingComments] = useState<boolean>(true);
+  // Fetching comments when the page loads
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get<AddCommentResponse[]>(
+          `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}`
+        );
+        setComments(response.data);
+        setLoadingComments(false);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+        setLoadingComments(false);
+      }
+    };
+
+    if (post._id) {
+      fetchComments();
+    }
+  }, [post._id]); // Fetch comments whenever the post id changes
+
   // Increment views when the page is loaded
   useEffect(() => {
-    console.log(post._id);
     const incrementViews = async () => {
       try {
         const response = await axios.put<IncrementViewsResponse>(
-          `http://localhost:4000/pages/${post._id}/views`
+          `${process.env.REACT_APP_WIKI_API_URL}/pages/${post._id}/views`
         );
         // You can also update the state to reflect the new view count
         post.views = response.data.views;
@@ -82,29 +113,54 @@ const PostPage: React.FC = () => {
       }
     };
 
-    incrementViews(); // Call the function to increment views when the component is mounted
-  }, [post._id]); // This effect will run when the post's ID changes
+    incrementViews();
+  }, [post._id]);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
+    // e.preventDefault();
+    // try {
+    //   const response = await axios.post<AddCommentResponse>(
+    //     `${process.env.REACT_APP_WIKI_API_URL}/comment`,
+    //     {
+    //       postId: post._id,
+    //       content: comment,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${signedUser?.access_token}`,
+    //       },
+    //     }
+    //   );
+    //   setComment();
+    //   // Add the new comment to the existing comments
+    //   setComments((prevComments) => [...prevComments, response.data]);
+    //   setComment("");
+    // } catch (error) {
+    //   console.error("Error adding comment:", error);
+    // }
     e.preventDefault();
     try {
       const response = await axios.post<AddCommentResponse>(
-        `http://localhost:4000/comment`,
+        `${process.env.REACT_APP_WIKI_API_URL}/comment`,
         {
           postId: post._id,
           content: comment,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${signedUser?.access_token}`,
           },
         }
       );
-      setComments([...comments, response.data.comment]);
+
+      // Add the new comment to the existing comments
+      setComments((prevComments) => [...prevComments, response.data]);
+
+      // Clear the comment input field
       setComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -132,6 +188,31 @@ const PostPage: React.FC = () => {
     }
   };
 
+  const handleEditCommentSubmit = async (commentId: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/comment/${commentId}`,
+        { content: editedContent },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setComments(
+        comments.map((comment) =>
+          comment._id === commentId
+            ? { ...comment, content: editedContent }
+            : comment
+        )
+      );
+      setEditedContent("");
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error editing comment:", error);
+    }
+  };
+
   const handleDeleteClick = async () => {
     try {
       await axios.delete(`http://localhost:4000/posts/${post._id}`);
@@ -152,6 +233,19 @@ const PostPage: React.FC = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await axios.delete(`http://localhost:4000/comment/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setComments(comments.filter((comment) => comment._id !== commentId));
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
   };
   return (
     <div>
@@ -207,16 +301,51 @@ const PostPage: React.FC = () => {
           disabled={!isAuthenticated}
         />
         <button type="submit" disabled={!isAuthenticated}>
-          Submit
+          Add comment
         </button>
       </form>
 
       <h4>Comments</h4>
-      <ul>
+      {/* <ul>
         {comments.map((comment: any, index: number) => (
           <li key={index}>{comment.content}</li>
         ))}
+      </ul> */}
+      <ul>
+        {comments.map((comment) =>
+          // Ensure `comment` is valid before accessing `content`
+          comment && comment.content ? (
+            <li key={comment._id}>
+              <p>{comment.content}</p>
+              {isAuthenticated && (
+                <div>
+                  <button onClick={() => setIsEditing(true)}>Edit</button>
+                  <button onClick={() => handleDeleteComment(comment._id)}>
+                    Delete
+                  </button>
+                  {isEditing && (
+                    <div>
+                      <textarea
+                        value={editedContent}
+                        onChange={handleEditChange}
+                      />
+                      <button
+                        onClick={() => handleEditCommentSubmit(comment._id)}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </li>
+          ) : (
+            // Handle missing or malformed comment
+            <li key="no-content">Comment data is unavailable.</li>
+          )
+        )}
       </ul>
+
       <div className="dates">
         <span>Created At: {formatDate(post.createdAt)}</span>
         <span>Updated At: {formatDate(post.updatedAt)}</span>

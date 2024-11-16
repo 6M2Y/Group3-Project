@@ -19,6 +19,7 @@ postrouter.post('/comment', verifyToken, postController.addComment);
 postrouter.get('/latest-posts', postController.get_LatestPosts);
 postrouter.get('/tags/counts', postController.getTag_Counts);
 postrouter.put('/pages/:id/views', postController.viewCount)
+postrouter.get('/posts/:postId', postController.getCommentsFromPost)
 
 
 

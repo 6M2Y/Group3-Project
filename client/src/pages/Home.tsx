@@ -218,12 +218,6 @@ const Home: React.FC<HomeProps> = ({
               <span className="tag-count">({count} posts)</span>
             </button>
           ))}
-          {/* {availableTags.map((tag, index) => (
-            <button onClick={loadByTag} className="tag-button" key={index}>
-              {tag}
-              <span className="tag-count">(12 posts)</span>
-            </button>
-          ))} */}
         </div>
       </div>
 
