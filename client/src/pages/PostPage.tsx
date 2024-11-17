@@ -5,75 +5,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
 import "../Styles/Comments.css"; // New CSS file for styling comments
 import { useUser } from "../utils/UserContext";
-
 import WikIEditorPage from "./WikIEditorPage";
-
 import { lookInSession } from "../utils/session";
 import { toast } from "react-toastify";
 import { formatDate } from "../utils/formDate";
+import {
+  AddCommentResponse,
+  IncrementViewsResponse,
+  SaveVersionResponse,
+} from "../Common/interfaces";
 
 interface PostPageProps {
   isAuthenticated: boolean;
   userId: string | null;
-}
-
-interface Version {
-  tags: string[];
-  content: string;
-  editor: string;
-  _id: string;
-  date: string;
-}
-
-interface SaveVersionResponse {
-  message: string;
-  post: {
-    _id: string;
-    title: string;
-    summary: string;
-    content: string;
-    tags: string[];
-    versions: {
-      title: string;
-      summary: string;
-      content: string;
-      tags: string[];
-      image?: string;
-      published: boolean;
-      editor: string;
-      date: string;
-    }[];
-    views: number;
-    comments: string[];
-    published: boolean;
-    createdAt: string;
-    updatedAt: string;
-    image?: string;
-  };
-}
-interface Post {
-  _id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  versions: Version[];
-  views: number;
-  comments: string[];
-  image: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-interface AddCommentResponse {
-  _id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface IncrementViewsResponse {
-  views: number;
 }
 
 const PostPage: React.FC = () => {
@@ -91,9 +35,7 @@ const PostPage: React.FC = () => {
   const [previewPost, setPreviewPost] = useState<any>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [updatedContent, setUpdatedContent] = useState(post.content);
-
   const { signedUser } = useUser();
-
   const [comments, setComments] = useState<AddCommentResponse[]>([]);
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
   const [isEditingPost, setIsEditingPost] = useState(false);
@@ -103,15 +45,6 @@ const PostPage: React.FC = () => {
     string | null
   >(null); // Store original content
 
-  // const formatDate = (dateString: string) => {
-  //   const date = new Date(dateString);
-  //   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-  //     2,
-  //     "0"
-  //   )}-${String(date.getDate()).padStart(2, "0")}`;
-  // };
-
-  // Memoized dates to avoid recalculation on every render
   const formattedCreatedAt = useMemo(
     () => formatDate(post.createdAt),
     [post.createdAt]
