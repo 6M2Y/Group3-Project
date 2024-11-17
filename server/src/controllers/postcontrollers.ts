@@ -19,6 +19,6 @@ export const getTag_Counts = (req:Request, res:Response) => postService.getTagCo
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
 export const viewCount = (req: Request, res: Response) => postService.getViews(req, res);
 export const getCommentsFromPost = (req: Request, res: Response) => postService.getComments(req, res);
-
-
+export const deleteCommentController = (req:Request, res:Response) => postService.deleteComment(req,res);
+export const saveEditedCommentController = (req: Request, res: Response) => postService.savedEditComment(req as AuthenticatedRequest, res);
 

@@ -1,1 +1,1 @@
-GET  http://localhost:4000/tags/counts
+GET http://localhost:4000/posts/67376c8545aab2b48adc3e28/comments

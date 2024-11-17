@@ -35,7 +35,6 @@ export const useAuthForm = (endpoint: string) => {
           `${process.env.REACT_APP_WIKI_API_URL}${endpoint}`,
           entries
         );
-        console.log(response)
           toast.success("Login successful!");
           //storing data in the session
           storeInSession("user", JSON.stringify(response.data));

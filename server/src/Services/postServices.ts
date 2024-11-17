@@ -163,8 +163,7 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
 };
 
 //Add a new controller function to add a comment to a post
-export const addComment = async (req: AuthenticatedRequest, res: Response) :
- Promise<void> => {
+export const addComment = async (req: AuthenticatedRequest, res: Response) : Promise<void> => {
   const { postId, content } = req.body;
   const authorId = req.user;
 
@@ -204,6 +203,32 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) :
   }
 };
 //get latest posts
+
+export const deleteComment = async (req: Request, res: Response) => {
+  const { commentId } = req.params;
+
+  try {
+    // Find the comment to be deleted
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      res.status(404).json({ message: "Comment not found" });
+      return;
+    }
+
+    // Remove the comment from the associated post's comments array
+    await Post.findByIdAndUpdate(comment.postId, {
+      $pull: { comments: commentId },
+    });
+
+    // Delete the comment itself
+    await Comment.findByIdAndDelete(commentId);
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ message: "Failed to delete comment", error });
+  }
+};
 
 export const getLatestPosts = (req: Request, res: Response) => { 
 
@@ -290,3 +315,32 @@ export const getComments = async (req:Request, res:Response):Promise<void> => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+export const savedEditComment = async (req: AuthenticatedRequest, res: Response)  => {
+  const { commentId } = req.params; // Get the commentId from the URL params
+  const { content } = req.body; // Get the content from the request body
+  const userId = req.user; // Get the userId from the authenticated user (via middleware)
+  try {
+    // Find the comment by ID
+    const comment = await Comment.findById(commentId);
+
+    // If the comment does not exist, return null
+    if (!comment) {
+      return;
+    }
+
+    // Check if the current user is the author of the comment
+    if (String(comment.author) !== String(userId)) {
+      res.status(403).json({ "error": 'You are not authorized to edit this comment'})
+    }
+
+    // Update the content and update the `updatedAt` field
+    comment.content = content;
+    comment.updatedAt = new Date();
+
+    // Save the updated comment and return it
+    await comment.save();
+    res.status(200).json(comment);
+  } catch (error) {
+    console.log("Error while saving edited comment: " + error); // Re-throw error for controller to catch
+  }
+}

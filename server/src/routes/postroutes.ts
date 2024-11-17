@@ -19,7 +19,9 @@ postrouter.post('/comment', verifyToken, postController.addComment);
 postrouter.get('/latest-posts', postController.get_LatestPosts);
 postrouter.get('/tags/counts', postController.getTag_Counts);
 postrouter.put('/pages/:id/views', postController.viewCount)
-postrouter.get('/posts/:postId', postController.getCommentsFromPost)
+postrouter.get('/posts/:postId/comments', postController.getCommentsFromPost)
+postrouter.delete("/comment/:commentId", postController.deleteCommentController);
+postrouter.put("/comment/:commentId", verifyToken, postController.saveEditedCommentController);
 
 
 

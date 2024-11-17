@@ -1,0 +1,42 @@
+.comments-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.commentEdit-btn {
+  /* margin-left: 15px; */
+
+  display: flex;
+  gap: 15px;
+}
+
+.comment-box {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.comment-box p {
+  margin: 0 0 10px;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff5722;;
+  color: #fff;
+  cursor: pointer;
+}
+
+.comment-actions button:hover {
+  background-color:#6d3525;
+}

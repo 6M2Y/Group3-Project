@@ -15,14 +15,15 @@ import { CreatePost } from "./pages/CreatePost";
 import Home from "./pages/Home";
 import PostPage from "./pages/PostPage";
 import { UserAuthType } from "./utils/useAuthForm";
+import { SearchPage } from "./pages/SearchPage";
 
 // export const UserContext = createContext({}); //creating global user context
 
 function App() {
   //const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
-    //{
-      //access_token: null,
-    //}
+  //{
+  //access_token: null,
+  //}
   //);
   const [signedUser, setSignedUser] = useState<UserAuthType | null>(null);
 
@@ -41,14 +42,22 @@ function App() {
         <ToastNotification />
         <div className="main-content">
           <Routes>
-            
-            <Route path="/" element={<Home isAuthenticated={isAuthenticated} userId={signedUser?.access_token}  />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  isAuthenticated={isAuthenticated}
+                  userId={signedUser?.access_token}
+                />
+              }
+            />
             <Route path="/createpost" element={<CreatePost />} />
             <Route path="/postpage/:id" element={<PostPage />} />
             <Route path="/cardList" element={<CardList />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="search/:query" element={<SearchPage />} />
           </Routes>
         </div>
         <Footer />

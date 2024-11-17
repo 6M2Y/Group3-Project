@@ -10,7 +10,6 @@
 }
 
 /* Part 1: Tags Section */
-/* Part 1: Tags Section */
 .tags-section {
   width: 15%;
   background-color: #f4f4f4;
@@ -84,7 +83,7 @@
 }
 
 .post-image {
-  width: 100%;
+  width: 50%;
   height: auto;
   border-radius: 5px;
 }

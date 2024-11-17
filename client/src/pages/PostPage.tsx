@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+// export default PostPage;
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
-import { lookInSession } from "../utils/session";
+import "../Styles/Comments.css"; // New CSS file for styling comments
 import { useUser } from "../utils/UserContext";
+import { toast } from "react-toastify";
 
 interface PostPageProps {
   isAuthenticated: boolean;
@@ -26,17 +27,11 @@ interface Post {
   tags: string[];
   versions: Version[];
   views: number;
-  comments: string[]; // You can replace `any` with a more specific type if you have a structure for comments
+  comments: string[];
   image: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
-}
-
-interface User {
-  _id: string;
-  name: string;
-  // Add other user fields as necessary
 }
 
 interface AddCommentResponse {
@@ -46,67 +41,73 @@ interface AddCommentResponse {
   updatedAt: string;
 }
 
-const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
-];
-
 interface IncrementViewsResponse {
   views: number;
 }
 
 const PostPage: React.FC = () => {
-  //const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { post, isAuthenticated } = location.state as {
-    post: any;
+    post: Post;
     isAuthenticated: boolean;
   };
-  console.log("comments" + post.comments);
-  const [comment, setComment] = useState("");
-  //    const [comments, setComments] = useState<Comment[]>(post.comments);
-  //   const [comments, setComments] = useState<Comment[]>(post.comments || []);
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditedContent] = useState(post.content);
 
   const { signedUser } = useUser();
-  //   //try
+
   const [comments, setComments] = useState<AddCommentResponse[]>([]);
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
-  // Fetching comments when the page loads
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get<AddCommentResponse[]>(
-          `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}`
-        );
-        setComments(response.data);
-        setLoadingComments(false);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-        setLoadingComments(false);
-      }
-    };
+  const [comment, setComment] = useState("");
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [editedContent, setEditedContent] = useState(post.content);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedCommentContent, setEditedCommentContent] = useState("");
+  const [originalCommentContent, setOriginalCommentContent] = useState<
+    string | null
+  >(null); // Store original content
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  // Memoized dates to avoid recalculation on every render
+  const formattedCreatedAt = useMemo(
+    () => formatDate(post.createdAt),
+    [post.createdAt]
+  );
+  const formattedUpdatedAt = useMemo(
+    () => formatDate(post.updatedAt),
+    [post.updatedAt]
+  );
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get<AddCommentResponse[]>(
+        `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}/comments`
+      );
+      setComments(response.data);
+      console.log(response.data);
+      setLoadingComments(false);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setLoadingComments(false);
+    }
+  };
+  useEffect(() => {
     if (post._id) {
       fetchComments();
     }
-  }, [post._id]); // Fetch comments whenever the post id changes
+  }, [post._id]);
 
-  // Increment views when the page is loaded
   useEffect(() => {
     const incrementViews = async () => {
       try {
         const response = await axios.put<IncrementViewsResponse>(
           `${process.env.REACT_APP_WIKI_API_URL}/pages/${post._id}/views`
         );
-        // You can also update the state to reflect the new view count
         post.views = response.data.views;
       } catch (error) {
         console.error("Error incrementing views:", error);
@@ -116,185 +117,129 @@ const PostPage: React.FC = () => {
     incrementViews();
   }, [post._id]);
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(e.target.value);
-  };
-
   const handleCommentSubmit = async (e: React.FormEvent) => {
-    // e.preventDefault();
-    // try {
-    //   const response = await axios.post<AddCommentResponse>(
-    //     `${process.env.REACT_APP_WIKI_API_URL}/comment`,
-    //     {
-    //       postId: post._id,
-    //       content: comment,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${signedUser?.access_token}`,
-    //       },
-    //     }
-    //   );
-    //   setComment();
-    //   // Add the new comment to the existing comments
-    //   setComments((prevComments) => [...prevComments, response.data]);
-    //   setComment("");
-    // } catch (error) {
-    //   console.error("Error adding comment:", error);
-    // }
     e.preventDefault();
     try {
       const response = await axios.post<AddCommentResponse>(
         `${process.env.REACT_APP_WIKI_API_URL}/comment`,
-        {
-          postId: post._id,
-          content: comment,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${signedUser?.access_token}`,
-          },
-        }
+        { postId: post._id, content: comment },
+        { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
       );
-
-      // Add the new comment to the existing comments
-      setComments((prevComments) => [...prevComments, response.data]);
-
-      // Clear the comment input field
+      setComments([...comments, response.data]);
       setComment("");
+      toast.success("You comments is now added");
+      fetchComments(); // in order to add new comments
     } catch (error) {
       console.error("Error adding comment:", error);
     }
   };
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditedContent(e.target.value);
-  };
-
-  const handleEditSubmit = async () => {
+  const handleEditPost = async () => {
     try {
-      await axios.put(`http://localhost:4000/posts/${post._id}`, {
-        content: editedContent,
-      });
-      setIsEditing(false);
-      // Optionally, update the post content in the state
+      await axios.put(
+        `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}`,
+        { content: editedContent },
+        { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
+      );
+      setIsEditingPost(false);
       post.content = editedContent;
     } catch (error) {
-      console.error("Error updating post:", error);
+      console.error("Error editing post:", error);
     }
   };
-
-  const handleEditCommentSubmit = async (commentId: string) => {
+  const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await axios.put(
-        `http://localhost:4000/comment/${commentId}`,
-        { content: editedContent },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+      await axios.delete(
+        `${process.env.REACT_APP_WIKI_API_URL}/comment/${commentId}`,
+        { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
       );
+      setComments(comments.filter((comment) => comment._id !== commentId));
+      toast.success("Comment deleted successfully");
+    } catch (error) {
+      const errorMessage =
+        (error as any)?.response?.data?.message ||
+        "An error occurred while deleting the comment.";
+      toast.error(errorMessage);
+    }
+  };
+  const handleEditComment = (commentId: string, currentContent: string) => {
+    // Enable editing mode and store the original content
+    setEditingCommentId(commentId);
+    setEditedCommentContent(currentContent);
+    setOriginalCommentContent(currentContent); // Save the original content for cancellation
+  };
+
+  const handleCancelCommentEdit = () => {
+    // Cancel the edit and restore the original content
+    if (originalCommentContent !== null) {
+      setEditedCommentContent(originalCommentContent); // Reset to original content
+    }
+    setOriginalCommentContent(null); // Clear the original content reference
+    setEditingCommentId(null); // Exit the editing mode
+  };
+
+  const handleSaveCommentEdit = async (commentId: string) => {
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_WIKI_API_URL}/comment/${commentId}`,
+        { content: editedCommentContent },
+        { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
+      );
+      // Update the comments list with the new edited comment
       setComments(
         comments.map((comment) =>
           comment._id === commentId
-            ? { ...comment, content: editedContent }
+            ? { ...comment, content: editedCommentContent }
             : comment
         )
       );
-      setEditedContent("");
-      setIsEditing(false);
+      setEditingCommentId(null); // Exit edit mode
+      setEditedCommentContent(""); // Clear edited content
+      setOriginalCommentContent(null); // Clear the original content
+      toast.success("Comment updated successfully");
     } catch (error) {
-      console.error("Error editing comment:", error);
+      toast.error("Failed to edit comment");
     }
   };
 
-  const handleDeleteClick = async () => {
-    try {
-      await axios.delete(`http://localhost:4000/posts/${post._id}`);
-      navigate("/"); // Redirect to home page after deletion
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
-  //clean up the content before displaying it.
-  const stripHtmlTags = (str: string) => {
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
-
-  //To extract just the date from the createdAt field
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const handleDeleteComment = async (commentId: string) => {
-    try {
-      await axios.delete(`http://localhost:4000/comment/${commentId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setComments(comments.filter((comment) => comment._id !== commentId));
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    }
-  };
   return (
-    <div>
-      <p>
-        <img
-          src={`http://localhost:4000${post.image}`}
-          alt={post.title}
-          className="image-300"
-        />
-      </p>
+    <div className="post-page">
+      <img
+        src={`http://localhost:4000${post.image}`}
+        alt={post.title}
+        className="post-image"
+      />
       <h1>{post.title}</h1>
-      {isEditing ? (
+      {isEditingPost ? (
         <div>
-          <textarea value={editedContent} onChange={handleEditChange} />
-          <button onClick={handleEditSubmit}>Save</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
+          <textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+          />
+          <button onClick={handleEditPost}>Save</button>
+          <button onClick={() => setIsEditingPost(false)}>Cancel</button>
         </div>
       ) : (
-        <p>{stripHtmlTags(post.content)}</p>
+        <p>{post.content}</p>
       )}
       <p>Tags: {post.tags.join(", ")}</p>
       <p>Views: {post.views}</p>
+      <div className="dates">
+        <span>Created At: {formattedCreatedAt}</span>
+        <span>Updated At: {formattedUpdatedAt}</span>
+      </div>
 
       {isAuthenticated && (
         <div>
-          <button onClick={handleEditClick}>Edit</button>
-          <button onClick={handleDeleteClick}>Delete</button>
+          <button onClick={() => setIsEditingPost(true)}>Edit</button>
         </div>
       )}
 
-      <h4>Versions:</h4>
-      <ul>
-        {post.versions.map((version: any) => (
-          <li key={version._id}>
-            <p>Content: {version.content}</p>
-            <p>Editor: {version.editor}</p>
-            <p>Date: {formatDate(version.date)}</p>
-            <p>Tags: {version.tags.join(", ")}</p>
-          </li>
-        ))}
-      </ul>
-
       <h4>Add Comment</h4>
-
       <form onSubmit={handleCommentSubmit}>
-        {!isAuthenticated && <p>Please sign in to add a comment.</p>}
         <textarea
           value={comment}
-          onChange={handleCommentChange}
+          onChange={(e) => setComment(e.target.value)}
           placeholder="Add a comment"
           rows={4}
           cols={50}
@@ -304,51 +249,67 @@ const PostPage: React.FC = () => {
           Add comment
         </button>
       </form>
-
-      <h4>Comments</h4>
-      {/* <ul>
-        {comments.map((comment: any, index: number) => (
-          <li key={index}>{comment.content}</li>
-        ))}
-      </ul> */}
-      <ul>
-        {comments.map((comment) =>
-          // Ensure `comment` is valid before accessing `content`
-          comment && comment.content ? (
-            <li key={comment._id}>
-              <p>{comment.content}</p>
-              {isAuthenticated && (
-                <div>
-                  <button onClick={() => setIsEditing(true)}>Edit</button>
-                  <button onClick={() => handleDeleteComment(comment._id)}>
-                    Delete
-                  </button>
-                  {isEditing && (
+      <div className="post-page">
+        <h4>Comments</h4>
+        {loadingComments ? (
+          <p>Loading comments...</p>
+        ) : (
+          <div className="comments-section">
+            {comments.length === 0 ? (
+              <p>No comments yet. Be the first to comment!</p>
+            ) : (
+              comments.map((comment) => (
+                <div key={comment._id} className="comment-box">
+                  {/* Edit comment inline using textarea */}
+                  {editingCommentId === comment._id ? (
                     <div>
                       <textarea
-                        value={editedContent}
-                        onChange={handleEditChange}
+                        value={editedCommentContent}
+                        onChange={(e) =>
+                          setEditedCommentContent(e.target.value)
+                        }
+                        style={{
+                          width: "100%",
+                          minHeight: "100px",
+                          border: "1px solid #ddd",
+                          padding: "5px",
+                        }}
                       />
-                      <button
-                        onClick={() => handleEditCommentSubmit(comment._id)}
-                      >
-                        Save
-                      </button>
+                      <div className="comment-actions">
+                        <button
+                          onClick={() => handleSaveCommentEdit(comment._id)}
+                        >
+                          Save
+                        </button>
+                        <button onClick={handleCancelCommentEdit}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p>{comment.content}</p>
+                      <div className="comment-actions">
+                        <button
+                          onClick={() =>
+                            handleEditComment(comment._id, comment.content)
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteComment(comment._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
-              )}
-            </li>
-          ) : (
-            // Handle missing or malformed comment
-            <li key="no-content">Comment data is unavailable.</li>
-          )
+              ))
+            )}
+          </div>
         )}
-      </ul>
-
-      <div className="dates">
-        <span>Created At: {formatDate(post.createdAt)}</span>
-        <span>Updated At: {formatDate(post.updatedAt)}</span>
       </div>
     </div>
   );

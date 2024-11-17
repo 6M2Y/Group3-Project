@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEvent } from "react";
+import React, { useState, useEffect, MouseEvent, KeyboardEvent } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Navbar.css";
@@ -18,6 +18,7 @@ const Navbar: React.FC = () => {
   const { signedUser, setSignedUser } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
+  const navigate = useNavigate();
   //sign out
   const handleSignOut = () => {
     removeFromSession("user");
@@ -53,6 +54,13 @@ const Navbar: React.FC = () => {
     };
   }, [isMenuOpen]);
 
+  const handlekeyDownOnSearch = (e: KeyboardEvent) => {
+    let query = (e.target as HTMLInputElement).value;
+    if (e.key == "Enter" && query.length) {
+      navigate(`search/${query}`);
+    }
+  };
+
   return (
     <>
       <nav className="navbar" onClick={(e: MouseEvent) => e.stopPropagation()}>
@@ -68,7 +76,11 @@ const Navbar: React.FC = () => {
         {/* Centered Search Input */}
         <div className="navbar-center">
           <div className="search-container">
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search"
+              onKeyDown={handlekeyDownOnSearch}
+            />
             <FaSearch className="search-icon" />
           </div>
         </div>
