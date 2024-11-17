@@ -48,14 +48,10 @@ const PageSchema: Schema<IPage> = new Schema(
       },
     ],
     views: { type: Number, default: 0 },
-<<<<<<< HEAD
+
     published: {type:Boolean},
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-=======
-    comments:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    published: {type:Boolean},
     // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
->>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     image: { type: String, required: false },
