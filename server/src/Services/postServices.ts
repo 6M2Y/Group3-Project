@@ -3,10 +3,6 @@ import Post from "../models/PageSchema";
 //import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
 import Comment from '../models/CommentSchema';
-import mongoose from 'mongoose';
-
-
-
 
 // Define the AuthenticatedRequest interface
 interface AuthenticatedRequest extends Request {
@@ -173,28 +169,44 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) :
   const authorId = req.user;
 
   try {
+    //get the post
     const post = await Post.findById(postId);
     if (!post) {
        res.status(404).json({ message: 'Post not found' });
        return;
     }
 
+    // const newComment = new Comment({
+    //   postId: new mongoose.Types.ObjectId(postId),
+    //   author: new mongoose.Types.ObjectId(authorId),
+    //   content
+    // });
+    // Create a new comment
     const newComment = new Comment({
-      postId: new mongoose.Types.ObjectId(postId),
-      author: new mongoose.Types.ObjectId(authorId),
-      content
+      postId,
+      content,
+      author: authorId,
+      page: postId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
-    await newComment.save();
+    await newComment.save(); // create new comment in the database
 
-    post.comments.push(newComment.id);
-    await post.save();
+     // Add comment to the post's comments array
+     await Post.findByIdAndUpdate(postId, { $push: { comments: newComment._id } });
+    // post.comments.push(newComment.id);
+    // await post.save();
 
-    res.status(200).json({ message: 'Comment added successfully', post });
+    res.status(200).json({ message: 'Comment added successfully', newComment });
   } catch (error) {
     console.error('Error adding comment:', error);
     res.status(500).json({ message: 'Failed to add comment', error });
   }
+<<<<<<< HEAD
  }
+=======
+};
+>>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d
 //get latest posts
 export const getLatestPosts = (req: Request, res: Response) => { 
   Post.find({ published: true }) // Fetch published posts
@@ -208,6 +220,7 @@ export const getLatestPosts = (req: Request, res: Response) => {
     .catch(err => {
         return res.status(500).json({ error: err.message }); // Handle errors
     });
+<<<<<<< HEAD
 }
 
 
@@ -320,3 +333,77 @@ export const deletePost = async (req: AuthenticatedRequest, res: Response): Prom
     res.status(500).json({ message: "Failed to delete post.", error });
   }
 };
+=======
+};
+
+export const searchPostsByTag = (req: Request, res: Response) => {
+  const {tag} = req.body;
+  const  findQuery = { tags: tag, published: true }
+
+  Post.find(findQuery) // Fetch published posts
+    .populate("author", "fullname email -_id") // Include author details
+    .sort({ "updatedAt": -1 }) // Sort by latest updated
+    .select("title tags content summary updatedAt") // Select specific fields
+    .limit(5) // Limit to 5 results
+    .then(wikiPost => {
+        return res.status(200).json({ wikiPost }); // Return results
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err.message }); // Handle errors
+    });
+};
+
+export const getTagCounts = async (req: Request, res: Response)=> {
+  try {
+    const tagCounts = await Post.aggregate([
+      { $unwind: "$tags" }, 
+      { $group: { _id: "$tags", count: { $sum: 1 } } }, 
+      { $project: { tag: "$_id", count: 1, _id: 0 } }, 
+    ]);
+   res.json(tagCounts);
+  } catch (error) {
+    console.error(error);
+     res.status(500).json({ error: "Error fetching tag counts" });
+  }
+};
+
+// Increment views for a page
+export const getViews = async (req: Request, res: Response):Promise<void> => {
+  try {
+    const page = await Post.findById(req.params.id);
+    if (!page) {
+      res.status(404).json({ message: 'Page not found' }); return;
+    }
+
+    // Increment view count
+    page.views += 1;
+    await page.save();
+
+    res.status(200).json({ message: 'Page views incremented', views: page.views });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to increment views' + error });
+  }
+};
+
+export const getComments = async (req:Request, res:Response):Promise<void> => {
+  const { postId } = req.params;
+
+  try {
+    // Find the post and populate comments
+    const post = await Post.findById(postId)
+      .populate({
+        path: 'comments',
+        select: 'content createdAt updatedAt',
+      });
+
+    if (!post) {
+      res.status(404).json({ message: 'Post not found' }); return;
+    }
+
+    res.json(post.comments);
+  } catch (error) {
+    console.error('Error fetching post with comments:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+>>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d

@@ -14,9 +14,18 @@ export const getAllPosts = (req: Request, res: Response) => postService.getAllPo
 export const getUserPosts = (req: Request, res: Response) => postService.getUserPosts(req as AuthenticatedRequest, res);
 export const get_LatestPosts = (req: Request, res: Response) => postService.getLatestPosts(req, res);
 export const countUserPosts = (req: Request, res: Response) => postService.countUserPosts(req as AuthenticatedRequest, res);
+export const searchby_Tag = (req: Request, res: Response) => postService.searchPostsByTag(req, res)
+export const getTag_Counts = (req:Request, res:Response) => postService.getTagCounts(req,res)
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
+<<<<<<< HEAD
 export const incrementViews = (req: Request, res: Response) => postService.incrementViews(req as AuthenticatedRequest, res);
 export const saveNewVersion = (req: Request, res: Response) => postService.saveNewVersion(req as AuthenticatedRequest, res);
 export const getPageStatistics = (req: Request, res: Response) => postService.getPageStatistics(req as AuthenticatedRequest, res);
 export const deletePost = (req: Request, res: Response) => postService.deletePost(req as AuthenticatedRequest, res);
+=======
+export const viewCount = (req: Request, res: Response) => postService.getViews(req, res);
+export const getCommentsFromPost = (req: Request, res: Response) => postService.getComments(req, res);
+
+
+>>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d
 
