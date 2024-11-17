@@ -36,6 +36,18 @@ export const useAuthForm = (endpoint: string) => {
           entries
         );
           toast.success("Login successful!");
+
+          // Store the token in localStorage
+          const { access_token, username, email } = response.data;
+          if (access_token) {
+            localStorage.setItem('token', access_token);
+        }
+
+          // Optionally, store other user data if needed
+          localStorage.setItem('username', username);
+          localStorage.setItem('email', email);
+
+
           //storing data in the session
           storeInSession("user", JSON.stringify(response.data));
           setSignedUser(response.data)

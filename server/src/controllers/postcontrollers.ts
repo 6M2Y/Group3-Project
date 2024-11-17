@@ -17,8 +17,14 @@ export const countUserPosts = (req: Request, res: Response) => postService.count
 export const searchby_Tag = (req: Request, res: Response) => postService.searchPostsByTag(req, res)
 export const getTag_Counts = (req:Request, res:Response) => postService.getTagCounts(req,res)
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
+
+export const incrementViews = (req: Request, res: Response) => postService.incrementViews(req as AuthenticatedRequest, res);
+export const saveNewVersion = (req: Request, res: Response) => postService.saveNewVersion(req as AuthenticatedRequest, res);
+export const getPageStatistics = (req: Request, res: Response) => postService.getPageStatistics(req as AuthenticatedRequest, res);
+export const deletePost = (req: Request, res: Response) => postService.deletePost(req as AuthenticatedRequest, res);
+
 export const viewCount = (req: Request, res: Response) => postService.getViews(req, res);
 export const getCommentsFromPost = (req: Request, res: Response) => postService.getComments(req, res);
+
 export const deleteCommentController = (req:Request, res:Response) => postService.deleteComment(req,res);
 export const saveEditedCommentController = (req: Request, res: Response) => postService.savedEditComment(req as AuthenticatedRequest, res);
-

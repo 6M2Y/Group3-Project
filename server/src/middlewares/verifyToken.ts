@@ -9,6 +9,7 @@ export interface AuthenticatedRequest extends Request {
 
 export const verifyToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) : void => {
   const authHeader = req.headers.authorization;
+  //console.log('Authorization Header:', authHeader); // Log the authorization header
 
   // Check if there is an Authorization header
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -18,6 +19,8 @@ export const verifyToken = (req: AuthenticatedRequest, res: Response, next: Next
 
   // Extract the token from the header
   const token = authHeader.split(' ')[1];
+  //console.log('Token:', token); // Log the token
+
 
   try {
     // Verify the token using the secret key

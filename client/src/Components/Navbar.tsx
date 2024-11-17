@@ -66,10 +66,15 @@ const Navbar: React.FC = () => {
       <nav className="navbar" onClick={(e: MouseEvent) => e.stopPropagation()}>
         {/* Left side - Logo */}
         <div className="navbar-left">
-          <Link to={"/"}>
+          <Link to="/" className="navbar-logo">
             <img src="your-logo.png" alt="" />
+<<<<<<< HEAD
+         
+          <span className="logo">SuperBlog</span>
+=======
 
             <span className="logo">SuperBlog</span>
+>>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d
           </Link>
         </div>
 
@@ -105,7 +110,7 @@ const Navbar: React.FC = () => {
                   <FaUser />
                 </button>
               </Link>
-              <Link to={"/"}>
+              <Link  to={"/"}>
                 <button onClick={handleSignOut}>
                   <FaSignOutAlt />
                   SignOut

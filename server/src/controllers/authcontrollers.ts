@@ -11,6 +11,7 @@ export const signup = (req: Request, res: Response) => authService.signupLogic(r
 export const signin = (req: Request, res: Response) => authService.signin(req, res);
 export const signinWithGoogle = (req: Request, res: Response) => authService.signinWithGoogle(req, res);
 export const frontPage = (req: Request, res: Response) => authService.frontPage(req,res);
+export const userByID = (req: Request, res: Response) => authService.fetchUserById(req,res);
 
 export const getProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {

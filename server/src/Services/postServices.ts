@@ -3,6 +3,7 @@ import Post from "../models/PageSchema";
 //import { AuthenticatedRequest } from '../middlewares/verifyToken';
 import User from '../models/User Schema';
 import Comment from '../models/CommentSchema';
+import mongoose from 'mongoose';
 
 // Define the AuthenticatedRequest interface
 interface AuthenticatedRequest extends Request {
@@ -136,7 +137,7 @@ export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
      console.error("Error fetching posts:", error);
       res.status(500).json({ message: 'Error fetching posts' });
   }
-};
+}
 
 // Fetch posts for a specific user
 export const getUserPosts = async (req: AuthenticatedRequest, res: Response) => {
@@ -148,7 +149,7 @@ export const getUserPosts = async (req: AuthenticatedRequest, res: Response) => 
      console.error("Error fetching user posts:", error);
       res.status(500).json({ message: 'Error fetching user posts' });
   }
-};
+}
 
 // Add a new controller function to count posts for a specific user
 export const countUserPosts = async (req: AuthenticatedRequest, res: Response) => {
@@ -160,7 +161,7 @@ export const countUserPosts = async (req: AuthenticatedRequest, res: Response) =
     console.error("Error counting user posts:", error);
     res.status(500).json({ message: 'Error counting user posts' });
   }
-};
+}
 
 //Add a new controller function to add a comment to a post
 export const addComment = async (req: AuthenticatedRequest, res: Response) : Promise<void> => {
@@ -201,8 +202,8 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) : Pro
     console.error('Error adding comment:', error);
     res.status(500).json({ message: 'Failed to add comment', error });
   }
-};
-//get latest posts
+ }
+
 
 export const deleteComment = async (req: Request, res: Response) => {
   const { commentId } = req.params;
@@ -229,9 +230,7 @@ export const deleteComment = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to delete comment", error });
   }
 };
-
 export const getLatestPosts = (req: Request, res: Response) => { 
-
   Post.find({ published: true }) // Fetch published posts
     .populate("author", "fullname email -_id") // Include author details
     .sort({ "updatedAt": -1 }) // Sort by latest updated
@@ -243,6 +242,118 @@ export const getLatestPosts = (req: Request, res: Response) => {
     .catch(err => {
         return res.status(500).json({ error: err.message }); // Handle errors
     });
+
+}
+
+
+// increment post views
+export const incrementViews = async (req: AuthenticatedRequest, res: Response) => {
+  const postId = req.params.id;
+  try {
+    await Post.findByIdAndUpdate(postId, { $inc: { views: 1 } });
+    const post = await Post.findById(postId).populate('versions.editor', 'username');
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error incrementing views:", error);
+    res.status(500).json({ message: "Failed to increment views.", error });
+  }
+}
+
+// Save new version
+export const saveNewVersion = async (req: AuthenticatedRequest, res: Response):
+Promise<void> => {
+  const postId = req.params.id;
+  const { title, summary, content, tags, image } = req.body;
+  const editorId = req.user;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).json({ message: "Post not found." });
+      return;
+    }
+    //console.log("Original Post:", post);
+
+    const newVersion = {
+      title: title || post.title,
+      summary: summary || post.summary,
+      content: content || post.content,
+      tags: tags || post.tags,
+      image: image || post.image,
+      published: post.published,
+      editor: new mongoose.Types.ObjectId(editorId), // Convert editorId to ObjectId
+      date: new Date()
+    };
+
+    post.versions.push(newVersion);
+    post.title = title || post.title;
+    post.summary = summary || post.summary;
+    post.content = content || post.content;
+    post.tags = tags || post.tags;
+    post.image = image || post.image;
+
+    //console.log("Updated Post:", post);
+
+    await post.save();
+
+// Populate the editor field in the versions array
+// const populatedPost = await Post.findById(post._id).populate('versions.editor', 'username');
+
+    res.status(200).json({ message: "Version saved successfully.", post });
+  } catch (error) {
+    console.error("Error saving version:", error);
+    res.status(500).json({ message: "Failed to save version.", error });
+  }
+}
+
+// Get page statistics
+export const getPageStatistics = async (req: AuthenticatedRequest, res: Response):
+Promise<void> => { 
+  const postId = req.params.id;
+  try {
+    const post = await Post.findById(postId).populate('versions.editor', 'username');
+    if (!post) {
+      res.status(404).json({ message: "Post not found." });
+      return;
+    }
+    const statistics = {
+      views: post.views,
+      versions: post.versions
+    };
+    res.status(200).json(statistics);
+  } catch (error) {
+    console.error("Error fetching statistics:", error);
+    res.status(500).json({ message: "Failed to fetch statistics.", error });
+  }
+}
+
+// Function to delete a post
+export const deletePost = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const postId = req.params.id;
+  const userId = req.user;
+
+  try {
+    // Find the post by its ID
+    const post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).json({ message: "Post not found." });
+      return;
+    }
+
+    // Check if the user is the author of the post
+    if (post.author.toString() !== userId) {
+      res.status(403).json({ message: "You are not authorized to delete this post." });
+      return;
+    }
+    // Delete the post
+    await Post.findByIdAndDelete(postId);
+    // Remove the post ID from the user's posts array
+    await User.findByIdAndUpdate(userId, { $pull: { posts: postId } });
+    res.status(200).json({ message: "Post deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Failed to delete post.", error });
+  }
 };
 
 export const searchPostsByTag = (req: Request, res: Response) => {
@@ -315,6 +426,7 @@ export const getComments = async (req:Request, res:Response):Promise<void> => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 export const savedEditComment = async (req: AuthenticatedRequest, res: Response)  => {
   const { commentId } = req.params; // Get the commentId from the URL params
   const { content } = req.body; // Get the content from the request body

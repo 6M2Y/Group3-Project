@@ -15,6 +15,18 @@
 .navbar-left {
   display: flex;
   align-items: center;
+  
+  
+}
+.navbar-logo
+{
+  text-decoration: none; /* Remove underline */
+  cursor: pointer;
+}
+
+.navbar-logo
+{
+  color: #ff6f61;
 }
 
 .navbar-center {

@@ -5,6 +5,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
 import "../Styles/Comments.css"; // New CSS file for styling comments
 import { useUser } from "../utils/UserContext";
+
+import WikIEditorPage from "./WikIEditorPage";
+
+import { lookInSession } from "../utils/session";
 import { toast } from "react-toastify";
 
 interface PostPageProps {
@@ -20,6 +24,32 @@ interface Version {
   date: string;
 }
 
+interface SaveVersionResponse {
+  message: string;
+  post: {
+    _id: string;
+    title: string;
+    summary: string;
+    content: string;
+    tags: string[];
+    versions: {
+      title: string;
+      summary: string;
+      content: string;
+      tags: string[];
+      image?: string;
+      published: boolean;
+      editor: string;
+      date: string;
+    }[];
+    views: number;
+    comments: string[];
+    published: boolean;
+    createdAt: string;
+    updatedAt: string;
+    image?: string;
+  };
+}
 interface Post {
   _id: string;
   title: string;
@@ -46,33 +76,39 @@ interface IncrementViewsResponse {
 }
 
 const PostPage: React.FC = () => {
+  //const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { post, isAuthenticated } = location.state as {
-    post: Post;
+    post: any;
     isAuthenticated: boolean;
   };
+  const [comment, setComment] = useState("");
+  // const [comments, setComments] = useState<Comment[]>(post.comments);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(post.content);
+  const [previewPost, setPreviewPost] = useState<any>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [updatedContent, setUpdatedContent] = useState(post.content);
 
   const { signedUser } = useUser();
 
   const [comments, setComments] = useState<AddCommentResponse[]>([]);
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
-  const [comment, setComment] = useState("");
   const [isEditingPost, setIsEditingPost] = useState(false);
-  const [editedContent, setEditedContent] = useState(post.content);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedCommentContent, setEditedCommentContent] = useState("");
   const [originalCommentContent, setOriginalCommentContent] = useState<
     string | null
   >(null); // Store original content
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")}`;
-  };
+  // const formatDate = (dateString: string) => {
+  //   const date = new Date(dateString);
+  //   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+  //     2,
+  //     "0"
+  //   )}-${String(date.getDate()).padStart(2, "0")}`;
+  // };
 
   // Memoized dates to avoid recalculation on every render
   const formattedCreatedAt = useMemo(
@@ -125,7 +161,77 @@ const PostPage: React.FC = () => {
         { postId: post._id, content: comment },
         { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
       );
+
       setComments([...comments, response.data]);
+
+      const handleEditClick = () => {
+        setIsEditing(true); // Enable edit mode
+      };
+
+      const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setEditedContent(e.target.value);
+      };
+
+      const handleEditSubmit = async (updatedPost: any) => {
+        try {
+          console.log("Updated Post Payload:", updatedPost);
+
+          const response = await axios.put<SaveVersionResponse>(
+            `http://localhost:4000/posts/${post._id}/version`,
+            {
+              title: updatedPost.title,
+              summary: updatedPost.summary,
+              content: updatedPost.content,
+              tags: updatedPost.tags,
+              image: updatedPost.image,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          setIsEditing(false);
+          post.title = updatedPost.title;
+          post.summary = updatedPost.summary;
+          post.content = updatedPost.content;
+          post.tags = updatedPost.tags;
+          post.image = updatedPost.image;
+          post.versions.push(response.data.post.versions.slice(-1)[0]); // Add the new version to the post
+          console.log(post.image);
+        } catch (error) {
+          console.error("Error updating post:", error);
+        }
+      };
+      const handleDeleteClick = async () => {
+        try {
+          const token = localStorage.getItem("token"); // or wherever you store your token
+          console.log("Token here:", token); // Log the token to check its format
+          if (!token) {
+            throw new Error("No token found");
+          }
+          await axios.delete(`http://localhost:4000/delete/${post._id}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          toast.success("Post deleted successfully!");
+
+          navigate("/"); // Redirect to home page after deletion
+        } catch (error) {
+          console.error("Error deleting post:", error);
+        }
+      };
+      //clean up the content before displaying it.
+      const stripHtmlTags = (str: string) => {
+        return str.replace(/<\/?[^>]+(>|$)/g, "");
+      };
+
+      // Add the new comment to the existing comments
+      setComments((prevComments) => [...prevComments, response.data]);
+
+      // Clear the comment input field
       setComment("");
       toast.success("You comments is now added");
       fetchComments(); // in order to add new comments
@@ -178,6 +284,9 @@ const PostPage: React.FC = () => {
     setEditingCommentId(null); // Exit the editing mode
   };
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
   const handleSaveCommentEdit = async (commentId: string) => {
     try {
       await axios.put(
@@ -202,40 +311,102 @@ const PostPage: React.FC = () => {
     }
   };
 
+  const handleDeleteClick = async () => {
+    try {
+      await axios.delete(`http://localhost:4000/posts/${post._id}`);
+      navigate("/"); // Redirect to home page after deletion
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+  //clean up the content before displaying it.
+  const stripHtmlTags = (str: string) => {
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+  const handleEditSubmit = async (updatedPost: any) => {
+    try {
+      console.log("Updated Post Payload:", updatedPost);
+
+      const response = await axios.put<SaveVersionResponse>(
+        `http://localhost:4000/posts/${post._id}/version`,
+        {
+          title: updatedPost.title,
+          summary: updatedPost.summary,
+          content: updatedPost.content,
+          tags: updatedPost.tags,
+          image: updatedPost.image,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setIsEditing(false);
+      post.title = updatedPost.title;
+      post.summary = updatedPost.summary;
+      post.content = updatedPost.content;
+      post.tags = updatedPost.tags;
+      post.image = updatedPost.image;
+      post.versions.push(response.data.post.versions.slice(-1)[0]); // Add the new version to the post
+      console.log(post.image);
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+  //To extract just the date from the createdAt field
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   return (
-    <div className="post-page">
-      <img
-        src={`http://localhost:4000${post.image}`}
-        alt={post.title}
-        className="post-image"
-      />
-      <h1>{post.title}</h1>
-      {isEditingPost ? (
-        <div>
-          <textarea
-            value={editedContent}
-            onChange={(e) => setEditedContent(e.target.value)}
-          />
-          <button onClick={handleEditPost}>Save</button>
-          <button onClick={() => setIsEditingPost(false)}>Cancel</button>
-        </div>
+    <div>
+      <p>
+        <img
+          src={`http://localhost:4000${post.image}`}
+          alt={post.title}
+          className="image-300"
+        />
+      </p>
+      <h1>Title: {post.title}</h1>
+      {isEditing ? (
+        <WikIEditorPage
+          post={post}
+          onSave={(updatedContent) => {
+            handleEditSubmit({ ...post, content: updatedContent });
+          }}
+          onCancel={() => setIsEditing(false)}
+        />
       ) : (
-        <p>{post.content}</p>
+        <p>Content: {stripHtmlTags(post.content)}</p>
       )}
       <p>Tags: {post.tags.join(", ")}</p>
-      <p>Views: {post.views}</p>
-      <div className="dates">
-        <span>Created At: {formattedCreatedAt}</span>
-        <span>Updated At: {formattedUpdatedAt}</span>
-      </div>
 
-      {isAuthenticated && (
+      {isAuthenticated && !isEditing && (
         <div>
-          <button onClick={() => setIsEditingPost(true)}>Edit</button>
+          <button onClick={handleEditClick}>Edit</button>
+          <button onClick={handleDeleteClick}>Delete</button>
         </div>
       )}
-
-      <h4>Add Comment</h4>
+      <h2>Post statistics:</h2>
+      <p>Views: {post.views}</p>
+      <h3>Versions:</h3>
+      <ul>
+        {post.versions.map((version: any, index: number) => (
+          <li key={index}>
+            <p>Title: {version.title}</p>
+            <p>Content: {stripHtmlTags(version.content)}</p>
+            <p>Editor: {version.editor}</p>
+            <p>Date: {formatDate(version.date)}</p>
+            <p>Tags: {version.tags.join(", ")}</p>
+          </li>
+        ))}
+      </ul>
+      <h3>Add Comment</h3>
       <form onSubmit={handleCommentSubmit}>
         <textarea
           value={comment}

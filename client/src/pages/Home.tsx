@@ -378,6 +378,23 @@ interface Post {
   updatedAt: string;
   __v: number;
 }
+
+interface User {
+  _id: string;
+  fullname: string;
+  // Add other user fields as necessary
+  title: string;
+  content: string;
+  author: string;
+  tags: string[];
+  versions: Version[];
+  views: number;
+  comments: string[]; // You can replace `any` with a more specific type if you have a structure for comments
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 interface User {
   _id: string;
   fullname: string;
@@ -410,6 +427,7 @@ interface TagCount {
 interface PostCountResponse {
   postCount: number;
 }
+
 const Home: React.FC<HomeProps> = ({
   isAuthenticated = false,
   userId = null,
@@ -606,6 +624,7 @@ const Home: React.FC<HomeProps> = ({
           ))}
         </div>
       </div>
+
       {/* Part 2: All Posts */}
       <div className="posts-section">
         <h2 style={{ color: "#ff5722", fontSize: "24px", textAlign: "center" }}>
