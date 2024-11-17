@@ -15,4 +15,8 @@ export const getUserPosts = (req: Request, res: Response) => postService.getUser
 export const get_LatestPosts = (req: Request, res: Response) => postService.getLatestPosts(req, res);
 export const countUserPosts = (req: Request, res: Response) => postService.countUserPosts(req as AuthenticatedRequest, res);
 export const addComment = (req: Request, res: Response) => postService.addComment(req as AuthenticatedRequest, res);
+export const incrementViews = (req: Request, res: Response) => postService.incrementViews(req as AuthenticatedRequest, res);
+export const saveNewVersion = (req: Request, res: Response) => postService.saveNewVersion(req as AuthenticatedRequest, res);
+export const getPageStatistics = (req: Request, res: Response) => postService.getPageStatistics(req as AuthenticatedRequest, res);
+export const deletePost = (req: Request, res: Response) => postService.deletePost(req as AuthenticatedRequest, res);
 

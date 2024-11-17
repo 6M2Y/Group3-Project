@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "../Styles/MainContent.css";
+import { toast } from "react-toastify";
+
+import WikIEditorPage from './WikIEditorPage';
 
 interface PostPageProps {
     isAuthenticated: boolean;
@@ -17,6 +20,32 @@ interface Version {
     date: string;
 }
 
+interface SaveVersionResponse {
+    message: string;
+    post: {
+        _id: string;
+        title: string;
+        summary: string;
+        content: string;
+        tags: string[];
+        versions: {
+            title: string;
+            summary: string;
+            content: string;
+            tags: string[];
+            image?: string;
+            published: boolean;
+            editor: string;
+            date: string;
+        }[];
+        views: number;
+        comments: string[];
+        published: boolean;
+        createdAt: string;
+        updatedAt: string;
+        image?: string;
+    };
+}
 interface Post {
     _id: string;
     title: string;
@@ -73,6 +102,11 @@ const PostPage: React.FC = () => {
     const [comments, setComments] = useState<Comment[]>(post.comments);
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(post.content);
+    const [previewPost, setPreviewPost] = useState<any>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [updatedContent, setUpdatedContent] = useState(post.content);
+
+    
 
 
     const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -98,27 +132,57 @@ const PostPage: React.FC = () => {
     };
 
     const handleEditClick = () => {
-        setIsEditing(true);
+        setIsEditing(true); // Enable edit mode
     };
 
     const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setEditedContent(e.target.value);
     };
+  
+const handleEditSubmit = async (updatedPost: any) => {
+    try {
+        console.log("Updated Post Payload:", updatedPost);
 
-    const handleEditSubmit = async () => {
-        try {
-            await axios.put(`http://localhost:4000/posts/${post._id}`, { content: editedContent });
-            setIsEditing(false);
-            // Optionally, update the post content in the state
-            post.content = editedContent;
-        } catch (error) {
-            console.error('Error updating post:', error);
-        }
-    };
+        const response = await axios.put<SaveVersionResponse>
+        (`http://localhost:4000/posts/${post._id}/version`, {
+            title: updatedPost.title,
+            summary: updatedPost.summary,
+            content: updatedPost.content,
+            tags: updatedPost.tags,
+            image: updatedPost.image,
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
 
+        setIsEditing(false);
+        post.title = updatedPost.title;
+        post.summary = updatedPost.summary;
+        post.content = updatedPost.content;
+        post.tags = updatedPost.tags;
+        post.image = updatedPost.image;
+        post.versions.push(response.data.post.versions.slice(-1)[0]); // Add the new version to the post
+        console.log(post.image)
+    } catch (error) {
+        console.error('Error updating post:', error);
+       
+    }
+};
     const handleDeleteClick = async () => {
         try {
-            await axios.delete(`http://localhost:4000/posts/${post._id}`);
+            const token = localStorage.getItem('token'); // or wherever you store your token
+            console.log('Token here:', token); // Log the token to check its format
+            if (!token) {
+                throw new Error('No token found');
+            }
+            await axios.delete(`http://localhost:4000/delete/${post._id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            toast.success("Post deleted successfully!");
+
             navigate('/'); // Redirect to home page after deletion
         } catch (error) {
             console.error('Error deleting post:', error);
@@ -137,23 +201,90 @@ const formatDate = (dateString: string) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+return (
+    <div>
+        <p>
+        <img
+          src={`http://localhost:4000${post.image}`}
+          alt={post.title}
+          className="image-300"
+        />
+      </p>
+        <h1>Title: {post.title}</h1>
+        {isEditing ? (
+            <WikIEditorPage
+            post={post}
+            onSave={(updatedContent) => {
+            handleEditSubmit({ ...post, content: updatedContent });
+                }}
+                onCancel={() => setIsEditing(false)}
+                
+            />
+        ) : (
+            <p>Content: {stripHtmlTags(post.content)}</p>
+        )}
+        <p>Tags: {post.tags.join(', ')}</p>
+        
+        {isAuthenticated && !isEditing && (
+            <div>
+                <button onClick={handleEditClick}>Edit</button>
+                <button onClick={handleDeleteClick}>Delete</button>
+            </div>
+        )}
+        <h2>Post statistics:</h2>
+        <p>Views: {post.views}</p>
+        <h3>Versions:</h3>
+        <ul>
+            {post.versions.map((version: any, index: number) => (
+                <li key={index}>
+                    <p>Title: {version.title}</p>
+                    <p>Content: {stripHtmlTags(version.content)}</p>
+                    <p>Editor: {version.editor}</p>
+                    <p>Date: {formatDate(version.date)}</p>
+                    <p>Tags: {version.tags.join(', ')}</p>
+                </li>
+            ))}
+        </ul>
+        <h3>Add Comment</h3>
+        <form onSubmit={handleCommentSubmit}>
+            <textarea
+                value={comment}
+                onChange={handleCommentChange}
+                disabled={!isAuthenticated}
+            />
+            {!isAuthenticated && <p>Please sign in to add a comment.</p>}
+            <button type="submit" disabled={!isAuthenticated}>Submit</button>
+        </form>
+        <h4>Comments</h4>
+        <ul>
+            {comments.map((comment: any, index: number) => (
+                <li key={index}>{comment}</li>
+            ))}
+        </ul>
+        <div className="dates">
+            <span>Created At: {formatDate(post.createdAt)}</span>
+            <span>Updated At: {formatDate(post.updatedAt)}</span>
+        </div>
+    </div>
+);
+};
+
+export default PostPage;
+
+/*
     return (
             <div>
                 <p><img src={`http://localhost:4000${post.image}`} alt={post.title} className="image-300" /></p>
                 <h1>{post.title}</h1>
                 {isEditing ? (
-                <div>
-                    <textarea value={editedContent} onChange={handleEditChange} />
-                    <button onClick={handleEditSubmit}>Save</button>
-                    <button onClick={() => setIsEditing(false)}>Cancel</button>
-                </div>
+                <WikIEditorPage  post={post} onSave={handleEditSubmit} onCancel={() => setIsEditing(false)} /> // Pass onSave and onCancel props
             ) : (
-                <p>{stripHtmlTags(post.content)}</p>
+                 <p>{stripHtmlTags(post.content)}</p>
             )}
                 <p>Tags: {post.tags.join(', ')}</p>
                 <p>Views: {post.views}</p>
                 
-                {isAuthenticated && (
+                {isAuthenticated  &&  !isEditing && ( 
                 <div>
                     <button onClick={handleEditClick}>Edit</button>
                     <button onClick={handleDeleteClick}>Delete</button>
@@ -198,9 +329,12 @@ const formatDate = (dateString: string) => {
                             <span>Created At: {formatDate(post.createdAt)}</span>
                             <span>Updated At: {formatDate(post.updatedAt)}</span>
                         </div>
+                        
+                        
+            
             </div>
         
     );
 };
 
-export default PostPage;
+export default PostPage;*/

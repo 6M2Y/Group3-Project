@@ -80,6 +80,7 @@ export const signin = (req: Request, res: Response): void => {
       }
       else {
         //if everything is ok
+
         return res.status(200).json(FormatDatatoSend(user));
       }
     })
@@ -147,6 +148,22 @@ export const getProfileData = async (userId: string): Promise<ProfileData | null
 
   return { user, pages, comments, tags };
 };
+
+// Fetch user by ID
+export const fetchUserById = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      res.status(404).send('User not found');
+      return
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).send('Error fetching user');
+  }
+};
+
 // export const signinWithGoogle = async (req: Request, res: Response) => {
 //   const { access_token } = req.body;
 

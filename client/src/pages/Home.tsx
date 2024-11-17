@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
 
 interface HomeProps {
-    isAuthenticated?: boolean; // Make isAuthenticated optional
+  isAuthenticated?: boolean; // Make isAuthenticated optional
   userId?: string | null; // Make userId optional
 }
 
@@ -23,6 +23,7 @@ interface Post {
     _id: string;
     title: string;
     content: string;
+    author:string;
     tags: string[];
     versions: Version[];
     views: number;
@@ -35,7 +36,7 @@ interface Post {
 
 interface User {
     _id: string;
-    name: string;
+    fullname: string;
     // Add other user fields as necessary
 }
 const availableTags = [
@@ -84,19 +85,8 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated = false, userId = null }) =
     const [currentPage, setCurrentPage] = useState(1);
     const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
 
-    const postsPerPage = 6;
+    const postsPerPage = 9;
     const navigate = useNavigate();
-
-    const fetchLatestPosts = () => {
-      axios
-        .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
-        .then(({ data }) => {
-          setLatestPosts(data.wikiPost);
-        })
-        .catch((err) => {
-          toast.error(err.message);
-        });
-    };
   
     useEffect(() => {
         const fetchPosts = async () => {
@@ -112,36 +102,68 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated = false, userId = null }) =
                     ? await axios.get<Post[]>(`http://localhost:4000/user/posts`, config)
                     : await axios.get<Post[]>(`http://localhost:4000/posts`);
                 console.log('Fetching All Posts...');
+                //console.log('Posts response:', response.data);
                 setPosts(response.data);
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
         };
+
+        const fetchLatestPosts = () => {
+          axios
+            .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
+            .then(({ data }) => {
+              setLatestPosts(data.wikiPost);
+            })
+            .catch((err) => {
+              toast.error(err.message);
+            });
+        };
         fetchLatestPosts();
         fetchPosts();
     }, [isAuthenticated, userId]);
 
-    const fetchUser = async (userId: string) => {
-        if (!users[userId]) {
-            try {
-                const response = await axios.get<User>(`http://localhost:4000/users/${userId}`);
-                setUsers(prevUsers => ({ ...prevUsers, [userId]: response.data }));
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            }
-        }
-    };
+    
 
     useEffect(() => {
+      const fetchUser = async (userId: string) => {
+        if (!users[userId]) {
+          try {
+            const response = await axios.get<User>(`http://localhost:4000/users/${userId}`);
+            const userData: User = response.data; // Type assertion
+            setUsers(prevUsers => ({ ...prevUsers, [userId]: userData }));
+          } catch (error) {
+            console.error('Error fetching user:', error);
+            setUsers(prevUsers => ({
+              ...prevUsers,
+              [userId]: { _id: userId, fullname: 'Unknown User' } as User,
+            }));
+          }
+        }
+      };
+  
+      if (posts.length > 0) {
         posts.forEach(post => {
-            post.versions.forEach(version => {
-                fetchUser(version.editor);
-            });
+          fetchUser(post.author);
+          post.versions.forEach(version => {
+            fetchUser(version.editor);
+          });
         });
-    }, [posts]);
+      }
+    }, [posts, users]);
 
+    
+
+  const handlePostClick = async (post : Post) => {
+    try {
+      await axios.get(`http://localhost:4000/pages/${post._id}`);
+      navigate(`/postpage/${post._id}`, { state: { post, isAuthenticated, userId } });
+    } catch (error) {
+      console.error("Error incrementing views:", error);
+    }
+  };
     //clean up the content before displaying it.
-    const stripHtmlTags = (str: string) => {
+const stripHtmlTags = (str: string) => {
         return str.replace(/<\/?[^>]+(>|$)/g, "");
     };
 //To extract just the date from the createdAt field
@@ -186,17 +208,18 @@ const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
  {/* Part 2: All Posts */}
  <div className="posts-section">
-        <h3>All Posts For You</h3>
+        <h2 style={{ color: '#ff5722', fontSize: '24px', textAlign: 'center' }}>Your Ultimate Superhero Hub</h2>
         <div className="posts-grid">
           {currentPosts.map((post) => (
-            <div className="post-card" key={post._id} onClick={() => navigate(`/postpage/${post._id}`,{ state: { post, isAuthenticated, userId } })} style={{ cursor: 'pointer' }}>
+            <div className="post-card" key={post._id} onClick={() => handlePostClick(post)} style={{ cursor: 'pointer' }}>
               <img src={`http://localhost:4000${post.image}`} alt={post.title} className="image-300" />
               <h4 className="post-title">{post.title}</h4>
               <p className="post-summary">{getFirst200Characters(post.content)}</p>
+              <p className="post-summary">By: {users[post.author]?.fullname || 'Loading...'}</p>
               
-              <div>{post.versions.map((version) => (
-                                    <p>By {users[version.editor]?.name || 'Loading...'}</p>
-                            ))}</div>
+             {/*  <div>{post.versions.map((version) => (
+                                    <p key={version._id}>By {users[version.editor]?.fullname || 'Loading...'}</p>
+                            ))}</div> */}
               <p className="post-date">{formatDate(post.createdAt)}</p>              
               <span className="post-tag">{post.tags.join(', ')}</span>
             </div>

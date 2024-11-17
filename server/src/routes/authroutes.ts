@@ -9,6 +9,7 @@ userrouter.post('/signin', authController.signin);
 userrouter.post('/signup', authController.signup);
 userrouter.post('/google-auth', authController.signinWithGoogle);
 userrouter.get('/profile',authenticate, authController.getProfile);
+userrouter.get('/users/:id', authController.userByID);
 
 
 export default userrouter;
