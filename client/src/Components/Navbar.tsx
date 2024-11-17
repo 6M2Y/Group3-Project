@@ -68,13 +68,7 @@ const Navbar: React.FC = () => {
         <div className="navbar-left">
           <Link to="/" className="navbar-logo">
             <img src="your-logo.png" alt="" />
-<<<<<<< HEAD
-         
-          <span className="logo">SuperBlog</span>
-=======
-
             <span className="logo">SuperBlog</span>
->>>>>>> 4fcf0dc5bbbacf3247de652090b154fae0d6201d
           </Link>
         </div>
 
@@ -110,7 +104,7 @@ const Navbar: React.FC = () => {
                   <FaUser />
                 </button>
               </Link>
-              <Link  to={"/"}>
+              <Link to={"/"}>
                 <button onClick={handleSignOut}>
                   <FaSignOutAlt />
                   SignOut
