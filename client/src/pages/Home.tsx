@@ -353,6 +353,7 @@ import "../Styles/MainContent.css";
 import { UserAuthType } from "../utils/useAuthForm";
 import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
+import {stripHtmlTags}from  "../utils/cleanContent";
 import {
   ApiResponse,
   HomeProps,
@@ -627,7 +628,6 @@ const Home: React.FC<HomeProps> = ({
     []
   );
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
   const postsPerPage = 9;
   const navigate = useNavigate();
 
@@ -642,8 +642,6 @@ const Home: React.FC<HomeProps> = ({
       }
     };
 
-
-    
     const fetchLatestPosts = async () => {
       try {
         const response = await axios.get<ApiResponse>(
@@ -677,6 +675,27 @@ const Home: React.FC<HomeProps> = ({
     fetchTagCounts();
   }, []);
 
+  const fetchUser = async (userId: string) => {
+    console.log('Fetching user with ID:', userId); // Log the userId
+    console.log('Current users object:', users); // Log the current users object
+  
+    if (!users[userId]) {
+      try {
+        const response = await axios.get<User>(`http://localhost:4000/users/${userId}`);
+        console.log('API response:', response.data); // Log the API response
+  
+        setUsers(prevUsers => {
+          console.log('Previous users object:', prevUsers); // Log the previous users object
+          const updatedUsers: { [key: string]: User } = { ...prevUsers, [userId]: response.data };
+          console.log('Updated users object:', updatedUsers); // Log the updated users object
+          return updatedUsers;
+        });
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    }
+  };
+  
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -702,6 +721,14 @@ const Home: React.FC<HomeProps> = ({
     fetchPosts();
     fetchUserPosts();
   }, [isAuthenticated, userId]);
+
+  useEffect(() => {
+    posts.forEach(post => {
+      if (post.author) {
+        fetchUser(post.author);
+      }
+    });
+  }, [posts]);
 
   const filteredPosts = selectedTag
     ? posts.filter((post) =>
@@ -783,8 +810,8 @@ const Home: React.FC<HomeProps> = ({
                   className="image-300"
                 />
                 <h4 className="post-title">{post.title}</h4>
-                <p className="post-summary">{post.content.slice(0, 200)}...</p>
-                {/* <p className="post-summary">By: {users[post.author]?.fullname || 'Loading...'}</p>               */}
+                <p className="post-summary">{stripHtmlTags(post.content).slice(0, 200)}...</p>
+                <p>By: {users[post.author]?.fullname || 'Loading...'}</p>
                 <p className="post-date">{formatDate(post.createdAt)}</p>              
                 <span className="post-tag">{post.tags.join(", ")}</span>
               </div>

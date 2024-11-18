@@ -10,6 +10,7 @@ import { lookInSession } from "../utils/session";
 import { toast } from "react-toastify";
 import { formatDate } from "../utils/formDate";
 import LatestPostCard from "../Components/latestPostCard";
+import {stripHtmlTags}from  "../utils/cleanContent";
 
 import {
   AddCommentResponse,
@@ -17,7 +18,8 @@ import {
   SaveVersionResponse,
   latestPostType,
   TagCount,
-  ApiResponse
+  ApiResponse,
+  User,
 } from "../Common/interfaces";
 
 interface PostPageProps {
@@ -42,6 +44,7 @@ const PostPage: React.FC = () => {
     isAuthenticated: boolean;
   };
   const [comment, setComment] = useState("");
+  const [users, setUsers] = useState<{ [key: string]: User }>({});
   // const [comments, setComments] = useState<Comment[]>(post.comments);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
@@ -68,6 +71,29 @@ const PostPage: React.FC = () => {
     () => formatDate(post.updatedAt),
     [post.updatedAt]
   );
+  
+  const fetchUser = async (userId: string) => {
+    console.log('Fetching user with ID:', userId); // Log the userId
+    console.log('Current users object:', users); // Log the current users object
+  
+    if (!users[userId]) {
+      try {
+        const response = await axios.get<User>(`http://localhost:4000/users/${userId}`);
+        console.log('API response:', response.data); // Log the API response
+  
+        setUsers(prevUsers => {
+          console.log('Previous users object:', prevUsers); // Log the previous users object
+          const updatedUsers: { [key: string]: User } = { ...prevUsers, [userId]: response.data };
+          console.log('Updated users object:', updatedUsers); // Log the updated users object
+          return updatedUsers;
+        });
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    }
+  };
+
+
   const fetchComments = async () => {
     try {
       const response = await axios.get<AddCommentResponse[]>(
@@ -181,7 +207,11 @@ const PostPage: React.FC = () => {
           console.error("Error deleting post:", error);
         }
       };      
-
+      useEffect(() => {
+        if (post.author) {
+          fetchUser(post.author);
+        }
+      }, [post.author]);
   const handleDeleteComment = async (commentId: string) => {
     try {
       await axios.delete(
@@ -239,10 +269,7 @@ const PostPage: React.FC = () => {
       toast.error("Failed to edit comment");
     }
   };
-  //clean up the content before displaying it.
-  const stripHtmlTags = (str: string) => {
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
+  
   const handleEditSubmit = async (updatedPost: any) => {
     try {
       console.log("Updated Post Payload:", updatedPost);
@@ -360,7 +387,9 @@ const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
         />
       ) : (
         <p>Content: {stripHtmlTags(post.content)}</p>
+        
       )}
+      <p>By: {users[post.author]?.fullname || 'Loading...'}</p>
       <p>Tags: {post.tags.join(", ")}</p>
 
       {isAuthenticated && !isEditing && (
