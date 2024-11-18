@@ -1,5 +1,68 @@
 ## Frontend Project Structure
-coming up....
+client/
+├── node_modules/                  # Dependencies for the frontend project
+├── public/
+│   ├── index.html                 # Main HTML file for the React app
+│   ├── manifest.json              # Web app manifest for PWA support
+│   └── robots.txt                 # SEO configuration
+├── src/
+│   ├── __mocks__/                 # Mock files for API testing
+│   │   └── axios.js               # Axios mock for API calls
+│   ├── Common/                    # Shared utilities and configurations
+│   │   ├── firebase.ts            # Firebase configuration
+│   │   └── interfaces.ts          # TypeScript interfaces
+│   ├── Components/                # Reusable UI components
+│   │   ├── AuthForm.tsx           # Authentication form component
+│   │   ├── Button.tsx             # Reusable button component
+│   │   ├── CardList.tsx           # List of card items
+│   │   ├── CreateCard.tsx         # Component for creating a new card
+│   │   ├── Footer.tsx             # Footer component
+│   │   ├── GoogleAuth.tsx         # Google authentication component
+│   │   ├── InputBox.tsx           # Input field component
+│   │   ├── InputBox.test.tsx      # Test for InputBox component
+│   │   ├── Modal.tsx              # Reusable modal component
+│   │   ├── Navbar.tsx             # Navigation bar component
+│   │   ├── Navbar.test.tsx        # Test for Navbar component
+│   │   ├── TextArea.tsx           # Text area component
+│   │   └── ToastContainer.tsx     # Toast notifications
+│   ├── pages/                     # Pages for the application
+│   │   ├── CreatePost.tsx         # Page to create a post
+│   │   ├── Home.tsx               # Homepage
+│   │   ├── PostPage.tsx           # Page to display a specific post
+│   │   ├── Profile.tsx            # User profile page
+│   │   ├── SearchPage.tsx         # Page for searching posts
+│   │   ├── SignIn.tsx             # Sign-in page
+│   │   ├── Signup.tsx             # Signup page
+│   │   ├── Signup.test.tsx        # Test for Signup page
+│   │   └── WikiEditorPage.tsx     # Wiki editor for articles
+│   ├── Styles/                    # CSS files for styling
+│   │   ├── Comments.css           # Styles for comments
+│   │   ├── Footer.css             # Styles for the footer
+│   │   ├── MainContent.css        # Main content styles
+│   │   └── Navbar.css             # Styles for the navigation bar
+│   ├── utils/                     # Helper functions and custom hooks
+│   │   ├── formDate.ts            # Date formatting utility
+│   │   ├── QuillFormats.ts        # Formats for the Quill text editor
+│   │   ├── Regex.ts               # Regular expressions for validation
+│   │   ├── session.tsx            # Session management utilities
+│   │   ├── useAuthForm.ts         # Custom hook for authentication forms
+│   │   ├── useFormValidation.ts   # Custom hook for form validation
+│   │   └── UserContext.tsx        # Context for user data
+│   ├── App.css                    # Global styles for the application
+│   ├── App.test.tsx               # Tests for the main App component
+│   ├── App.tsx                    # Main application component
+│   ├── index.css                  # Styles for the index file
+│   ├── index.tsx                  # Entry point for the React application
+│   ├── react-app-env.d.ts         # React TypeScript environment declarations
+│   ├── reportWebVitals.ts         # Performance measuring utility
+│   └── setupTests.ts              # Setup for Jest tests
+├── logo.svg                       # Application logo
+├── .gitignore                     # Files and directories to ignore in Git
+├── package-lock.json              # Locks dependencies to specific versions
+├── package.json                   # Project dependencies and scripts
+├── README.md                      # Project documentation
+└── tsconfig.json                  # TypeScript configuration
+
 
 
 ## Backend Project Structure
