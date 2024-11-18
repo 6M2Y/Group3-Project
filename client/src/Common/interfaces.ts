@@ -103,7 +103,7 @@ export  interface Post {
     __v: number;
   }
   
-export  interface User {
+export  interface UserPost {
     _id: string;
     fullname: string;
     // Add other user fields as necessary
@@ -119,3 +119,11 @@ export  interface User {
     updatedAt: string;
     __v: number;
   }
+
+  export interface User {
+    _id: string;
+    fullname: string;
+    username?: string;
+    email?: string;
+  }
+  
