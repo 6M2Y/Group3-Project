@@ -1,5 +1,5 @@
 Frontend Project Structure
-
+<pre>
 client/
 ├── public/                      # Public folder for static files
 │   ├── index.html               # Main HTML file for the React app
@@ -65,7 +65,7 @@ client/
 
 ## Backend Project Structure
 
-<pre>
+
 src/
 ├── app.ts                  # Main app file 
 ├── config/
