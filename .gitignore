@@ -110,6 +110,9 @@ dist
 # Serverless directories
 .serverless/
 
+serviceAccountKey.json
+
+
 # FuseBox cache
 .fusebox/
 

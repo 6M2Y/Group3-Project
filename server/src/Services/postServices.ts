@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Post from "../models/PageSchema";
 //import { AuthenticatedRequest } from '../middlewares/verifyToken';
-import User from '../models/User Schema';
+import User from '../models/UserSchema';
 import Comment from '../models/CommentSchema';
 import mongoose from 'mongoose';
 
