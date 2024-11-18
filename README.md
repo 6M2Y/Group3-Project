@@ -1,11 +1,12 @@
-## Frontend Project Structure
+Frontend Project Structure
+
 client/
 ├── node_modules/                  # Dependencies for the frontend project
-├── public/
+├── public/                        # Public folder for static files
 │   ├── index.html                 # Main HTML file for the React app
 │   ├── manifest.json              # Web app manifest for PWA support
 │   └── robots.txt                 # SEO configuration
-├── src/
+├── src/                           # Main source code for the application
 │   ├── __mocks__/                 # Mock files for API testing
 │   │   └── axios.js               # Axios mock for API calls
 │   ├── Common/                    # Shared utilities and configurations
@@ -38,15 +39,14 @@ client/
 │   ├── Styles/                    # CSS files for styling
 │   │   ├── Comments.css           # Styles for comments
 │   │   ├── Footer.css             # Styles for the footer
-│   │   ├── MainContent.css        # Main content styles
-│   │   └── Navbar.css             # Styles for the navigation bar
+│   │   ├── MainContent.css        # Styles for main content styles
+│   │   ├── Navbar.css             # Styles for the navigation bar
 │   ├── utils/                     # Helper functions and custom hooks
 │   │   ├── formDate.ts            # Date formatting utility
 │   │   ├── QuillFormats.ts        # Formats for the Quill text editor
 │   │   ├── Regex.ts               # Regular expressions for validation
 │   │   ├── session.tsx            # Session management utilities
 │   │   ├── useAuthForm.ts         # Custom hook for authentication forms
-│   │   ├── useFormValidation.ts   # Custom hook for form validation
 │   │   └── UserContext.tsx        # Context for user data
 │   ├── App.css                    # Global styles for the application
 │   ├── App.test.tsx               # Tests for the main App component
@@ -54,15 +54,14 @@ client/
 │   ├── index.css                  # Styles for the index file
 │   ├── index.tsx                  # Entry point for the React application
 │   ├── react-app-env.d.ts         # React TypeScript environment declarations
-│   ├── reportWebVitals.ts         # Performance measuring utility
-│   └── setupTests.ts              # Setup for Jest tests
-├── logo.svg                       # Application logo
+│   ├── reportWebVitals.ts         # Performance measurement
+│   ├── setupTests.ts              # Setup for Jest tests
+│   └── logo.svg                   # Application logo
 ├── .gitignore                     # Files and directories to ignore in Git
 ├── package-lock.json              # Locks dependencies to specific versions
 ├── package.json                   # Project dependencies and scripts
 ├── README.md                      # Project documentation
 └── tsconfig.json                  # TypeScript configuration
-
 
 
 ## Backend Project Structure
