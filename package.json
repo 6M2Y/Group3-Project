@@ -1,5 +1,17 @@
 {
   "dependencies": {
     "react-quill": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "react-scripts": "^5.0.0",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/jest-dom": "^5.0.0",
+    "jest-environment-jsdom": "^29.0.0",
+    "react-test-renderer": "^18.0.0"
+  },
+  "scripts": {
+    "test": "react-scripts test"
   }
 }
+

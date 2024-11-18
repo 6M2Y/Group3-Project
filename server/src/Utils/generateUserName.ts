@@ -1,4 +1,4 @@
-import User from "../models/User Schema";
+import User from "../models/UserSchema";
 
 
 export const generateUserName = async(email:string) => {

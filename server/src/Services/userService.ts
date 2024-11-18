@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from '../models/User Schema';
+import User from '../models/UserSchema';
 import Page from '../models/PageSchema';
 import Comment from '../models/CommentSchema';
 import Tag from '../models/Tag Schema';
@@ -10,6 +10,7 @@ import { FormatDatatoSend } from '../Utils/FormatDatatoSend';
 import admin from 'firebase-admin'; //connect to frontend firebase
 import {getAuth} from 'firebase-admin/auth'
 import * as dotenv from "dotenv";
+
 
 interface ProfileData {
   user: any; // Replace 'any' with the appropriate type
@@ -163,6 +164,10 @@ export const fetchUserById = async (req: Request, res: Response): Promise<void> 
     res.status(500).send('Error fetching user');
   }
 };
+
+// Legg til denne linjen på slutten av userService.ts
+
+
 
 // export const signinWithGoogle = async (req: Request, res: Response) => {
 //   const { access_token } = req.body;

@@ -4,6 +4,7 @@ import cors from 'cors';
 import routes from './routes/mainroute';  // Combined routes
 import './configs/multerConfig'; // Ensure multer uploads directory exists
 
+
 dotenv.config(); // Load environment variables
 
 const app = express();
