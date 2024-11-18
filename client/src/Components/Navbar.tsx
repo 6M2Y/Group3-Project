@@ -94,11 +94,6 @@ const Navbar: React.FC = () => {
           {/* whether the user is logged in */}
           {signedUser?.access_token ? (
             <>
-              {/* <Link to={"/dashboard/notification"}>
-                <button>
-                  <FaBell />
-                </button>
-              </Link> */}
               <Link to={"/profile"}>
                 <button>
                   <FaUser />

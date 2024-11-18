@@ -1,22 +1,26 @@
 .footer {
-    background-color: #222;;
-    color:#f07511;;
-    /* padding: 50px 0; */
+    background-color: #222;
+    color:#f07511;
     width: 90%;
     border-radius: 10px 10px 0 0;
     margin: auto;
-    max-height: 50px;
+    padding: .9rem 0;
+    /* max-height: 50px; */
     /* border-top: 1px solid #ddd; */
     text-align: center;
-    font-size: 0.9em;
+    font-size: 1rem; 
   }
-  
+  .footer-content Link
+  {
+    text-decoration: none;
+    color:#f07511;
+
+  }
   .footer-content {
-  
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
   }
   
   .footer p {

@@ -1,4 +1,12 @@
 
+.tag-button.active {
+  background-color: #ff5722;
+  color: white;
+}
+
+
+
+
   /* Main Content Container */
 .main-content {
   display: flex;
@@ -139,7 +147,6 @@
   list-style-type: none;
   padding: 0;
 }
-
 .latest-post {
   padding: 0.2rem;
   border-bottom: 1px solid #ddd;
