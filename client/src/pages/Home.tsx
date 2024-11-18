@@ -642,6 +642,8 @@ const Home: React.FC<HomeProps> = ({
       }
     };
 
+
+    
     const fetchLatestPosts = async () => {
       try {
         const response = await axios.get<ApiResponse>(
@@ -675,6 +677,32 @@ const Home: React.FC<HomeProps> = ({
     fetchTagCounts();
   }, []);
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get<Post[]>(`http://localhost:4000/posts`);
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    const fetchUserPosts = async () => {
+      if (isAuthenticated && userId) {
+        try {
+          const config = { headers: { Authorization: `Bearer ${userId}` } };
+          const response = await axios.get<Post[]>(`http://localhost:4000/user/posts`, config);
+          setUserPosts(response.data);
+        } catch (error) {
+          console.error("Error fetching user posts:", error);
+        }
+      }
+    };
+
+    fetchPosts();
+    fetchUserPosts();
+  }, [isAuthenticated, userId]);
+
   const filteredPosts = selectedTag
     ? posts.filter((post) =>
         post.tags.some((tag) => tag.toLowerCase() === selectedTag)
@@ -706,7 +734,6 @@ const Home: React.FC<HomeProps> = ({
       console.error("Error incrementing views:", error);
     }
   };
-
   return (
     <div className="main-content">
       {/* Part 1: Tags Section */}
@@ -727,19 +754,19 @@ const Home: React.FC<HomeProps> = ({
           ))}
         </div>
       </div>
-
+  
       {/* Part 2: All Posts */}
       <div className="posts-section">
         <h2 style={{ color: "#ff5722", fontSize: "24px", textAlign: "center" }}>
           Your Ultimate Superhero Hub
         </h2>
-        {/* /* if there are no posts to display */}
+        {/* If there are no posts to display */}
         {filteredPosts.length === 0 ? (
           <p
             style={{ textAlign: "center", fontSize: "18px", color: "#757575" }}
           >
-            No posts available to show. Try selecting a different tag or come
-            back later!
+            No posts available to show. Try selecting a different tag or come back
+            later!
           </p>
         ) : (
           <div className="posts-grid">
@@ -757,13 +784,15 @@ const Home: React.FC<HomeProps> = ({
                 />
                 <h4 className="post-title">{post.title}</h4>
                 <p className="post-summary">{post.content.slice(0, 200)}...</p>
+                {/* <p className="post-summary">By: {users[post.author]?.fullname || 'Loading...'}</p>               */}
+                <p className="post-date">{formatDate(post.createdAt)}</p>              
                 <span className="post-tag">{post.tags.join(", ")}</span>
               </div>
             ))}
           </div>
         )}
-
-        {/* pagination */}
+  
+        {/* Pagination */}
         {filteredPosts.length > 0 && (
           <div className="pagination">
             {Array.from(
@@ -776,9 +805,26 @@ const Home: React.FC<HomeProps> = ({
             )}
           </div>
         )}
+        {/* Part 3: User's Posts */}
+      {isAuthenticated && (
+        <div className="posts-section">
+          <h2>Your Published Posts</h2>
+          {userPosts.map((post) => (
+            <ul
+              key={post._id}
+              onClick={() => handlePostClick(post)}
+              style={{ cursor: "pointer" }}
+            >
+              <li>{post.title}</li>
+            </ul>
+          ))}
+        </div>
+      )}
+  
       </div>
-
-      {/* Part 3: Latest Posts */}
+  
+      
+      {/* Part 4: Latest Posts */}
       <div className="latest-posts-section">
         <h3>Latest Posts</h3>
         <ul>
@@ -794,5 +840,5 @@ const Home: React.FC<HomeProps> = ({
     </div>
   );
 };
-
 export default Home;
+  

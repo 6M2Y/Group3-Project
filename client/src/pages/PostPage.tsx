@@ -9,10 +9,15 @@ import WikIEditorPage from "./WikIEditorPage";
 import { lookInSession } from "../utils/session";
 import { toast } from "react-toastify";
 import { formatDate } from "../utils/formDate";
+import LatestPostCard from "../Components/latestPostCard";
+
 import {
   AddCommentResponse,
   IncrementViewsResponse,
   SaveVersionResponse,
+  latestPostType,
+  TagCount,
+  ApiResponse
 } from "../Common/interfaces";
 
 interface PostPageProps {
@@ -20,6 +25,14 @@ interface PostPageProps {
   userId: string | null;
 }
 
+const availableTags = [
+  "Hero",
+  "Villain",
+  "Adventure",
+  "Powers",
+  "Universe",
+  "Origins",
+];
 const PostPage: React.FC = () => {
   //const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -39,6 +52,8 @@ const PostPage: React.FC = () => {
   const [comments, setComments] = useState<AddCommentResponse[]>([]);
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
   const [isEditingPost, setIsEditingPost] = useState(false);
+  const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedCommentContent, setEditedCommentContent] = useState("");
   const [originalCommentContent, setOriginalCommentContent] = useState<
@@ -98,15 +113,24 @@ const PostPage: React.FC = () => {
 
       setComments([...comments, response.data]);
 
-      const handleEditClick = () => {
-        setIsEditing(true); // Enable edit mode
-      };
+      
+      // Add the new comment to the existing comments
+      setComments((prevComments) => [...prevComments, response.data]);
+
+      // Clear the comment input field
+      setComment("");
+      toast.success("You comments is now added");
+      fetchComments(); // in order to add new comments
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
 
       const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setEditedContent(e.target.value);
       };
 
-      const handleEditSubmit = async (updatedPost: any) => {
+      /* const handleEditSubmit = async (updatedPost: any) => {
         try {
           console.log("Updated Post Payload:", updatedPost);
 
@@ -137,7 +161,7 @@ const PostPage: React.FC = () => {
         } catch (error) {
           console.error("Error updating post:", error);
         }
-      };
+      }; */
       const handleDeleteClick = async () => {
         try {
           const token = localStorage.getItem("token"); // or wherever you store your token
@@ -156,37 +180,8 @@ const PostPage: React.FC = () => {
         } catch (error) {
           console.error("Error deleting post:", error);
         }
-      };
-      //clean up the content before displaying it.
-      const stripHtmlTags = (str: string) => {
-        return str.replace(/<\/?[^>]+(>|$)/g, "");
-      };
+      };      
 
-      // Add the new comment to the existing comments
-      setComments((prevComments) => [...prevComments, response.data]);
-
-      // Clear the comment input field
-      setComment("");
-      toast.success("You comments is now added");
-      fetchComments(); // in order to add new comments
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  };
-
-  const handleEditPost = async () => {
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}`,
-        { content: editedContent },
-        { headers: { Authorization: `Bearer ${signedUser?.access_token}` } }
-      );
-      setIsEditingPost(false);
-      post.content = editedContent;
-    } catch (error) {
-      console.error("Error editing post:", error);
-    }
-  };
   const handleDeleteComment = async (commentId: string) => {
     try {
       await axios.delete(
@@ -244,15 +239,6 @@ const PostPage: React.FC = () => {
       toast.error("Failed to edit comment");
     }
   };
-
-  const handleDeleteClick = async () => {
-    try {
-      await axios.delete(`http://localhost:4000/posts/${post._id}`);
-      navigate("/"); // Redirect to home page after deletion
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
   //clean up the content before displaying it.
   const stripHtmlTags = (str: string) => {
     return str.replace(/<\/?[^>]+(>|$)/g, "");
@@ -289,10 +275,73 @@ const PostPage: React.FC = () => {
       console.error("Error updating post:", error);
     }
   };
-  //To extract just the date from the createdAt field
+
+  
+const fetchLatestPosts = () => {
+  axios
+    .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
+    .then(({ data }) => {
+      setLatestPosts(data.wikiPost);
+    })
+    .catch((err) => {
+      toast.error(err.message);
+    });
+};
+
+const fetchTagCounts = async () => {
+  try {
+    const response = await axios.get<TagCount[]>(
+      `${process.env.REACT_APP_WIKI_API_URL}/tags/counts`
+    );
+
+    const mergedTagCounts = availableTags.map((tag) => {
+      // Look for the tag in the API response
+      const apiTag = response.data.find((t) => t.tag === tag);
+
+      // If found, use its count. Otherwise, set count to 0.
+      return { tag, count: apiTag ? apiTag.count : 0 };
+    });
+    setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
+    console.log(response.data);
+  } catch (error) {
+    {
+      toast.error("An unexpected error occurred.");
+    }
+  }
+};
+useEffect(() => {
+  fetchLatestPosts();
+  fetchTagCounts();
+}, []);
+
+
+const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const tag = e.currentTarget.textContent
+    ?.match(/^[^\(]*/)?.[0]
+    .toLowerCase();
+  console.log("Selected tag:", tag);
+};
 
   return (
-    <div>
+    <div className="main-content">
+      {/*  Tags Section */}
+      <div className="tags-section">
+      <h3>Tags</h3>
+      <div className="tags-list">
+        {tagCounts.map(({ tag, count }) => (
+          <button
+            onClick={loadByTag} // Ensure `loadByTag` is properly defined
+            className="tag-button"
+            key={tag}
+          >
+            {tag}
+            <span className="tag-count">({count} posts)</span>
+          </button>
+        ))}
+      </div> </div>
+
+{/* Post Section */}
+      <div className="posts-section">
       <p>
         <img
           src={`http://localhost:4000${post.image}`}
@@ -326,11 +375,11 @@ const PostPage: React.FC = () => {
       <ul>
         {post.versions.map((version: any, index: number) => (
           <li key={index}>
-            <p>Title: {version.title}</p>
-            <p>Content: {stripHtmlTags(version.content)}</p>
-            <p>Editor: {version.editor}</p>
-            <p>Date: {formatDate(version.date)}</p>
-            <p>Tags: {version.tags.join(", ")}</p>
+            <p>Title: {version.title} / Updated at : Date: {formatDate(version.date)}</p>
+            {/* <p>Content: {stripHtmlTags(version.content)}</p> */}
+            {/* <p>Editor: {version.editor}</p> */}
+            {/* <p>Date: {formatDate(version.date)}</p> */}
+            {/* <p>Tags: {version.tags.join(", ")}</p> */}
           </li>
         ))}
       </ul>
@@ -410,6 +459,22 @@ const PostPage: React.FC = () => {
           </div>
         )}
       </div>
+      </div>
+
+       {/*  Latest Posts */}
+       <div className="latest-posts-section">
+        <h3>Latest Posts</h3>
+        <ul>
+          {latestPosts.length > 0 ? (
+            latestPosts.map((latestPost, index) => (
+              <LatestPostCard content={latestPost} key={index} />
+            ))
+          ) : (
+            <p>No latest posts available.</p>
+          )}
+        </ul>
+      </div>
+
     </div>
   );
 };
