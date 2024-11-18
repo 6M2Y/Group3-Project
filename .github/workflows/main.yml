@@ -1,0 +1,32 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Sjekk ut koden fra repositoriet
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Sett opp Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    # Installer avhengigheter
+    - name: Install dependencies
+      run: npm install
+
+    # Kjør tester
+    - name: Run tests
+      run: npm test
