@@ -6,7 +6,6 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <Link to={"/"}>SuperHeroes</Link>
         <nav className="footer-links">
           <a href="/teams">Teams</a>
           <a href="/help">Help</a>

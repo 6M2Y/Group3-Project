@@ -13,6 +13,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import LatestPostCard from "../Components/latestPostCard";
+import { FaUser, FaEnvelope, FaFileAlt } from "react-icons/fa";
+import "../Styles/profile.css";
+
 import {
   ApiResponse,
   HomeProps,
@@ -180,17 +183,34 @@ const Profile: React.FC = () => {
 
       {/* Profile Section */}
       <div className="posts-section">
-        <div style={{ textAlign: "left", margin: "20px" }}>
+        <div className="profile-container">
           <h1>User Profile</h1>
-          <p>Username: {profile?.user.username}</p>
-          <p>Email: {profile?.user.email}</p>
-          <div style={{ marginBottom: "20px" }}>
-            <h2>Posts Created:</h2>
-            <p>Total posts created: {postCount}</p>
+
+          <div className="profile-info">
+            <p>
+              <FaUser className="icon" />
+              <strong>Username:</strong> {profile?.user.username}
+            </p>
+            <p>
+              <FaEnvelope className="icon" />
+              <strong>Email:</strong> {profile?.user.email}
+            </p>
+          </div>
+
+          <div className="posts-created">
+            <h2>
+              <FaFileAlt className="icon" />
+              Posts Created:
+            </h2>
+            <p>
+              <strong>Total posts created:</strong> {postCount}
+            </p>
+
             <ul>
               {profile?.pages.map((page) => (
                 <li key={page._id}>
-                  {page.title} ({new Date(page.createdAt).toLocaleString()})
+                  <strong>{page.title}</strong> (
+                  {new Date(page.createdAt).toLocaleString()})
                 </li>
               ))}
             </ul>
