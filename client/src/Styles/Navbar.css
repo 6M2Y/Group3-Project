@@ -1,11 +1,4 @@
- :root {
-  --primary-color: #ff6f61;
-  --secondary-color: #ffffff;
-  --background-color: #222;
-  --text-color: #f07511;;
-  --button-bg: #444;
-  --button-hover-bg: #665f5f;
-}
+
 
 .navbar {
   width: 90%;
@@ -14,11 +7,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background-color: #222;
+  color: #f07511;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
 }
 
 .navbar-left img {
@@ -41,7 +34,7 @@
 .search-container {
   display: flex;
   align-items: center;
-  background-color: var(--secondary-color);
+  background-color: #fff;
   padding: 5px 10px;
   border-radius: 20px;
   width: 90%;
@@ -51,7 +44,7 @@
   width: inherit;
   border: none;
   background: none;
-  color: var(--text-color);
+  color: #f07511;
   padding-left: 10px;
   outline: none;
   font-size: 16px;
@@ -72,8 +65,8 @@
 .navbar-right a,
 .navbar-right button {
   margin-left: 15px;
-  color: var(--text-color);
-  background: var(--button-bg);
+  color: #f07511;
+  /* background: var(--button-bg); */
   border: none;
   cursor: pointer;
   font-size: 18px;

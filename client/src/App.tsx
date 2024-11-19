@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
-import CreateCard from "./Components/CreateCard";
-import CardList from "./Components/CardList";
 import { Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import Signup from "./pages/Signup";
@@ -19,11 +17,6 @@ import SearchPage from "./pages/SearchPage";
 import AboutPage from "./pages/AboutPage";
 
 function App() {
-  //const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
-  //{
-  //access_token: null,
-  //}
-  //);
   const [signedUser, setSignedUser] = useState<UserAuthType | null>(null);
 
   useEffect(() => {
@@ -52,7 +45,6 @@ function App() {
             />
             <Route path="/createpost" element={<CreatePost />} />
             <Route path="/postpage/:id" element={<PostPage />} />
-            <Route path="/cardList" element={<CardList />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
