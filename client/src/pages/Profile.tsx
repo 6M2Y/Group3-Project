@@ -1,11 +1,3 @@
-//import React from "react";
-//import { useUser } from "../utils/UserContext";
-
-//export const Profile = () => {
-//  const { signedUser } = useUser();
-//  return <>{signedUser?.access_token && <div>Profile</div>}</>;
-//};
-
 import React, { useEffect, useState } from "react";
 import { useUser } from "../utils/UserContext";
 import { lookInSession } from "../utils/session";
@@ -59,10 +51,6 @@ const availableTags = [
   "Origins",
 ];
 const Profile: React.FC = () => {
-  //const { signedUser } = useUser();
-  //const [profile, setProfile] = useState<ProfileData | null>(null);
-  //const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
   const { signedUser } = useUser();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,7 +67,6 @@ const Profile: React.FC = () => {
       const token = user ? JSON.parse(user).access_token : null;
       if (!token) {
         setError("User not authenticated");
-        //redirect to homepage
         <Navigate to={"/"} />;
         setLoading(false);
         return;
@@ -113,7 +100,7 @@ const Profile: React.FC = () => {
           },
         };
         const response = await axios.get<PostCountResponse>(
-          `http://localhost:4000/user/posts/count`,
+          `${process.env.REACT_APP_WIKI_API_URL}/user/posts/count`,
           config
         );
         setPostCount(response.data.postCount);
@@ -153,9 +140,7 @@ const Profile: React.FC = () => {
       setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
       console.log(response.data);
     } catch (error) {
-      {
-        toast.error("An unexpected error occurred.");
-      }
+      toast.error("An unexpected error occurred.");
     }
   };
   useEffect(() => {

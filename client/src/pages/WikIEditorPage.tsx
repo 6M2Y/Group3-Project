@@ -16,7 +16,7 @@ import "../Styles/createPost.css";
 // eslint-disable-next-line react-hooks/rules-of-hooks
 // let navigate = useNavigate();
 interface WikiEditorPageProps {
-  post: any; // You can replace `any` with a more specific type if you have one
+  post: any;
   onSave: (updatedPost: any) => void;
   onCancel: () => void;
 }
@@ -28,17 +28,17 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
 }) => {
   const [title, setTitle] = useState(post?.title || "");
   const [content, setContent] = useState(post?.content || "");
-  const [tags, setTags] = useState(post?.tags?.join(", ") || ""); // Assuming tags are a comma-separated string
-  const [summary, setSummary] = useState(post?.summary || ""); // Assuming there's a summary field
+  const [tags, setTags] = useState(post?.tags?.join(", ") || "");
+  const [summary, setSummary] = useState(post?.summary || "");
   const [file, setFile] = useState<File | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const { signedUser } = useUser();
   const quillRef = useRef<ReactQuill>(null);
-  const [isNewPost, setIsNewPost] = useState(true); // true for new post, false for updating existing post
+  const [isNewPost, setIsNewPost] = useState(true);
 
-  const postId = post._id; // Assuming `post` is the object containing the post details
+  const postId = post._id;
 
   useEffect(() => {
     setTitle(post?.title || "");
@@ -47,16 +47,16 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
     setTags(post?.tags?.join(", ") || "");
   }, [post]);
 
-  const handleSave = () => {
-    const updatedPost = {
-      ...post,
-      title,
-      content,
-      tags: tags.split(",").map((tag: string) => tag.trim()), // Convert back to array
-      summary,
-    };
-    onSave(updatedPost);
-  };
+  // const handleSave = () => {
+  //   const updatedPost = {
+  //     ...post,
+  //     title,
+  //     content,
+  //     tags: tags.split(",").map((tag: string) => tag.trim()), // Convert back to array
+  //     summary,
+  //   };
+  //   onSave(updatedPost);
+  // };
 
   const availableTags = [
     "Physical Health",

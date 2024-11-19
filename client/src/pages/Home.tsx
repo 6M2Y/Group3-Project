@@ -91,9 +91,6 @@ const Home: React.FC<HomeProps> = ({
   //filter by post
 
   const fetchUser = async (userId: string) => {
-    console.log("Fetching user with ID:", userId); // Log the userId
-    console.log("Current users object:", users); // Log the current users object
-
     if (!users[userId]) {
       try {
         const response = await axios.get<User>(
