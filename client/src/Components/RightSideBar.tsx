@@ -21,7 +21,7 @@ const RightSideBar: React.FC = () => {
     };
 
     fetchLatestPosts();
-  }, []); // Empty dependency array to fetch data on mount
+  }, []);
 
   return (
     <div className="latest-posts-section">

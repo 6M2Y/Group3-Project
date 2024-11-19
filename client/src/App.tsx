@@ -15,6 +15,7 @@ import PostPage from "./pages/PostPage";
 import { UserAuthType } from "./utils/useAuthForm";
 import SearchPage from "./pages/SearchPage";
 import AboutPage from "./pages/AboutPage";
+import { PageInfo } from "./pages/PageInfo";
 
 function App() {
   const [signedUser, setSignedUser] = useState<UserAuthType | null>(null);
@@ -49,6 +50,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/teams" element={<AboutPage />} />
+            <Route path="/about" element={<PageInfo />} />
             <Route path="search/:query" element={<SearchPage />} />
           </Routes>
         </div>
