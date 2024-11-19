@@ -97,21 +97,7 @@ export const editPost = async (req: AuthenticatedRequest, res: Response): Promis
       if (!post) {
          res.status(404).json({ message: "Post not found." });return
       }
-  
-      // Add the new version to the versions array with updated fields
-    //   const newVersion = {
-    //     title: title || post.title, // If no title is provided, keep the current one
-    //     content: content || post.content,
-    //     tags: tags || post.tags,
-    //     image: image || post.image, // If no image is provided, keep the current one
-    //     editor: req.user._id, // Assuming you have the user data in `req.user`
-    //     date: new Date(),
-    //   };
-  
-      // Push the new version into the versions array
-    //   post.versions.push(newVersion);
-  
-      // Update the post with the new content and version
+  // Update the post with the new content and version
       post.title = title || post.title;
       post.content = content || post.content;
       post.tags = tags || post.tags;

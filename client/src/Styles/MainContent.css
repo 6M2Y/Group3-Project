@@ -79,25 +79,32 @@
 }
 
 .post-card {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   padding: 1rem;
+
 }
 
-.post-image {
-  width: 50%;
+.authorInfo{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: .5rem 0;
+}
+
+/* .post-image {
+  width: 40%;
   height: auto;
   border-radius: 5px;
-}
-
+} */
 
 .image-300 {
   width: 300px;
   height: 300px;
   border-radius: 5px;
-  object-fit: cover; /* This ensures the image covers the area without distortion */
+   object-fit: cover; 
 }
 .post-title {
   font-size: 1.25rem;
@@ -238,7 +245,7 @@
   font-size: 0.875rem;
   background-color: #ff5722;
   color: #fff;
-  padding: 0.25rem 0.5rem;
+  padding: .4rem;
   border-radius: 20px;
   margin-top: 1rem;
 }
@@ -295,7 +302,7 @@
     font-Size: 32px;
     font-Weight: bold;
     text-Align: center;
-    background-Color: #f77d58;
+    background-Color: #eeb484;
     padding: 20px;
     margin-Bottom: 20px;
     border-Radius: 10px;

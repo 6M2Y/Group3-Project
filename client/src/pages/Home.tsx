@@ -173,7 +173,9 @@ const Home: React.FC<HomeProps> = ({
 
   const handlePostClick = async (post: Post) => {
     try {
-      await axios.get(`http://localhost:4000/pages/${post._id}`);
+      await axios.get(
+        `${process.env.REACT_APP_WIKI_API_URL}/pages/${post._id}`
+      );
       navigate(`/postpage/${post._id}`, {
         state: { post, isAuthenticated, userId },
       });
@@ -225,16 +227,21 @@ const Home: React.FC<HomeProps> = ({
                 style={{ cursor: "pointer" }}
               >
                 <img
-                  src={`http://localhost:4000${post.image}`}
+                  src={`${process.env.REACT_APP_WIKI_API_URL}${post.image}`}
                   alt={post.title}
                   className="image-300"
                 />
                 <h4 className="post-title">{post.title}</h4>
                 <p className="post-summary">
-                  {stripHtmlTags(post.content).slice(0, 200)}...
+                  {stripHtmlTags(post.content).slice(0, 100)}...
                 </p>
-                <p>By: {users[post.author]?.fullname || "Loading..."}</p>
-                <p className="post-date">{formatDate(post.createdAt)}</p>
+                <div className="authorInfo">
+                  <p className="by">
+                    By: {users[post.author]?.fullname || "Loading..."}
+                  </p>
+                  <p className="post-date">{formatDate(post.createdAt)}</p>
+                </div>
+
                 <span className="post-tag">{post.tags.join(", ")}</span>
               </div>
             ))}
@@ -267,11 +274,8 @@ const Home: React.FC<HomeProps> = ({
                 <h3>{post.title}</h3>
 
                 <div className="publishedPostStyleYours">
-                  {/* Calendar Icon and Date */}
                   <FaCalendarAlt />
                   <span>{formatDate(post.createdAt)}</span>
-
-                  {/* "Click to view details" Text with Chevron Icon */}
                   <span
                     style={{
                       marginLeft: "auto",
