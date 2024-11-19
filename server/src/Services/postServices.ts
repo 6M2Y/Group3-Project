@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Post from "../models/PageSchema";
 //import { AuthenticatedRequest } from '../middlewares/verifyToken';
-import User from '../models/User Schema';
+import User from '../models/UserSchema';
 import Comment from '../models/CommentSchema';
 import mongoose from 'mongoose';
 
@@ -131,7 +131,7 @@ export const editPost = async (req: AuthenticatedRequest, res: Response): Promis
   // Fetch all posts
 export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
   try {
-      const posts = await Post.find();
+      const posts = await Post.find({ published: true });
       res.status(200).json(posts);
   } catch (error) {
      console.error("Error fetching posts:", error);
@@ -143,7 +143,7 @@ export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
 export const getUserPosts = async (req: AuthenticatedRequest, res: Response) => {
   try {
       const userId = req.user; // Assuming user ID is stored in req.user
-      const posts = await Post.find({ author: userId });
+      const posts = await Post.find({ author: userId , published: true });
       res.status(200).json(posts);
   } catch (error) {
      console.error("Error fetching user posts:", error);

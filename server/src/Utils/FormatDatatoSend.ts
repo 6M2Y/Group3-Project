@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { IUser } from '../models/User Schema';
+import { IUser } from '../models/UserSchema';
 
 //gets data from db (server) and formats its
 export const FormatDatatoSend = (user:IUser) => {

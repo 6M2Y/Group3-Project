@@ -353,6 +353,7 @@ import "../Styles/MainContent.css";
 import { UserAuthType } from "../utils/useAuthForm";
 import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
+import { stripHtmlTags } from "../utils/cleanContent";
 import {
   ApiResponse,
   HomeProps,
@@ -627,7 +628,6 @@ const Home: React.FC<HomeProps> = ({
     []
   );
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
   const postsPerPage = 9;
   const navigate = useNavigate();
 
@@ -676,8 +676,71 @@ const Home: React.FC<HomeProps> = ({
     fetchLatestPosts();
     fetchTagCounts();
   }, []);
-
   //filter by post
+
+  const fetchUser = async (userId: string) => {
+    console.log("Fetching user with ID:", userId); // Log the userId
+    console.log("Current users object:", users); // Log the current users object
+
+    if (!users[userId]) {
+      try {
+        const response = await axios.get<User>(
+          `http://localhost:4000/users/${userId}`
+        );
+        console.log("API response:", response.data); // Log the API response
+
+        setUsers((prevUsers) => {
+          console.log("Previous users object:", prevUsers); // Log the previous users object
+          const updatedUsers: { [key: string]: User } = {
+            ...prevUsers,
+            [userId]: response.data,
+          };
+          console.log("Updated users object:", updatedUsers); // Log the updated users object
+          return updatedUsers;
+        });
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get<Post[]>(`http://localhost:4000/posts`);
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    const fetchUserPosts = async () => {
+      if (isAuthenticated && userId) {
+        try {
+          const config = { headers: { Authorization: `Bearer ${userId}` } };
+          const response = await axios.get<Post[]>(
+            `http://localhost:4000/user/posts`,
+            config
+          );
+          setUserPosts(response.data);
+        } catch (error) {
+          console.error("Error fetching user posts:", error);
+        }
+      }
+    };
+
+    fetchPosts();
+    fetchUserPosts();
+  }, [isAuthenticated, userId]);
+
+  useEffect(() => {
+    posts.forEach((post) => {
+      if (post.author) {
+        fetchUser(post.author);
+      }
+    });
+  }, [posts]);
+
   const filteredPosts = selectedTag
     ? posts.filter((post) =>
         post.tags.some((tag) => tag.toLowerCase() === selectedTag)
@@ -709,7 +772,6 @@ const Home: React.FC<HomeProps> = ({
       console.error("Error incrementing views:", error);
     }
   };
-
   return (
     <div className="main-content">
       {/* Part 1: Tags Section */}
@@ -736,7 +798,7 @@ const Home: React.FC<HomeProps> = ({
         <h2 style={{ color: "#ff5722", fontSize: "24px", textAlign: "center" }}>
           Your Ultimate Superhero Hub
         </h2>
-        {/* /* if there are no posts to display */}
+        {/* If there are no posts to display */}
         {filteredPosts.length === 0 ? (
           <p
             style={{ textAlign: "center", fontSize: "18px", color: "#757575" }}
@@ -759,12 +821,18 @@ const Home: React.FC<HomeProps> = ({
                   className="image-300"
                 />
                 <h4 className="post-title">{post.title}</h4>
-                <p className="post-summary">{post.content.slice(0, 200)}...</p>
+                <p className="post-summary">
+                  {stripHtmlTags(post.content).slice(0, 200)}...
+                </p>
+                <p>By: {users[post.author]?.fullname || "Loading..."}</p>
+                <p className="post-date">{formatDate(post.createdAt)}</p>
                 <span className="post-tag">{post.tags.join(", ")}</span>
               </div>
             ))}
           </div>
         )}
+
+        {/* Pagination */}
         {/* pagination */}
         {filteredPosts.length > 0 && (
           <div className="pagination">
@@ -778,9 +846,24 @@ const Home: React.FC<HomeProps> = ({
             )}
           </div>
         )}
+        {/* Part 3: User's Posts */}
+        {isAuthenticated && (
+          <div className="posts-section">
+            <h2>Your Published Posts</h2>
+            {userPosts.map((post) => (
+              <ul
+                key={post._id}
+                onClick={() => handlePostClick(post)}
+                style={{ cursor: "pointer" }}
+              >
+                <li>{post.title}</li>
+              </ul>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Part 3: Latest Posts */}
+      {/* Part 4: Latest Posts */}
       <div className="latest-posts-section">
         <h3>Latest Posts</h3>
         <ul>
@@ -796,5 +879,4 @@ const Home: React.FC<HomeProps> = ({
     </div>
   );
 };
-
 export default Home;

@@ -106,7 +106,7 @@ export interface Post {
 }
 
   
-export  interface User {
+export  interface UserPost {
     _id: string;
     fullname: string;
     // Add other user fields as necessary
@@ -126,3 +126,13 @@ export  interface User {
 export interface wikiPostSearch{
   wikiPost?:Post[]
 }
+
+
+  export interface User {
+    _id: string;
+    fullname: string;
+    username?: string;
+    email?: string;
+  }
+  
+

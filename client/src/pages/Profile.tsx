@@ -10,12 +10,18 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "../utils/UserContext";
 import { lookInSession } from "../utils/session";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
+import LatestPostCard from "../Components/latestPostCard";
+import {
+  ApiResponse,
+  HomeProps,
+  latestPostType,
+  Post,
+  TagCount,
+  User,
+} from "../Common/interfaces";
 
-interface User {
-  username: string;
-  email: string;
-}
 
 interface Page {
   _id: string;
@@ -40,6 +46,14 @@ interface ProfileData {
 interface PostCountResponse {
   postCount: number;
 }
+const availableTags = [
+  "Hero",
+  "Villain",
+  "Adventure",
+  "Powers",
+  "Universe",
+  "Origins",
+];
 const Profile: React.FC = () => {
   //const { signedUser } = useUser();
   //const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -50,6 +64,9 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Ensure error is typed as string or null
   const [postCount, setPostCount] = useState(0);
+  const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -104,6 +121,50 @@ const Profile: React.FC = () => {
     fetchPostCount();
   }, [signedUser]);
 
+  const fetchLatestPosts = () => {
+    axios
+      .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
+      .then(({ data }) => {
+        setLatestPosts(data.wikiPost);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  const fetchTagCounts = async () => {
+    try {
+      const response = await axios.get<TagCount[]>(
+        `${process.env.REACT_APP_WIKI_API_URL}/tags/counts`
+      );
+
+      const mergedTagCounts = availableTags.map((tag) => {
+        // Look for the tag in the API response
+        const apiTag = response.data.find((t) => t.tag === tag);
+
+        // If found, use its count. Otherwise, set count to 0.
+        return { tag, count: apiTag ? apiTag.count : 0 };
+      });
+      setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
+      console.log(response.data);
+    } catch (error) {
+      {
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  };
+  useEffect(() => {
+    fetchLatestPosts();
+    fetchTagCounts();
+  }, []);
+
+  
+  const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const tag = e.currentTarget.textContent
+      ?.match(/^[^\(]*/)?.[0]
+      .toLowerCase();
+    console.log("Selected tag:", tag);
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -112,7 +173,28 @@ const Profile: React.FC = () => {
     return <div>{error}</div>;
   }
 
+
   return (
+    <div className="main-content">
+      {/*  Tags Section */}
+      <div className="tags-section">
+      <h3>Tags</h3>
+      <div className="tags-list">
+        {tagCounts.map(({ tag, count }) => (
+          <button
+            onClick={loadByTag} // Ensure `loadByTag` is properly defined
+            className="tag-button"
+            key={tag}
+          >
+            {tag}
+            <span className="tag-count">({count} posts)</span>
+          </button>
+        ))}
+      </div> </div>
+     
+
+  {/* Profile Section */}
+  <div className="posts-section">
     <div style={{ textAlign: "left", margin: "20px" }}>
       <h1>User Profile</h1>
       <p>Username: {profile?.user.username}</p>
@@ -128,25 +210,23 @@ const Profile: React.FC = () => {
           ))}
         </ul>
       </div>
-      <div style={{ marginBottom: "20px" }}>
-        <h2>Comments:</h2>
+  </div>
+  </div>
+       {/*  Latest Posts */}
+       <div className="latest-posts-section">
+        <h3>Latest Posts</h3>
         <ul>
-          {profile?.comments.map((comment) => (
-            <li key={comment._id}>
-              {comment.content} on {comment.page.title} (
-              {new Date(comment.createdAt).toLocaleString()})
-            </li>
-          ))}
+          {latestPosts.length > 0 ? (
+            latestPosts.map((latestPost, index) => (
+              <LatestPostCard content={latestPost} key={index} />
+            ))
+          ) : (
+            <p>No latest posts available.</p>
+          )}
         </ul>
       </div>
-      <div style={{ marginBottom: "20px" }}>
-        <h2>Tags Used:</h2>
-        <ul>
-          {profile?.tags.map((tag) => (
-            <li key={tag}>{tag}</li>
-          ))}
-        </ul>
-      </div>
+     
+     
     </div>
   );
 };
