@@ -147,4 +147,20 @@ export interface wikiPostSearch{
     email?: string;
   }
   
-
+interface Responsibility {
+    Backend: string;
+    Frontend: string;
+  }
+  interface Contacts {
+    email: string;
+    phone: string;
+  }
+  export interface Member {
+    name: string;
+    role: string;
+    bio: string;
+    responsibility: Responsibility;
+    image: string;
+    contacts: Contacts
+  }
+  

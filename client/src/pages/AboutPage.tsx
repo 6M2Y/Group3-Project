@@ -2,55 +2,9 @@ import React from "react";
 import "../Styles/aboutpage.css"; // CSS for styling
 import LeftSidebar from "../Components/LeftSidebar";
 import RightSideBar from "../Components/RightSideBar";
+import { members } from "../Common/members";
 
 const AboutPage = () => {
-  const members = [
-    {
-      name: "Minyahel Muluneh Yimer",
-      role: "Front and backend",
-      bio: "NTNU student",
-      responsibility: {
-        Backend:
-          "Signin, signup, googleautho, tags, CRUD operation on forms and comments",
-        Frontend: "Homepage, forms, navbar, footer",
-      },
-
-      image: "./minyahe.jpg",
-      contacts: {
-        email: "minyahey@ntnu.no",
-        phone: "",
-      },
-    },
-    {
-      name: "Suzan Mustafa",
-      role: "Backend Developer",
-      bio: "Bob specializes in server-side development and ensures our systems are scalable and efficient.",
-      responsibility: {
-        Backend: "",
-        Frontend: "",
-      },
-      image: "https://via.placeholder.com/150",
-      contacts: {
-        email: "",
-        phone: "",
-      },
-    },
-    {
-      name: "Kristoffer Josefsen Hellerud",
-      role: "Frontend Developer",
-      bio: "Charlie is a creative frontend developer who focuses on crafting user-friendly interfaces.",
-      responsibility: {
-        Backend: "",
-        Frontend: "",
-      },
-      image: "https://via.placeholder.com/150",
-      contacts: {
-        email: "",
-        phone: "",
-      },
-    },
-  ];
-
   return (
     <div className="main-content">
       <LeftSidebar />
