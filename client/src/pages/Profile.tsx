@@ -12,7 +12,7 @@ import { lookInSession } from "../utils/session";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
-import LatestPostCard from "../Components/latestPostCard";
+// import { LatestPostCard } from "../Components/LatestPostCard";
 import { FaUser, FaEnvelope, FaFileAlt } from "react-icons/fa";
 import "../Styles/profile.css";
 

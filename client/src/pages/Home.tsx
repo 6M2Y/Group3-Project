@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
 import { toast } from "react-toastify";
-import LatestPostCard from "../Components/latestPostCard";
+import { LatestPostCard } from "../Components/LatesPostCard";
 import { stripHtmlTags } from "../utils/cleanContent";
 import {
   ApiResponse,
@@ -40,7 +40,7 @@ const Home: React.FC<HomeProps> = ({
     []
   );
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const postsPerPage = 9;
+  const postsPerPage = 6;
   const navigate = useNavigate();
 
   useEffect(() => {

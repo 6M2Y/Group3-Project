@@ -6,10 +6,10 @@ import "../Styles/MainContent.css";
 import "../Styles/Comments.css"; // New CSS file for styling comments
 import { useUser } from "../utils/UserContext";
 import WikIEditorPage from "./WikIEditorPage";
-import { lookInSession } from "../utils/session";
+// import { lookInSession } from "../utils/session";
 import { toast } from "react-toastify";
 import { formatDate } from "../utils/formDate";
-import LatestPostCard from "../Components/latestPostCard";
+// import { LatestPostCard } from "../Components/latestPostCard";
 import { stripHtmlTags } from "../utils/cleanContent";
 
 import {

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ApiResponse, latestPostType, TagCount } from "../Common/interfaces";
-import LatestPostCard from "./latestPostCard";
 
 const availableTags = [
   "Physical Health",

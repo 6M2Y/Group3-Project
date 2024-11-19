@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ApiResponse, latestPostType } from "../Common/interfaces";
-import LatestPostCard from "../Components/latestPostCard"; // Import the LatestPostCard component
+import { LatestPostCard } from "./LatesPostCard"; // Import the LatestPostCard component
 
 const RightSideBar: React.FC = () => {
   const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);

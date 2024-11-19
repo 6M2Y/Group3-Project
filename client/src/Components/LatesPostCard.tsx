@@ -1,10 +1,9 @@
-import React from "react";
 import "../Styles/MainContent.css";
 import { latestPostType } from "../Common/interfaces";
 import { FaUser, FaCalendarAlt, FaTag } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
-const LatestPostCard = ({ content }: { content: latestPostType }) => {
+export const LatestPostCard = ({ content }: { content: latestPostType }) => {
   let { title, tags, updatedAt, author } = content;
   return (
     <li className="latest-post">
@@ -43,4 +42,3 @@ const LatestPostCard = ({ content }: { content: latestPostType }) => {
     </li>
   );
 };
-export default LatestPostCard;
