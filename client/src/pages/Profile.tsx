@@ -163,12 +163,12 @@ const Profile: React.FC = () => {
     fetchTagCounts();
   }, []);
 
-  const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const tag = e.currentTarget.textContent
-      ?.match(/^[^\(]*/)?.[0]
-      .toLowerCase();
-    console.log("Selected tag:", tag);
-  };
+  // const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   const tag = e.currentTarget.textContent
+  //     ?.match(/^[^\(]*/)?.[0]
+  //     .toLowerCase();
+  //   console.log("Selected tag:", tag);
+  // };
   if (loading) {
     return <div>Loading...</div>;
   }

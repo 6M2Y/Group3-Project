@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <nav className="footer-links">
-          <a href="/teams">Teams</a>
+          <Link to={"/teams"}>Teams</Link>
           <a href="/help">Help</a>
           <a href="/privacy-policy">Privacy Policy</a>
           <a href="/contact-us">Contact Us</a>

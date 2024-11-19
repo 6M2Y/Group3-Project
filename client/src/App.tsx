@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import PostPage from "./pages/PostPage";
 import { UserAuthType } from "./utils/useAuthForm";
 import SearchPage from "./pages/SearchPage";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   //const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
@@ -55,6 +56,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/teams" element={<AboutPage />} />
             <Route path="search/:query" element={<SearchPage />} />
           </Routes>
         </div>
