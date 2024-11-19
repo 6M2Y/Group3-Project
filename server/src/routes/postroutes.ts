@@ -10,7 +10,7 @@ const postrouter = express.Router();
 
 postrouter.post('/publish',verifyToken, uploadSingleImage, postController.publishPost);
 postrouter.post('/save-draft', verifyToken, uploadSingleImage, postController.saveDraftPost);
-postrouter.post('/searchby-tag', postController.searchby_Tag);
+postrouter.post('/searchbytag', postController.searchby_Tag);
 postrouter.put('/edit/:id', postController.editPost);
 postrouter.get('/posts', postController.getAllPosts);
 postrouter.get('/user/posts', verifyToken, postController.getUserPosts);

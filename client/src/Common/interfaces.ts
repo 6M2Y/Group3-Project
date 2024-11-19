@@ -88,20 +88,23 @@ export  interface Version {
     _id: string;
     date: string;
   }
-export  interface Post {
-    _id: string;
-    title: string;
-    content: string;
-    author: string;
-    tags: string[];
-    versions: Version[];
-    views: number;
-    comments: string[]; // You can replace `any` with a more specific type if you have a structure for comments
-    image: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }
+
+export interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  views: number;
+  published: boolean;
+  image: string;
+  author: {
+    fullname: string;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
   
 export  interface User {
     _id: string;
@@ -118,4 +121,8 @@ export  interface User {
     createdAt: string;
     updatedAt: string;
     __v: number;
-  }
+}
+  
+export interface wikiPostSearch{
+  wikiPost?:Post[]
+}

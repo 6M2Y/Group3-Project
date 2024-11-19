@@ -1,1 +1,7 @@
-GET http://localhost:4000/posts/67376c8545aab2b48adc3e28/comments
+POST  http://localhost:4000/searchbytag
+{
+    "Content-Type": "application/json"
+    {
+        "tag":"Hello"
+    }
+}

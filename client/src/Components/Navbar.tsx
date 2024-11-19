@@ -13,8 +13,13 @@ import {
 } from "react-icons/fa";
 import { removeFromSession } from "../utils/session";
 import { toast } from "react-toastify";
+import { Post, wikiPostSearch } from "../Common/interfaces";
 
 const Navbar: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState(""); // State to store the search input
+  const [searchResults, setSearchResults] = useState<Post[]>([]);
+  const [error, setError] = useState<string | null>(null); // State for error handling
+  const [loading, setLoading] = useState(false); // State for loading indicator
   const { signedUser, setSignedUser } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -54,12 +59,45 @@ const Navbar: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  const handlekeyDownOnSearch = (e: KeyboardEvent) => {
-    let query = (e.target as HTMLInputElement).value;
-    if (e.key == "Enter" && query.length) {
-      navigate(`search/${query}`);
+  const handleKeyDownOnSearch = async (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    const query = (e.target as HTMLInputElement).value.trim();
+    if (e.key === "Enter" && query.length) {
+      navigate(`/search/${query}`); // Navigate to the search results page with the query
     }
   };
+  // const handlekeyDownOnSearch = (e: KeyboardEvent) => {
+  //   let query = (e.target as HTMLInputElement).value;
+  //   if (e.key == "Enter" && query.length) {
+  //     navigate(`search/${query}`);
+  //   }
+  // };
+
+  // const handleKeyDownOnSearch = async (
+  //   e: React.KeyboardEvent<HTMLInputElement>
+  // ) => {
+  //   const query = (e.target as HTMLInputElement).value.trim();
+  //   if (e.key === "Enter" && query.length) {
+  //     try {
+  //       setLoading(true);
+  //       setError(null);
+
+  //       // Make API call to search
+  //       const response = await axios.post<wikiPostSearch>(
+  //         `${process.env.REACT_APP_WIKI_API_URL}/searchByTag`,
+  //         { tag: query }
+  //       );
+  //       setSearchResults(response.data.wikiPost || []); // Update results state
+  //     } catch (err: any) {
+  //       setError(
+  //         err.response?.data?.error || "Failed to fetch search results."
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -78,8 +116,15 @@ const Navbar: React.FC = () => {
             <input
               type="text"
               placeholder="Search"
-              onKeyDown={handlekeyDownOnSearch}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Sync input state
+              onKeyDown={handleKeyDownOnSearch} // Trigger on Enter key
             />
+            {/* <input
+              type="text"
+              placeholder="Search"
+              onKeyDown={handlekeyDownOnSearch}
+            /> */}
             <FaSearch className="search-icon" />
           </div>
         </div>

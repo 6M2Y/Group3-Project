@@ -4,6 +4,22 @@
   color: #eeeeee;
 }
 
+/* main-layout styles */
+.main-layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 25%; /* Adjust based on preference */
+  padding: 1rem;
+  background-color: #f5f5f5;
+}
+
+.main-content {
+  width: 75%; /* Adjust based on preference */
+  padding: 1rem;
+}
+
 
 .navbar {
   display: flex;

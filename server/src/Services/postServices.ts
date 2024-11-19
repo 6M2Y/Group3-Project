@@ -358,15 +358,15 @@ export const deletePost = async (req: AuthenticatedRequest, res: Response): Prom
 
 export const searchPostsByTag = (req: Request, res: Response) => {
   const {tag} = req.body;
-  const  findQuery = { tags: tag, published: true }
-
-  Post.find(findQuery) // Fetch published posts
+  // const findQuery = { tags: tag, published: true }
+  const findQuery = { published: true, title: new RegExp(tag, 'i') };
+    Post.find(findQuery) // Fetch published posts
     .populate("author", "fullname email -_id") // Include author details
     .sort({ "updatedAt": -1 }) // Sort by latest updated
-    .select("title tags content summary updatedAt") // Select specific fields
-    .limit(5) // Limit to 5 results
+    // .select("title tags content summary updatedAt") // Select specific fields/ Limit to 5 results
     .then(wikiPost => {
-        return res.status(200).json({ wikiPost }); // Return results
+      return res.status(200).json({ wikiPost }); // Return results
+      
     })
     .catch(err => {
         return res.status(500).json({ error: err.message }); // Handle errors

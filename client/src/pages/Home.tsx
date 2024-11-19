@@ -634,7 +634,9 @@ const Home: React.FC<HomeProps> = ({
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        const response = await axios.get<Post[]>(`http://localhost:4000/posts`);
+        const response = await axios.get<Post[]>(
+          `${process.env.REACT_APP_WIKI_API_URL}/posts`
+        );
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -675,6 +677,7 @@ const Home: React.FC<HomeProps> = ({
     fetchTagCounts();
   }, []);
 
+  //filter by post
   const filteredPosts = selectedTag
     ? posts.filter((post) =>
         post.tags.some((tag) => tag.toLowerCase() === selectedTag)
@@ -762,7 +765,6 @@ const Home: React.FC<HomeProps> = ({
             ))}
           </div>
         )}
-
         {/* pagination */}
         {filteredPosts.length > 0 && (
           <div className="pagination">

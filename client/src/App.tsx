@@ -15,9 +15,7 @@ import { CreatePost } from "./pages/CreatePost";
 import Home from "./pages/Home";
 import PostPage from "./pages/PostPage";
 import { UserAuthType } from "./utils/useAuthForm";
-import { SearchPage } from "./pages/SearchPage";
-
-// export const UserContext = createContext({}); //creating global user context
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   //const [signedUser, setSignedUser] = useState<{ access_token: string | null }>(
