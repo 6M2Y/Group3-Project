@@ -53,7 +53,7 @@ export const useAuthForm = (endpoint: string) => {
           setSignedUser(response.data)
           //  console.log(response.data);
       } catch (error: any) {
-        toast.error(error.response?.data?.error || "An error occurred");
+        toast.error(error.response?.data?.error || "You are not registered user. Please register");
       }
     }
   };

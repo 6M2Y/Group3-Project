@@ -161,7 +161,7 @@ export const fetchUserById = async (req: Request, res: Response): Promise<void> 
     }
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).send('Error fetching user');
+    res.status(500).send('Error fetching user' + error);
   }
 };
 

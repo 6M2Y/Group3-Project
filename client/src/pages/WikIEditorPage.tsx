@@ -13,8 +13,6 @@ import { useUser } from "../utils/UserContext";
 import { Navigate } from "react-router-dom";
 import "../Styles/createPost.css";
 
-// import { useNavigate } from "react-router-dom";
-
 // eslint-disable-next-line react-hooks/rules-of-hooks
 // let navigate = useNavigate();
 interface WikiEditorPageProps {
@@ -236,12 +234,14 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
     <div className="post-section">
       <div style={{ textAlign: "center", margin: "20px" }}>
         {file ? (
+          // eslint-disable-next-line jsx-a11y/img-redundant-alt
           <img
             src={URL.createObjectURL(file)}
             style={{ maxWidth: "30%", maxHeight: "10%" }}
             alt="Selected Image"
           />
         ) : (
+          // eslint-disable-next-line jsx-a11y/img-redundant-alt
           <img
             // src={bannerImg}
             alt="Uploaded image appears here"
@@ -254,6 +254,10 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
         <h2 style={{ textAlign: "left", marginBottom: "20px" }}>
           Write a New Post
         </h2>
+        <h3>
+          About your Health, Your Success: Why Well-being Matters. Be part of
+          the discussion
+        </h3>
 
         <div style={{ marginBottom: "20px" }}>
           <label htmlFor="title">Title</label>

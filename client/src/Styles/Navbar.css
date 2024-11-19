@@ -78,7 +78,7 @@
 .navbar-right button {
   margin-left: 15px;
   color: #f07511;
-  /* background: var(--button-bg); */
+  background: var(--button-bg); 
   border: none;
   cursor: pointer;
   font-size: 18px;
@@ -91,7 +91,8 @@
 
 .navbar-right a:hover,
 .navbar-right button:hover {
-  background-color: var(--button-hover-bg);
+  background-color: #7e7e7e;
+  /* border-bottom:rgb(207, 207, 197) ; */
 }
 
 .navbar-right a span {
@@ -100,7 +101,7 @@
 }
 
 .navbar-right a span.active {
-  color: var(--primary-color);
+  color: #f07511;
 }
 
 .navbar-right a span.inactive {
@@ -127,7 +128,7 @@
 
 .dropdown-menu a,
 .dropdown-menu button {
-  color: var(--text-color);
+  color: #f07511;
   padding: 10px 0;
   text-decoration: none;
   display: flex;
@@ -138,7 +139,7 @@
 
 .dropdown-menu a:hover,
 .dropdown-menu button:hover {
-  background-color: var(--button-hover-bg);
+  background-color: #666666;;
 }
 
 @media (max-width: 768px) {

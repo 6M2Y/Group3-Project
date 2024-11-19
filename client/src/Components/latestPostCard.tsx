@@ -11,12 +11,16 @@ const LatestPostCard = ({ content }: { content: latestPostType }) => {
       <p className="latest-post-title">{title}</p>
       <div className="author-info">
         <p className="latest-post-author">
-          <FaUser size={10} color="rgb(255, 87, 34)" /> {author.fullname}
-        </p>
-        <p className="latest-post-email">
-          {" "}
-          <MdEmail size={10} color="rgb(255, 87, 34)" />
-          {author.email}
+          {author !== null && (
+            <>
+              <p className="latest-post-author">
+                <FaUser size={10} color="rgb(255, 87, 34)" /> {author.fullname}
+              </p>
+              <p className="latest-post-email">
+                <MdEmail size={10} color="rgb(255, 87, 34)" /> {author.email}
+              </p>
+            </>
+          )}
         </p>
       </div>
 

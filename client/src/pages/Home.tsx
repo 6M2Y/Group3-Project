@@ -98,15 +98,11 @@ const Home: React.FC<HomeProps> = ({
         const response = await axios.get<User>(
           `${process.env.REACT_APP_WIKI_API_URL}/users/${userId}`
         );
-        console.log("API response:", response.data); // Log the API response
-
         setUsers((prevUsers) => {
-          console.log("Previous users object:", prevUsers); // Log the previous users object
           const updatedUsers: { [key: string]: User } = {
             ...prevUsers,
             [userId]: response.data,
           };
-          console.log("Updated users object:", updatedUsers); // Log the updated users object
           return updatedUsers;
         });
       } catch (error) {
@@ -148,8 +144,7 @@ const Home: React.FC<HomeProps> = ({
 
   useEffect(() => {
     posts.forEach((post) => {
-      if (post.author) {
-        // alert(post.author);
+      if (post.author && isAuthenticated) {
         fetchUser(post.author);
       }
     });
