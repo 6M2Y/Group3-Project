@@ -5,7 +5,7 @@
 https://github.com/6M2Y/Group3-Project [we made the project public for a couple of weeks]
 
 #Figma
-Initial figma desgn:
+Initial figma desgnand we used this as reference:
 https://www.figma.com/design/8lHNMgVSomZ76tugN48LeI/Untitled?node-id=0-1&m=dev&t=MU8ZyN0lhKlHgW6z-1
 
 
