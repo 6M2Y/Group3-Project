@@ -31,11 +31,11 @@ import { Member } from "./interfaces";
     },
       {
           name: "Kristoffer Josefsen Hellerud",
-          role: "",
+          role: "Testing",
           bio: "",
           responsibility: {
-              Backend: "",
-              Frontend: "",
+              Backend: "Backend testing",
+              Frontend: "Frontend testing",
           },
           image: "/30958753.jpg",
           contacts: {

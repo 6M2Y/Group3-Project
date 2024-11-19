@@ -232,7 +232,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
   if (redirect) return <Navigate to="/" />;
 
   return (
-    <>
+    <div className="post-section">
       <div style={{ textAlign: "center", margin: "20px" }}>
         {file ? (
           <img
@@ -383,7 +383,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
           <Button label="Back to Edit" onClick={() => setShowPreview(false)} />
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 

@@ -68,8 +68,8 @@
 
 /* Part 2: All Posts Section */
 .posts-section {
-  width: 65%;
-  padding: 1rem 0;
+  width: 60%;
+  padding: 1rem 1rem;
 }
 
 .posts-grid {

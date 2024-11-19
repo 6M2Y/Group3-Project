@@ -1,5 +1,5 @@
 .post-section {
-    width: 60%;
+    /* width: 60%; */
     margin: 0 pxauto;
     padding: 20px;
     /* Optional styling for testing */
@@ -7,8 +7,7 @@
   
 .createForm{
     width: 90%;
-    margin: "auto";
-
+    margin: auto;
     padding: 30px;
     border-Radius: 10px;
     box-shadow: 0px 0px 8px rgba(86, 117, 150, 0.5);

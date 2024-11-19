@@ -21,6 +21,8 @@ import {
   ApiResponse,
   User,
 } from "../Common/interfaces";
+import LeftSidebar from "../Components/LeftSidebar";
+import RightSideBar from "../Components/RightSideBar";
 
 interface PostPageProps {
   isAuthenticated: boolean;
@@ -48,13 +50,13 @@ const PostPage: React.FC = () => {
   // const [comments, setComments] = useState<Comment[]>(post.comments);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
-  const [previewPost, setPreviewPost] = useState<any>(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [updatedContent, setUpdatedContent] = useState(post.content);
+  // const [previewPost, setPreviewPost] = useState<any>(null);
+  // const [showPreview, setShowPreview] = useState(false);
+  // const [updatedContent, setUpdatedContent] = useState(post.content);
   const { signedUser } = useUser();
   const [comments, setComments] = useState<AddCommentResponse[]>([]);
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
-  const [isEditingPost, setIsEditingPost] = useState(false);
+  // const [isEditingPost, setIsEditingPost] = useState(false);
   const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
   const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
     []
@@ -65,14 +67,14 @@ const PostPage: React.FC = () => {
     string | null
   >(null); // Store original content
 
-  const formattedCreatedAt = useMemo(
-    () => formatDate(post.createdAt),
-    [post.createdAt]
-  );
-  const formattedUpdatedAt = useMemo(
-    () => formatDate(post.updatedAt),
-    [post.updatedAt]
-  );
+  // const formattedCreatedAt = useMemo(
+  //   () => formatDate(post.createdAt),
+  //   [post.createdAt]
+  // );
+  // const formattedUpdatedAt = useMemo(
+  //   () => formatDate(post.updatedAt),
+  //   [post.updatedAt]
+  // );
 
   const fetchUser = async (userId: string) => {
     console.log("Fetching user with ID:", userId); // Log the userId
@@ -247,7 +249,7 @@ const PostPage: React.FC = () => {
       console.log("Updated Post Payload:", updatedPost);
 
       const response = await axios.put<SaveVersionResponse>(
-        `http://localhost:4000/posts/${post._id}/version`,
+        `${process.env.REACT_APP_WIKI_API_URL}/posts/${post._id}/version`,
         {
           title: updatedPost.title,
           summary: updatedPost.summary,
@@ -302,9 +304,7 @@ const PostPage: React.FC = () => {
       setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
       console.log(response.data);
     } catch (error) {
-      {
-        toast.error("An unexpected error occurred.");
-      }
+      toast.error("An unexpected error occurred.");
     }
   };
   useEffect(() => {
@@ -322,27 +322,13 @@ const PostPage: React.FC = () => {
   return (
     <div className="main-content">
       {/*  Tags Section */}
-      <div className="tags-section">
-        <h3>Tags</h3>
-        <div className="tags-list">
-          {tagCounts.map(({ tag, count }) => (
-            <button
-              onClick={loadByTag} // Ensure `loadByTag` is properly defined
-              className="tag-button"
-              key={tag}
-            >
-              {tag}
-              <span className="tag-count">({count} posts)</span>
-            </button>
-          ))}
-        </div>{" "}
-      </div>
+      <LeftSidebar />
 
       {/* Post Section */}
       <div className="posts-section">
         <p>
           <img
-            src={`http://localhost:4000${post.image}`}
+            src={`${process.env.REACT_APP_WIKI_API_URL}${post.image}`}
             alt={post.title}
             className="image-300"
           />
@@ -357,31 +343,34 @@ const PostPage: React.FC = () => {
             onCancel={() => setIsEditing(false)}
           />
         ) : (
-          <p>Content: {stripHtmlTags(post.content)}</p>
+          <p>
+            Content: <br />
+            {stripHtmlTags(post.content)}
+          </p>
         )}
+        <br />
         <p>By: {users[post.author]?.fullname || "Loading..."}</p>
+        <br />
         <p>Tags: {post.tags.join(", ")}</p>
 
         {isAuthenticated && !isEditing && (
-          <div>
-            <button onClick={handleEditClick}>Edit</button>
-            <button onClick={handleDeleteClick}>Delete</button>
+          <div className="comment-actions button">
+            <button onClick={handleEditClick}>Edit Post</button>
+            <button onClick={handleDeleteClick}>Delete Post</button>
           </div>
         )}
-        <h2>Post statistics:</h2>
+        <h3>Post statistics:</h3>
         <p>Views: {post.views}</p>
-        <h3>Versions:</h3>
+        <h4>Versions:</h4>
         <ul>
           {post.versions.map((version: any, index: number) => (
             <li key={index}>
-              <p>
-                Title: {version.title} / Updated at : Date:{" "}
-                {formatDate(version.date)}
-              </p>
-              {/* <p>Content: {stripHtmlTags(version.content)}</p> */}
-              {/* <p>Editor: {version.editor}</p> */}
-              {/* <p>Date: {formatDate(version.date)}</p> */}
-              {/* <p>Tags: {version.tags.join(", ")}</p> */}
+              <p>Title: {version.title}</p>
+              <p>Content: {stripHtmlTags(version.content)}</p>
+              <p>Editor: {version.editor.fullname}</p>
+              <p>Date: {formatDate(version.date)}</p>
+              <p>Last updated at : Date: {formatDate(version.date)}</p>
+              <p>Tags: {version.tags.join(", ")}</p>
             </li>
           ))}
         </ul>
@@ -395,9 +384,11 @@ const PostPage: React.FC = () => {
             cols={50}
             disabled={!isAuthenticated}
           />
-          <button type="submit" disabled={!isAuthenticated}>
-            Add comment
-          </button>
+          <div className="comment-actions button">
+            <button type="submit" disabled={!isAuthenticated}>
+              Add comment
+            </button>
+          </div>
         </form>
         <div className="post-page">
           <h4>Comments</h4>
@@ -464,18 +455,7 @@ const PostPage: React.FC = () => {
       </div>
 
       {/*  Latest Posts */}
-      <div className="latest-posts-section">
-        <h3>Latest Posts</h3>
-        <ul>
-          {latestPosts.length > 0 ? (
-            latestPosts.map((latestPost, index) => (
-              <LatestPostCard content={latestPost} key={index} />
-            ))
-          ) : (
-            <p>No latest posts available.</p>
-          )}
-        </ul>
-      </div>
+      <RightSideBar />
     </div>
   );
 };

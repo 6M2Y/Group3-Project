@@ -1,36 +1,17 @@
 import { Navigate } from "react-router-dom";
 import { useUser } from "../utils/UserContext";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import WikIEditorPage from "./WikIEditorPage";
-import { toast } from "react-toastify";
-import axios from "axios";
-import LatestPostCard from "../Components/latestPostCard";
-import {
-  ApiResponse,
-  HomeProps,
-  latestPostType,
-  Post,
-  TagCount,
-  User,
-} from "../Common/interfaces";
 import LeftSidebar from "../Components/LeftSidebar";
 import RightSideBar from "../Components/RightSideBar";
 
-const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
-];
 export const CreatePost: React.FC = () => {
   // const [pageState, setPageState] = useState("editor");
   const { signedUser } = useUser(); //whether the user is in session
-  const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
-  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
-    []
-  );
+  // const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
+  // const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
+  //   []
+  // );
   const [post, setPost] = useState({
     _id: "",
     title: "",
@@ -63,14 +44,10 @@ export const CreatePost: React.FC = () => {
     <div className="main-content">
       {/*  Tags Section */}
       <LeftSidebar />
-      <div className="post-section form">
-        <WikIEditorPage
-          post={post}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
-        {/*  Latest Posts */}
-      </div>
+      {/* <div className="post-section"> */}
+      <WikIEditorPage post={post} onSave={handleSave} onCancel={handleCancel} />
+      {/*  Latest Posts */}
+      {/* </div> */}
       <RightSideBar />
     </div>
   );
