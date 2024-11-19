@@ -23,7 +23,7 @@ import { Member } from "./interfaces";
         Backend: "Profile, HomePage (Post Display Section) and Navigation, Post Page and CRUD operations on posts",
         Frontend: "(Basic view) :Profile, Post Page, Write Post",
       },
-        image: "/suzan.jpg",
+        image: "/57045044.jpg",
         contacts: {
             email: "suzanm@ntnu.no",
             phone:""
