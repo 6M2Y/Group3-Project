@@ -32,14 +32,15 @@ import { Member } from "./interfaces";
       {
           name: "Kristoffer Josefsen Hellerud",
           role: "Testing",
-          bio: "",
+          bio: "NTNU student",
           responsibility: {
               Backend: "Backend testing",
-              Frontend: "Frontend testing",
+              Frontend: "Frontend testing + continous integration",
+              
           },
-          image: "/30958753.jpg",
+          image: "./kristoffer.jpg",
           contacts: {
-              email: "",
+              email: "kristojh@stud.ntnu.no",
               phone: ""
           }
       }
