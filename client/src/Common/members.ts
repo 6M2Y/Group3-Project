@@ -17,15 +17,15 @@ import { Member } from "./interfaces";
     },
     {
       name: "Suzan Mustafa",
-      role: "",
-      bio: "",
+      role: "Frontend and Backend Developer",
+      bio: "NTNU student",
       responsibility: {
-        Backend: "",
-        Frontend: "",
+        Backend: "Profile, HomePage (Post Display Section) and Navigation, Post Page and CRUD operations on posts",
+        Frontend: "(Basic view) :Profile, Post Page, Write Post",
       },
         image: "/57045044.jpg",
         contacts: {
-            email: "",
+            email: "suzanm@ntnu.no",
             phone:""
     }
     },
