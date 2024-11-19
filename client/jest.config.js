@@ -1,12 +1,10 @@
 module.exports = {
-    roots: ['<rootDir>/src'], // Angi at testene ligger i `src`-mappen
+    roots: ['<rootDir>/client/src'], // Sørger for at Jest ser i client/src
     transform: {
-      '^.+\\.tsx?$': 'ts-jest', // Transpiler TypeScript-filer med `ts-jest`
+      '^.+\\.tsx?$': 'ts-jest', // Støtte for TypeScript-filer
     },
-    testMatch: [
-      '**/?(*.)+(test).[tj]s?(x)', // Finn alle testfiler som slutter med `.test.tsx` eller `.test.js`
-    ],
-    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'], // Støttede filtyper
-    testEnvironment: 'jsdom', // Angi miljø for frontend-testing
+    testMatch: ['**/tests/**/*.test.[tj]s?(x)'], // Matcher testfiler i tests-mappen
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'], // Støtte for filtyper
+    testEnvironment: 'jsdom', // Miljø for React-testing
   };
   
