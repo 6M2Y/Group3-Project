@@ -15,6 +15,7 @@ import {
 } from "../Common/interfaces";
 import { FaCalendarAlt, FaChevronRight } from "react-icons/fa";
 import { formatDate } from "../utils/formDate";
+import { Link } from "react-router-dom";
 
 const availableTags = [
   "Physical Health",
@@ -208,7 +209,7 @@ const Home: React.FC<HomeProps> = ({
       <div className="posts-section">
         <h2 className="homepagePost">
           Your Health, Your Success: Why Well-being Matters. Be part of the
-          discussion
+          discussion. Share your thoughts!
         </h2>
         {/* If there are no posts to display */}
         {filteredPosts.length === 0 ? (
@@ -265,34 +266,40 @@ const Home: React.FC<HomeProps> = ({
         {isAuthenticated && (
           <div>
             <h2>Your Published Posts</h2>
-            {userPosts.map((post) => (
-              <section
-                key={post._id}
-                onClick={() => handlePostClick(post)}
-                className="publishedPostStyle"
-              >
-                <h3>{post.title}</h3>
+            {userPosts.length === 0 ? (
+              <p className="publishedPostStyle">
+                You have published 0 article published.{" "}
+                <Link to={"/createPost"}>Create a new post now.</Link>
+              </p>
+            ) : (
+              userPosts.map((post) => (
+                <section
+                  key={post._id}
+                  onClick={() => handlePostClick(post)}
+                  className="publishedPostStyle"
+                >
+                  <h3>{post.title}</h3>
 
-                <div className="publishedPostStyleYours">
-                  <FaCalendarAlt />
-                  <span>{formatDate(post.createdAt)}</span>
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Click to view details</span>
-                    <FaChevronRight style={{ marginLeft: "5px" }} />
-                  </span>
-                </div>
-              </section>
-            ))}
+                  <div className="publishedPostStyleYours">
+                    <FaCalendarAlt />
+                    <span>{formatDate(post.createdAt)}</span>
+                    <span
+                      style={{
+                        marginLeft: "auto",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span>Click to view details</span>
+                      <FaChevronRight style={{ marginLeft: "5px" }} />
+                    </span>
+                  </div>
+                </section>
+              ))
+            )}
           </div>
         )}
       </div>
-
       {/* Part 4: Latest Posts */}
 
       <div className="latest-posts-section">

@@ -13,9 +13,9 @@ import * as dotenv from "dotenv";
 
 
 interface ProfileData {
-  user: any; // Replace 'any' with the appropriate type
-  pages: any[]; // Replace 'any' with the appropriate type
-  comments: any[]; // Replace 'any' with the appropriate type
+  user: unknown; 
+  pages: unknown[];
+  comments: unknown[]; 
   tags: string[];
 }
 dotenv.config();

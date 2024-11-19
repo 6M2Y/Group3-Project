@@ -132,6 +132,14 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.publishedPostStyle a{
+  text-decoration: none;
+  background-color: #ff5722;
+  color: white;
+  padding: 0 .6rem;
+  border-Radius: 8px;
+  box-Shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 .publishedPostStyle h3{
   margin: 0;
   font-Size: 1.2rem;
@@ -140,11 +148,11 @@
 
 .publishedPostStyleYours{
   display: flex;
-                    align-Items: center;
-                    gap: 10px;
-                    margin: 10px 0;
-                    font-Size: 0.9rem;
-                    color: #777,
+  align-Items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-Size: 0.9rem;
+  color: #777,
 }
 /* Form container */
 .user-signin-out {
