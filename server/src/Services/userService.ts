@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/UserSchema';
 import Page from '../models/PageSchema';
 import Comment from '../models/CommentSchema';
-import Tag from '../models/Tag Schema';
+import Tag from '../models/TagSchema';
 import { generateUserName } from '../Utils/generateUserName';
 import { validateSignupInput } from '../Utils/validateUser';
 import bcrypt from 'bcrypt'
