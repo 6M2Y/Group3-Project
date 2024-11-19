@@ -1,7 +1,6 @@
-POST  http://localhost:4000/searchbytag
+POST http://localhost:4000/searchbytag
+Content-Type: application/json
+
 {
-    "Content-Type": "application/json"
-    {
-        "tag":"Hello"
-    }
+    "tag": "Superman"
 }

@@ -23,7 +23,7 @@ import { Member } from "./interfaces";
         Backend: "",
         Frontend: "",
       },
-        image: "",
+        image: "/57045044.jpg",
         contacts: {
             email: "",
             phone:""
@@ -37,7 +37,7 @@ import { Member } from "./interfaces";
               Backend: "",
               Frontend: "",
           },
-          image: "",
+          image: "/30958753.jpg",
           contacts: {
               email: "",
               phone: ""
