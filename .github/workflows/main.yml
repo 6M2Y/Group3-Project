@@ -4,29 +4,32 @@ on:
   push:
     branches:
       - master
+      - jest-setup
   pull_request:
     branches:
       - master
+      - jest-setup
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-    # Sjekk ut koden fra repositoriet
-    - name: Checkout code
+    - name: Sjekk ut koden fra repositoriet
       uses: actions/checkout@v3
 
-    # Sett opp Node.js
-    - name: Setup Node.js
+    - name: Sett opp Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 16
 
-    # Installer avhengigheter
-    - name: Install dependencies
+    - name: Gå til client-mappen
+      working-directory: client
+      run: echo "Navigerer til client-mappen"
+
+    - name: Installer avhengigheter
+      working-directory: client
       run: npm install
 
-    # Kjør tester
-    - name: Run tests
+    - name: Kjør tester
+      working-directory: client
       run: npm test
