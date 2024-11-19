@@ -164,3 +164,27 @@ interface Responsibility {
     contacts: Contacts
   }
   
+
+  export interface Page {
+    _id: string;
+    title: string;
+    createdAt: string;
+  }
+  
+  export interface Comment {
+    _id: string;
+    content: string;
+    page: Page;
+    createdAt: string;
+  }
+  
+  export interface ProfileData {
+    user: User;
+    pages: Page[];
+    comments: Comment[];
+    tags: string[];
+}
+  
+export interface PostCountResponse {
+  postCount: number;
+}

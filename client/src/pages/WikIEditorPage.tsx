@@ -47,17 +47,6 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
     setTags(post?.tags?.join(", ") || "");
   }, [post]);
 
-  // const handleSave = () => {
-  //   const updatedPost = {
-  //     ...post,
-  //     title,
-  //     content,
-  //     tags: tags.split(",").map((tag: string) => tag.trim()), // Convert back to array
-  //     summary,
-  //   };
-  //   onSave(updatedPost);
-  // };
-
   const availableTags = [
     "Physical Health",
     "Fitness",
@@ -344,7 +333,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
         </div>
       </form>
 
-      {/* Preview Modal */}
+      {/* Preview the post before publishing */}
       {showPreview && (
         <Modal onClose={() => setShowPreview(false)} title="Preview Post">
           <h1>{title}</h1>

@@ -1,6 +1,6 @@
 // src/utils/authenticate.ts
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload }  from 'jsonwebtoken';
+import jwt  from 'jsonwebtoken';
 
 interface AuthenticatedRequest extends Request {
   user?: { id: string }; // Adjust the type based on your user object
@@ -25,7 +25,7 @@ const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFuncti
     req.user = { id: decoded.id };
     next();
   } catch (err) {
-    res.status(401).json({ error: 'Invalid token' });
+    res.status(401).json({ error: 'Invalid token' + err });
   }
 };
 

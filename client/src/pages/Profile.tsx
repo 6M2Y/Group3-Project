@@ -4,62 +4,26 @@ import { lookInSession } from "../utils/session";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
-// import { LatestPostCard } from "../Components/LatestPostCard";
 import { FaUser, FaEnvelope, FaFileAlt } from "react-icons/fa";
 import "../Styles/profile.css";
-
 import {
   ApiResponse,
   HomeProps,
   latestPostType,
   Post,
+  PostCountResponse,
+  ProfileData,
   TagCount,
   User,
 } from "../Common/interfaces";
 import RightSideBar from "../Components/RightSideBar";
 import LeftSidebar from "../Components/LeftSidebar";
-
-interface Page {
-  _id: string;
-  title: string;
-  createdAt: string;
-}
-
-interface Comment {
-  _id: string;
-  content: string;
-  page: Page;
-  createdAt: string;
-}
-
-interface ProfileData {
-  user: User;
-  pages: Page[];
-  comments: Comment[];
-  tags: string[];
-}
-
-interface PostCountResponse {
-  postCount: number;
-}
-const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
-];
 const Profile: React.FC = () => {
   const { signedUser } = useUser();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Ensure error is typed as string or null
   const [postCount, setPostCount] = useState(0);
-  const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
-  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
-    []
-  );
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -75,18 +39,17 @@ const Profile: React.FC = () => {
       try {
         console.log("Fetching profile data...");
         const response = await axios.get<ProfileData>(
-          "http://localhost:4000/profile",
+          `${process.env.REACT_APP_WIKI_API_URL}/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        console.log("Profile data fetched:", response.data);
 
         setProfile(response.data);
       } catch (error) {
-        setError("Error fetching profile data");
+        toast.error("Error fetching profile data");
       } finally {
         setLoading(false);
       }
@@ -113,47 +76,6 @@ const Profile: React.FC = () => {
     fetchPostCount();
   }, [signedUser]);
 
-  const fetchLatestPosts = () => {
-    axios
-      .get<ApiResponse>(`${process.env.REACT_APP_WIKI_API_URL}/latest-posts`)
-      .then(({ data }) => {
-        setLatestPosts(data.wikiPost);
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-  };
-
-  const fetchTagCounts = async () => {
-    try {
-      const response = await axios.get<TagCount[]>(
-        `${process.env.REACT_APP_WIKI_API_URL}/tags/counts`
-      );
-
-      const mergedTagCounts = availableTags.map((tag) => {
-        // Look for the tag in the API response
-        const apiTag = response.data.find((t) => t.tag === tag);
-
-        // If found, use its count. Otherwise, set count to 0.
-        return { tag, count: apiTag ? apiTag.count : 0 };
-      });
-      setTagCounts(mergedTagCounts); // Assume `setTagCounts` accepts an array of TagCount
-      console.log(response.data);
-    } catch (error) {
-      toast.error("An unexpected error occurred.");
-    }
-  };
-  useEffect(() => {
-    fetchLatestPosts();
-    fetchTagCounts();
-  }, []);
-
-  // const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   const tag = e.currentTarget.textContent
-  //     ?.match(/^[^\(]*/)?.[0]
-  //     .toLowerCase();
-  //   console.log("Selected tag:", tag);
-  // };
   if (loading) {
     return <div>Loading...</div>;
   }
