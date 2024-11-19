@@ -11,6 +11,8 @@ import Modal from "../Components/Modal"; // Import the new Modal component
 import axios from "axios";
 import { useUser } from "../utils/UserContext";
 import { Navigate } from "react-router-dom";
+import "../Styles/createPost.css";
+
 // import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -93,6 +95,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
   const handlePublish = () => {
     setShowPreview(false);
 
+    //input validation
     if (!title.length) {
       return toast.error("Title is missing");
     }
@@ -106,6 +109,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
       return toast.error("Tags is missing");
     }
 
+    //create a form data
     const formData = new FormData();
     if (file) formData.append("image", file);
     formData.append("title", title);
@@ -141,8 +145,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
           });
       } else {
         // Update existing post with new version
-        const postId = post._id; // Ensure postId is correctly defined
-        console.log("postId:", postId); // Log postId to verify its value
+        const postId = post._id;
         axios
           .put(
             `${process.env.REACT_APP_WIKI_API_URL}/posts/${postId}/version`,
@@ -176,7 +179,6 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
   };
 
   //save the draft
-
   const handleSaveDraft = async () => {
     if (!title.length) {
       return toast.error("Title for the draft is missing");
@@ -241,23 +243,13 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
         ) : (
           <img
             // src={bannerImg}
-            alt="Banner"
+            alt="Uploaded image appears here"
             style={{ maxWidth: "50%", height: "40%" }}
           />
         )}
       </div>
 
-      <form
-        onSubmit={handlePreview}
-        style={{
-          width: "50%",
-          margin: "auto",
-          backgroundColor: "#f5f5f0",
-          padding: "30px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
+      <form onSubmit={handlePreview} className="createForm">
         <h2 style={{ textAlign: "left", marginBottom: "20px" }}>
           Write a New Post
         </h2>
@@ -358,13 +350,7 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
             <img
               src={URL.createObjectURL(file)}
               alt="Preview"
-              style={{
-                width: "50%",
-                height: "auto",
-                display: "block",
-                margin: "0 auto 15px auto",
-                borderRadius: "5px",
-              }}
+              className="createformimage"
             />
           )}
           <div dangerouslySetInnerHTML={{ __html: content }}></div>

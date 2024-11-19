@@ -63,9 +63,14 @@ export const CreatePost: React.FC = () => {
     <div className="main-content">
       {/*  Tags Section */}
       <LeftSidebar />
-
-      <WikIEditorPage post={post} onSave={handleSave} onCancel={handleCancel} />
-      {/*  Latest Posts */}
+      <div className="post-section form">
+        <WikIEditorPage
+          post={post}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+        {/*  Latest Posts */}
+      </div>
       <RightSideBar />
     </div>
   );
