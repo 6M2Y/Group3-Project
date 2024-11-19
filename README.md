@@ -1,8 +1,8 @@
 ### Wiki Project
 ## Description
 
-#Links til the project
-https://github.com/6M2Y/Group3-Project
+#Link til the project
+https://github.com/6M2Y/Group3-Project [we made the project public for a couple of weeks]
 
 
 Collaborative wiki platform allows users to create, edit, and collaborate on content directly in the browser. 
