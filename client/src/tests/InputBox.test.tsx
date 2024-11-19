@@ -1,6 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import InputBox from "./InputBox";
+import InputBox from "../Components/InputBox";
+
+
 
 describe("InputBox Component", () => {
   it("calls onChange when user types in the input field", () => {

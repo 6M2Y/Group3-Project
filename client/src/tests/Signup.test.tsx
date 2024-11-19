@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import Signup from './Signup';
+import Signup from "../pages/Signup";
 import { UserProvider } from '../utils/UserContext';
 import { useAuthForm } from '../utils/useAuthForm';
 

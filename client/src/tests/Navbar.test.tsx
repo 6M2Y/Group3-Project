@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from "../Components/Navbar";
+
 import { UserProvider } from '../utils/UserContext';
 
 describe('Navbar Component', () => {
