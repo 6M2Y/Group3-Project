@@ -72,12 +72,13 @@ npm start for both client and server
     - If not signed up , navigate to the "Sign Up" Page.
     
 **Create, edit, and delete pages:**
-    - Navigate to the "Create Page" section to add new content.
-    - Use the "Edit" button on existing pages to update content.
-    - Use the "Delete" button to remove pages.
+    - Navigate to the "Write" section in Navbar to add new content.
+    - After clicking on specific post from homepage =>
+    Use the "Edit" button on existing posts to update content.
+    Use the "Delete" button to remove posts.
     
 **Versioning:**
-    - Each time a page is updated, a new version is saved.
+    - Each time a post is updated, a new version is saved.
     - View version history in post page to see changes over time.
     
 **Linking and Navigation:**
@@ -85,10 +86,10 @@ npm start for both client and server
     
 **Search and Tags:**
     - Use the search bar to find content.
-    - View and filter by tags to find related pages.
+    - View and filter by tags to find related posts.
     
 **Comments:**
-    - Add comments to pages.
+    - Add comments to posts.
     - Edit or delete your comments as needed.
     
 **Team Member Page:**

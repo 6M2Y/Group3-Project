@@ -1,5 +1,5 @@
 // export default PostPage;
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
