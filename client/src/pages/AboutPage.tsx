@@ -16,6 +16,10 @@ const AboutPage = () => {
       },
 
       image: "./minyahe.jpg",
+      contacts: {
+        email: "minyahey@ntnu.no",
+        phone: "",
+      },
     },
     {
       name: "Suzan Mustafa",
@@ -26,6 +30,10 @@ const AboutPage = () => {
         Frontend: "",
       },
       image: "https://via.placeholder.com/150",
+      contacts: {
+        email: "",
+        phone: "",
+      },
     },
     {
       name: "Kristoffer Josefsen Hellerud",
@@ -36,6 +44,10 @@ const AboutPage = () => {
         Frontend: "",
       },
       image: "https://via.placeholder.com/150",
+      contacts: {
+        email: "",
+        phone: "",
+      },
     },
   ];
 
@@ -62,6 +74,15 @@ const AboutPage = () => {
                   </p>
                   <p>
                     <strong>Frontend:</strong> {member.responsibility.Frontend}
+                  </p>
+                </div>
+                <div className="member-responsibility">
+                  <h4>Contacts:</h4>
+                  <p>
+                    <strong>Email:</strong> {member.contacts.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {member.contacts.phone}
                   </p>
                 </div>
               </div>
