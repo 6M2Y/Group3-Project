@@ -1,7 +1,7 @@
 ### Wiki Project
 ## Description
 Collaborative wiki platform allows users to create, edit, and collaborate on content directly in the browser. 
-About the project:
+#About the project:
 As students, we often focus so much on our academics, deadlines, and future goals that we forget one key factor that shapes our success: our health. Whether it’s mental, physical, or emotional, maintaining a healthy lifestyle is not just about staying in shape or avoiding illness—it's about ensuring that we are in the best possible condition to thrive in all aspects of our lives.
 
 This is a space where you can take charge of your well-being. Here, we share tips on managing stress, staying active during exam week, eating well on a budget, and practicing self-care amidst the pressures of student life. It's a place for open conversations about mental health, fitness routines, nutritious meals, and everything in between. Most importantly, it's a space where we support one another—because your well-being directly impacts your success.
