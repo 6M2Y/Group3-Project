@@ -40,7 +40,7 @@ Ensure the following are installed on your system:
     ```bash
  cd client
  cd server
- npm install for both
+ npm install for both client and server
     ```
 **Set up environment variables**:
  *** Create a `.env` file in the root directory of the client and add the following:
