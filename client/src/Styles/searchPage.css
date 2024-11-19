@@ -1,77 +1,84 @@
-/* Post Result Container */
+.post-section {
+  width: 60%;
+  margin: 0 pxauto;
+  padding: 20px;
+  /* Optional styling for testing */
+}
+
+.post-section h1, .post-section p{
+  background-color: rgb(255, 171, 87);
+}
+/* Add the hover effect to the post-result */
 .post-result {
-    margin-bottom: 10px;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  /* Flex container for image (left column) and details (right column) */
-  .post-item {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-  }
-  
-  /* Image styling (first column) */
-  .post-image {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-  
-  /* Post details (second column) */
-  .post-details {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-  
-  /* Title */
-  .post-details h3 {
-    width: 100%;
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  /* Flex container for inline details */
-  .details-inline {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 10px;
-  }
-  
-  /* Styling for each inline section (Author, Email, Tags) */
-  .details-inline > div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .details-inline .author-info,
-  .details-inline .email-info,
-  .details-inline .tags-info {
-    font-size: 1rem;
-  }
-  
-  /* Views and Published Status */
-  .views-and-status {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .views-and-status > div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  /* Styling for icons */
-  .details-inline svg,
-  .views-and-status svg {
-    font-size: 1.2rem;
-    color: #f07511; /* Customize icon color */
-  }
-  
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer; /* Change cursor to pointer to show interactivity */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.post-result:hover {
+  transform: translateY(-5px); /* Slightly lift the element on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to create depth */
+}
+
+/* Add a smooth transition effect when hovering */
+.post-item {
+  display: flex;
+  gap: 20px;
+}
+
+.post-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px; /* Optional: Add rounded corners to the image */
+}
+
+.post-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.details-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.details-inline div {
+  display: flex;
+  align-items: center;
+}
+
+.details-inline span {
+  margin-left: 5px;
+}
+
+/* Adding a smooth hover effect for the individual detail items */
+.author-info:hover,
+.email-info:hover,
+.tags-info:hover,
+.views-info:hover,
+.published-info:hover {
+  color: #007bff; /* Change the color on hover */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Optional: Add hover effect to images as well */
+.post-image:hover {
+  opacity: 0.8; /* Slight opacity change to the image */
+  transition: opacity 0.3s ease;
+}
+
