@@ -23,6 +23,7 @@ import {
 } from "../Common/interfaces";
 import LeftSidebar from "../Components/LeftSidebar";
 import RightSideBar from "../Components/RightSideBar";
+import { Link } from "react-router-dom";
 
 interface PostPageProps {
   isAuthenticated: boolean;
@@ -65,16 +66,7 @@ const PostPage: React.FC = () => {
   const [editedCommentContent, setEditedCommentContent] = useState("");
   const [originalCommentContent, setOriginalCommentContent] = useState<
     string | null
-  >(null); // Store original content
-
-  // const formattedCreatedAt = useMemo(
-  //   () => formatDate(post.createdAt),
-  //   [post.createdAt]
-  // );
-  // const formattedUpdatedAt = useMemo(
-  //   () => formatDate(post.updatedAt),
-  //   [post.updatedAt]
-  // );
+  >(null);
 
   const fetchUser = async (userId: string) => {
     console.log("Fetching user with ID:", userId); // Log the userId
@@ -138,6 +130,10 @@ const PostPage: React.FC = () => {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error("You are not signed in");
+      return;
+    }
     try {
       const response = await axios.post<AddCommentResponse>(
         `${process.env.REACT_APP_WIKI_API_URL}/comment`,
@@ -159,9 +155,6 @@ const PostPage: React.FC = () => {
     }
   };
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditedContent(e.target.value);
-  };
   const handleDeleteClick = async () => {
     try {
       const token = localStorage.getItem("token"); // or wherever you store your token
@@ -312,13 +305,6 @@ const PostPage: React.FC = () => {
     fetchTagCounts();
   }, []);
 
-  const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const tag = e.currentTarget.textContent
-      ?.match(/^[^\(]*/)?.[0]
-      .toLowerCase();
-    console.log("Selected tag:", tag);
-  };
-
   return (
     <div className="main-content">
       {/*  Tags Section */}
@@ -384,7 +370,7 @@ const PostPage: React.FC = () => {
             cols={50}
             disabled={!isAuthenticated}
           />
-          <div className="comment-actions button">
+          <div className="comment-actions">
             <button type="submit" disabled={!isAuthenticated}>
               Add comment
             </button>
@@ -397,7 +383,10 @@ const PostPage: React.FC = () => {
           ) : (
             <div className="comments-section">
               {comments.length === 0 ? (
-                <p>No comments yet. Be the first to comment!</p>
+                <p>
+                  No comments yet. <Link to={"/signin"}>Sign in</Link> and be
+                  the first to comment!
+                </p>
               ) : (
                 comments.map((comment) => (
                   <div key={comment._id} className="comment-box">
