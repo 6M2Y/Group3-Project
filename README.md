@@ -70,28 +70,35 @@ npm start for both client and server
     - Click "Sign In" to access your account.
     - Alternatively, use the "Sign in with Google" option for Google authentication.
     - If not signed up , navigate to the "Sign Up" Page.
+    
 **Create, edit, and delete pages:**
     - Navigate to the "Create Page" section to add new content.
     - Use the "Edit" button on existing pages to update content.
     - Use the "Delete" button to remove pages.
+    
 **Versioning:**
     - Each time a page is updated, a new version is saved.
     - View version history in post page to see changes over time.
+    
 **Linking and Navigation:**
     - Navigate through the content using the provided links and page Navigation.
+    
 **Search and Tags:**
     - Use the search bar to find content.
     - View and filter by tags to find related pages.
+    
 **Comments:**
     - Add comments to pages.
     - Edit or delete your comments as needed.
+    
 **Team Member Page:**
     - View information about the team members.
 
 ## Testing
 Run tests using Jest:
-```bash
+   ```bash
 npm test
+   ```
 
 ## Frontend Project Structure
 <pre>
