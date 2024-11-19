@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../Styles/searchPage.css";
 import axios from "axios";
-import { Post } from "../Common/interfaces";
+import { PostSearch } from "../Common/interfaces";
 import {
   FaUser,
   FaEnvelope,
@@ -96,7 +96,7 @@ import {
 // export default SearchPage;
 const SearchPage: React.FC = () => {
   const { query } = useParams();
-  const [searchResults, setSearchResults] = useState<Post[]>([]);
+  const [searchResults, setSearchResults] = useState<PostSearch[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   let navigate = useNavigate();
@@ -107,7 +107,7 @@ const SearchPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.post<{ wikiPost: Post[] }>(
+        const response = await axios.post<{ wikiPost: PostSearch[] }>(
           `${process.env.REACT_APP_WIKI_API_URL}/searchByTag`,
           { tag: query }
         );
@@ -127,7 +127,7 @@ const SearchPage: React.FC = () => {
     }
   }, [query]);
 
-  const handlePostClick = async (post: Post) => {
+  const handlePostClick = async (post: PostSearch) => {
     try {
       await axios.get(`http://localhost:4000/pages/${post._id}`);
       navigate(`/postpage/${post._id}`, {

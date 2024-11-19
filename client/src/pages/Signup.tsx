@@ -6,6 +6,8 @@ import AuthForm from "../Components/AuthForm";
 import { GoogleAuth } from "../Components/GoogleAuth";
 import { useUser } from "../utils/UserContext";
 import { Navigate } from "react-router-dom";
+import LeftSidebar from "../Components/LeftSidebar";
+import RightSideBar from "../Components/RightSideBar";
 
 const Signup: React.FC = () => {
   const { formRef, handleFormSubmit, formEntries } = useAuthForm("/signup");
@@ -20,6 +22,7 @@ const Signup: React.FC = () => {
     <Navigate to="/" />
   ) : (
     <>
+      <LeftSidebar />
       <h1>Sign Up</h1>
       <AuthForm
         onSubmit={onSubmit}
@@ -29,6 +32,7 @@ const Signup: React.FC = () => {
       />
       {/* Continue with Google button */}
       <GoogleAuth />
+      <RightSideBar />
     </>
   );
 };

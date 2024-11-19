@@ -21,7 +21,8 @@ import {
   TagCount,
   User,
 } from "../Common/interfaces";
-
+import RightSideBar from "../Components/RightSideBar";
+import LeftSidebar from "../Components/LeftSidebar";
 
 interface Page {
   _id: string;
@@ -65,8 +66,9 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null); // Ensure error is typed as string or null
   const [postCount, setPostCount] = useState(0);
   const [latestPosts, setLatestPosts] = useState<latestPostType[]>([]);
-  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>([]);
-
+  const [tagCounts, setTagCounts] = useState<{ tag: string; count: number }[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -158,7 +160,6 @@ const Profile: React.FC = () => {
     fetchTagCounts();
   }, []);
 
-  
   const loadByTag = (e: React.MouseEvent<HTMLButtonElement>) => {
     const tag = e.currentTarget.textContent
       ?.match(/^[^\(]*/)?.[0]
@@ -173,60 +174,31 @@ const Profile: React.FC = () => {
     return <div>{error}</div>;
   }
 
-
   return (
     <div className="main-content">
-      {/*  Tags Section */}
-      <div className="tags-section">
-      <h3>Tags</h3>
-      <div className="tags-list">
-        {tagCounts.map(({ tag, count }) => (
-          <button
-            onClick={loadByTag} // Ensure `loadByTag` is properly defined
-            className="tag-button"
-            key={tag}
-          >
-            {tag}
-            <span className="tag-count">({count} posts)</span>
-          </button>
-        ))}
-      </div> </div>
-     
+      <LeftSidebar />
 
-  {/* Profile Section */}
-  <div className="posts-section">
-    <div style={{ textAlign: "left", margin: "20px" }}>
-      <h1>User Profile</h1>
-      <p>Username: {profile?.user.username}</p>
-      <p>Email: {profile?.user.email}</p>
-      <div style={{ marginBottom: "20px" }}>
-        <h2>Posts Created:</h2>
-        <p>Total posts created: {postCount}</p>
-        <ul>
-          {profile?.pages.map((page) => (
-            <li key={page._id}>
-              {page.title} ({new Date(page.createdAt).toLocaleString()})
-            </li>
-          ))}
-        </ul>
+      {/* Profile Section */}
+      <div className="posts-section">
+        <div style={{ textAlign: "left", margin: "20px" }}>
+          <h1>User Profile</h1>
+          <p>Username: {profile?.user.username}</p>
+          <p>Email: {profile?.user.email}</p>
+          <div style={{ marginBottom: "20px" }}>
+            <h2>Posts Created:</h2>
+            <p>Total posts created: {postCount}</p>
+            <ul>
+              {profile?.pages.map((page) => (
+                <li key={page._id}>
+                  {page.title} ({new Date(page.createdAt).toLocaleString()})
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-  </div>
-  </div>
-       {/*  Latest Posts */}
-       <div className="latest-posts-section">
-        <h3>Latest Posts</h3>
-        <ul>
-          {latestPosts.length > 0 ? (
-            latestPosts.map((latestPost, index) => (
-              <LatestPostCard content={latestPost} key={index} />
-            ))
-          ) : (
-            <p>No latest posts available.</p>
-          )}
-        </ul>
-      </div>
-     
-     
+
+      <RightSideBar />
     </div>
   );
 };

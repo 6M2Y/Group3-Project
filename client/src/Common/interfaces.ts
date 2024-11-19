@@ -89,7 +89,7 @@ export  interface Version {
     date: string;
   }
 
-export interface Post {
+export interface PostSearch {
   _id: string;
   title: string;
   content: string;
@@ -105,6 +105,18 @@ export interface Post {
   updatedAt: string;
 }
 
+export interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  views: number;
+  published: boolean;
+  image: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+}
   
 export  interface UserPost {
     _id: string;
@@ -124,7 +136,7 @@ export  interface UserPost {
 }
   
 export interface wikiPostSearch{
-  wikiPost?:Post[]
+  wikiPost?:PostSearch[]
 }
 
 

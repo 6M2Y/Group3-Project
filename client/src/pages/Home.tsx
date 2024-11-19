@@ -736,6 +736,7 @@ const Home: React.FC<HomeProps> = ({
   useEffect(() => {
     posts.forEach((post) => {
       if (post.author) {
+        // alert(post.author);
         fetchUser(post.author);
       }
     });
@@ -803,8 +804,7 @@ const Home: React.FC<HomeProps> = ({
           <p
             style={{ textAlign: "center", fontSize: "18px", color: "#757575" }}
           >
-            No posts available to show. Try selecting a different tag or come
-            back later!
+            No posts available to show. Try selecting a different tag.
           </p>
         ) : (
           <div className="posts-grid">
