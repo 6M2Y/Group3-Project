@@ -1,9 +1,7 @@
-import React, { FormEvent, useState ,useEffect,useRef} from "react";
+import React, { FormEvent, useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
 import { formats, modules } from "../utils/QuillFormats";
-
 import Button from "../Components/Button";
 import TextArea from "../Components/TextArea";
 import InputBox from "../Components/InputBox";
@@ -23,11 +21,15 @@ interface WikiEditorPageProps {
   onCancel: () => void;
 }
 
-const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel  }) => {
-  const [title, setTitle] = useState(post?.title || '');
-  const [content, setContent] = useState(post?.content || '');
-  const [tags, setTags] = useState(post?.tags?.join(', ') || ''); // Assuming tags are a comma-separated string
-  const [summary, setSummary] = useState(post?.summary || ''); // Assuming there's a summary field
+const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
+  post,
+  onSave,
+  onCancel,
+}) => {
+  const [title, setTitle] = useState(post?.title || "");
+  const [content, setContent] = useState(post?.content || "");
+  const [tags, setTags] = useState(post?.tags?.join(", ") || ""); // Assuming tags are a comma-separated string
+  const [summary, setSummary] = useState(post?.summary || ""); // Assuming there's a summary field
   const [file, setFile] = useState<File | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
@@ -38,25 +40,23 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
 
   const postId = post._id; // Assuming `post` is the object containing the post details
 
-
-
   useEffect(() => {
-    setTitle(post?.title || '');
-    setContent(post?.content || '');
-    setSummary(post?.summary || '')
-    setTags(post?.tags?.join(', ') || '');
-}, [post]);
+    setTitle(post?.title || "");
+    setContent(post?.content || "");
+    setSummary(post?.summary || "");
+    setTags(post?.tags?.join(", ") || "");
+  }, [post]);
 
   const handleSave = () => {
     const updatedPost = {
-        ...post,
-        title,
-        content,
-        tags: tags.split(',').map((tag: string) => tag.trim()), // Convert back to array
-        summary,
+      ...post,
+      title,
+      content,
+      tags: tags.split(",").map((tag: string) => tag.trim()), // Convert back to array
+      summary,
     };
     onSave(updatedPost);
-};
+  };
 
   const availableTags = [
     "Hero",
@@ -117,55 +117,59 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
       let loadingToast = toast.loading("publishing started....");
       if (isNewPost) {
         // Publish new post
-      axios
-        .post(`${process.env.REACT_APP_WIKI_API_URL}/publish`, formData, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${signedUser?.access_token}`,
-          },
-        })
-        .then(() => {
-          setTimeout(() => {
-            toast.dismiss(loadingToast);
-          }, 1000);
+        axios
+          .post(`${process.env.REACT_APP_WIKI_API_URL}/publish`, formData, {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${signedUser?.access_token}`,
+            },
+          })
+          .then(() => {
+            setTimeout(() => {
+              toast.dismiss(loadingToast);
+            }, 1000);
 
-          toast.success("Post published successfully!");
+            toast.success("Post published successfully!");
 
-          setTimeout(() => {
-            setRedirect(true);
-          }, 1500);
-        })
-        .catch((error) => {
-          toast.error("Something went wrong. Please try again.");
-        });
+            setTimeout(() => {
+              setRedirect(true);
+            }, 1500);
+          })
+          .catch((error) => {
+            toast.error("Something went wrong. Please try again.");
+          });
       } else {
         // Update existing post with new version
         const postId = post._id; // Ensure postId is correctly defined
-            console.log("postId:", postId); // Log postId to verify its value
+        console.log("postId:", postId); // Log postId to verify its value
         axios
-            .put(`${process.env.REACT_APP_WIKI_API_URL}/posts/${postId}/version`, formData, {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${signedUser?.access_token}`,
-                },
-            })
-            .then(() => {
-                setTimeout(() => {
-                    toast.dismiss(loadingToast);
-                }, 1000);
+          .put(
+            `${process.env.REACT_APP_WIKI_API_URL}/posts/${postId}/version`,
+            formData,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${signedUser?.access_token}`,
+              },
+            }
+          )
+          .then(() => {
+            setTimeout(() => {
+              toast.dismiss(loadingToast);
+            }, 1000);
 
-                toast.success("Post updated successfully!");
+            toast.success("Post updated successfully!");
 
-                setTimeout(() => {
-                    setRedirect(true);
-                }, 1500);
-            })
-            .catch((error) => {
-                toast.error("Something went wrong. Please try again.");
-            });
-    }
+            setTimeout(() => {
+              setRedirect(true);
+            }, 1500);
+          })
+          .catch((error) => {
+            toast.error("Something went wrong. Please try again.");
+          });
+      }
     } catch (error) {
       toast.error("An error occurred while publishing the post.");
     }
@@ -255,17 +259,21 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
         }}
       >
         <h2 style={{ textAlign: "left", marginBottom: "20px" }}>
-          Create a New Post
+          Write a New Post
         </h2>
 
         <div style={{ marginBottom: "20px" }}>
           <label htmlFor="title">Title</label>
           <TextArea
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= titleCharacterLimit) {
+                setTitle(e.target.value);
+              }
+            }}
             placeholder="Enter post title"
             maxLength={titleCharacterLimit}
-            rows={3}
+            rows={2}
           />
           <p>{titleCharacterLimit - title.length} characters left</p>
         </div>
@@ -274,15 +282,18 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
           <label htmlFor="summary">Summary</label>
           <TextArea
             value={summary}
-            onChange={(e) => setSummary(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= summaryCharacterLimit) {
+                setSummary(e.target.value);
+              }
+            }}
             maxLength={summaryCharacterLimit}
             placeholder="Enter post summary"
-            rows={4}
+            rows={2}
           />
           <p>{summaryCharacterLimit - summary.length} characters left</p>
         </div>
-        
-            
+
         <div style={{ marginBottom: "20px" }}>
           <label htmlFor="file">Upload Image</label>
           <InputBox
@@ -301,11 +312,11 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
             onChange={setContent}
             modules={modules}
             formats={formats}
-            style={{ width: "100%", height: "300px", borderRadius: "5px" }}
+            style={{ width: "100%", height: "200px", borderRadius: "5px" }}
           />
         </div>
 
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ margin: "30px 0" }}>
           <label>Tags</label>
           <div>
             {availableTags.map((tag) => (
@@ -361,27 +372,27 @@ const WikIEditorPage : React.FC<WikiEditorPageProps> = ({ post, onSave, onCancel
             <strong>Tags:</strong> {selectedTags.join(", ")}
           </div>
           <div>
-    <label>
-        <input
-            type="radio"
-            name="publishOption"
-            value="new"
-            checked={isNewPost}
-            onChange={() => setIsNewPost(true)}
-        />
-        Publish New Post
-    </label>
-    <label>
-        <input
-            type="radio"
-            name="publishOption"
-            value="update"
-            checked={!isNewPost}
-            onChange={() => setIsNewPost(false)}
-        />
-        Update Existing Post
-    </label>
-</div>
+            <label>
+              <input
+                type="radio"
+                name="publishOption"
+                value="new"
+                checked={isNewPost}
+                onChange={() => setIsNewPost(true)}
+              />
+              Publish New Post
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="publishOption"
+                value="update"
+                checked={!isNewPost}
+                onChange={() => setIsNewPost(false)}
+              />
+              Update Existing Post
+            </label>
+          </div>
           <Button label="Publish" onClick={handlePublish} />
           <Button label="Back to Edit" onClick={() => setShowPreview(false)} />
         </Modal>
