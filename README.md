@@ -1,5 +1,10 @@
 ### Wiki Project
 ## Description
+
+#Links til the project
+https://github.com/6M2Y/Group3-Project
+
+
 Collaborative wiki platform allows users to create, edit, and collaborate on content directly in the browser. 
 # About the project:
 As students, we often focus so much on our academics, deadlines, and future goals that we forget one key factor that shapes our success: our health. Whether it’s mental, physical, or emotional, maintaining a healthy lifestyle is not just about staying in shape or avoiding illness—it's about ensuring that we are in the best possible condition to thrive in all aspects of our lives.
