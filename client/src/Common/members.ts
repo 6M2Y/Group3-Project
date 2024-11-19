@@ -35,7 +35,7 @@ import { Member } from "./interfaces";
           bio: "",
           responsibility: {
               Backend: "",
-              Frontend: "None",
+              Frontend: "",
           },
           image: "",
           contacts: {
