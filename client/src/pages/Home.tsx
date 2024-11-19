@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/MainContent.css";
-import { UserAuthType } from "../utils/useAuthForm";
 import { toast } from "react-toastify";
 import LatestPostCard from "../Components/latestPostCard";
 import { stripHtmlTags } from "../utils/cleanContent";
@@ -96,7 +95,7 @@ const Home: React.FC<HomeProps> = ({
     if (!users[userId]) {
       try {
         const response = await axios.get<User>(
-          `http://localhost:4000/users/${userId}`
+          `${process.env.REACT_APP_WIKI_API_URL}/users/${userId}`
         );
         console.log("API response:", response.data); // Log the API response
 
@@ -118,7 +117,9 @@ const Home: React.FC<HomeProps> = ({
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get<Post[]>(`http://localhost:4000/posts`);
+        const response = await axios.get<Post[]>(
+          `${process.env.REACT_APP_WIKI_API_URL}/posts`
+        );
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -130,7 +131,7 @@ const Home: React.FC<HomeProps> = ({
         try {
           const config = { headers: { Authorization: `Bearer ${userId}` } };
           const response = await axios.get<Post[]>(
-            `http://localhost:4000/user/posts`,
+            `${process.env.REACT_APP_WIKI_API_URL}/user/posts`,
             config
           );
           setUserPosts(response.data);
