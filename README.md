@@ -22,7 +22,6 @@ Collaborative wiki platform allows users to create, edit, and collaborate on con
 - **Frontend**: React.js
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
-- **Authentication**: Passport.js for email/password and Google sign-in
 - **Testing**: Jest
 
 ## Installation
