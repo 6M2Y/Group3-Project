@@ -23,6 +23,7 @@ As students, we're constantly evolving. What works for one person might not work
 - **User Profile Page**: View user-specific information.
 - **Write Post Page**: Create new posts.
 - **Team Member Page**: View information about the team members.
+- **About page**: View information about the project.
 
 ## Technologies Used
 - **Frontend**: React.js
