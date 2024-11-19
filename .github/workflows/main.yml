@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - jest-setup
   pull_request:
     branches:
       - master
+      - jest-setup
 
 jobs:
   test:
