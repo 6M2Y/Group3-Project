@@ -61,12 +61,13 @@ const WikIEditorPage: React.FC<WikiEditorPageProps> = ({
   };
 
   const availableTags = [
-    "Hero",
-    "Villain",
-    "Adventure",
-    "Powers",
-    "Universe",
-    "Origins",
+    "Physical Health",
+    "Fitness",
+    "Mental Health",
+    "Stress Management",
+    "Nutrition",
+    "Healthy Eating",
+    "Self-Care",
   ];
 
   //setting character limits

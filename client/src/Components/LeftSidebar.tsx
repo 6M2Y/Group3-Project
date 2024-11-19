@@ -6,12 +6,13 @@ import { ApiResponse, latestPostType, TagCount } from "../Common/interfaces";
 import LatestPostCard from "./latestPostCard";
 
 const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
+  "Physical Health",
+  "Fitness",
+  "Mental Health",
+  "Stress Management",
+  "Nutrition",
+  "Healthy Eating",
+  "Self-Care",
 ];
 
 const LeftSidebar: React.FC = () => {

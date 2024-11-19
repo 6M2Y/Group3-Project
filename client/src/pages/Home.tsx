@@ -17,12 +17,13 @@ import { FaCalendarAlt, FaChevronRight } from "react-icons/fa";
 import { formatDate } from "../utils/formDate";
 
 const availableTags = [
-  "Hero",
-  "Villain",
-  "Adventure",
-  "Powers",
-  "Universe",
-  "Origins",
+  "Physical Health",
+  "Fitness",
+  "Mental Health",
+  "Stress Management",
+  "Nutrition",
+  "Healthy Eating",
+  "Self-Care",
 ];
 
 const Home: React.FC<HomeProps> = ({
