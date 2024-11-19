@@ -115,6 +115,30 @@
   color: #777;
 }
 
+.publishedPostStyle{
+  cursor: pointer;
+  background-Color: #f9f9f9;
+  padding: 15px;
+  border-Radius: 8px;
+  box-Shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-Bottom: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.publishedPostStyle h3{
+  margin: 0;
+  font-Size: 1.2rem;
+  color: #333;
+}
+
+.publishedPostStyleYours{
+  display: flex;
+                    align-Items: center;
+                    gap: 10px;
+                    margin: 10px 0;
+                    font-Size: 0.9rem;
+                    color: #777,
+}
 /* Form container */
 .user-signin-out {
   width: 100%;

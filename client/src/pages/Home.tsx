@@ -362,9 +362,8 @@ import {
   TagCount,
   User,
 } from "../Common/interfaces";
+import { FaCalendarAlt, FaChevronRight } from "react-icons/fa";
 import { formatDate } from "../utils/formDate";
-import LeftSidebar from "../Components/LeftSidebar";
-import RightSideBar from "../Components/RightSideBar";
 
 const availableTags = [
   "Hero",
@@ -849,16 +848,34 @@ const Home: React.FC<HomeProps> = ({
         )}
         {/* Part 3: User's Posts */}
         {isAuthenticated && (
-          <div className="posts-section">
+          <div>
             <h2>Your Published Posts</h2>
             {userPosts.map((post) => (
-              <ul
+              <section
                 key={post._id}
                 onClick={() => handlePostClick(post)}
-                style={{ cursor: "pointer" }}
+                className="publishedPostStyle"
               >
-                <li>{post.title}</li>
-              </ul>
+                <h3>{post.title}</h3>
+
+                <div className="publishedPostStyleYours">
+                  {/* Calendar Icon and Date */}
+                  <FaCalendarAlt />
+                  <span>{formatDate(post.createdAt)}</span>
+
+                  {/* "Click to view details" Text with Chevron Icon */}
+                  <span
+                    style={{
+                      marginLeft: "auto",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>Click to view details</span>
+                    <FaChevronRight style={{ marginLeft: "5px" }} />
+                  </span>
+                </div>
+              </section>
             ))}
           </div>
         )}
