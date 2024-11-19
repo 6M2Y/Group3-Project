@@ -4,6 +4,10 @@
 #Link til the project
 https://github.com/6M2Y/Group3-Project [we made the project public for a couple of weeks]
 
+#Figma
+Initial figma desgn:
+https://www.figma.com/design/8lHNMgVSomZ76tugN48LeI/Untitled?node-id=0-1&m=dev&t=MU8ZyN0lhKlHgW6z-1
+
 
 Collaborative wiki platform allows users to create, edit, and collaborate on content directly in the browser. 
 # About the project:
