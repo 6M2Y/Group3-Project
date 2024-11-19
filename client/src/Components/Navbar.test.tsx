@@ -26,7 +26,7 @@ describe('Navbar Component', () => {
 
   test('renders correct links', () => {
     renderNavbar();
-    expect(screen.getByRole('link', { name: /superblog/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Health Wellbeing/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /write/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /signout/i })).toBeInTheDocument();
   });
