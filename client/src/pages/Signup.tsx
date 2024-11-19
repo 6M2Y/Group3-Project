@@ -21,19 +21,27 @@ const Signup: React.FC = () => {
   return signedUser?.access_token ? (
     <Navigate to="/" />
   ) : (
-    <>
+    <div className="main-content">
       <LeftSidebar />
-      <h1>Sign Up</h1>
-      <AuthForm
-        onSubmit={onSubmit}
-        formRef={formRef}
-        showFullname={true}
-        buttonText="Sign Up"
-      />
-      {/* Continue with Google button */}
-      <GoogleAuth />
+      <div className="posts-section">
+        <div className="user-signin-out">
+          <h1>Sign Up</h1>
+          <AuthForm
+            onSubmit={onSubmit}
+            formRef={formRef}
+            showFullname={true}
+            buttonText="Sign Up"
+          />
+          {/* Horizontal line with 'or' */}
+          <div className="or-container">
+            <span>or</span>
+          </div>
+          {/* Google Auth */}
+          <GoogleAuth />
+        </div>
+      </div>
       <RightSideBar />
-    </>
+    </div>
   );
 };
 

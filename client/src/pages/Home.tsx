@@ -363,6 +363,8 @@ import {
   User,
 } from "../Common/interfaces";
 import { formatDate } from "../utils/formDate";
+import LeftSidebar from "../Components/LeftSidebar";
+import RightSideBar from "../Components/RightSideBar";
 
 const availableTags = [
   "Hero",
@@ -832,7 +834,6 @@ const Home: React.FC<HomeProps> = ({
           </div>
         )}
 
-        {/* Pagination */}
         {/* pagination */}
         {filteredPosts.length > 0 && (
           <div className="pagination">
@@ -864,6 +865,7 @@ const Home: React.FC<HomeProps> = ({
       </div>
 
       {/* Part 4: Latest Posts */}
+
       <div className="latest-posts-section">
         <h3>Latest Posts</h3>
         <ul>

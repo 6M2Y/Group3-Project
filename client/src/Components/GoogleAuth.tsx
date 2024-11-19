@@ -100,7 +100,7 @@ export const GoogleAuth = () => {
   return (
     <>
       {" "}
-      <button onClick={handleGoogleClick}>
+      <button style={{ width: "90%" }} onClick={handleGoogleClick}>
         <FaGoogle /> Continue with Google
       </button>
     </>

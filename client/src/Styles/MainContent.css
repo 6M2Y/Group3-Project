@@ -114,6 +114,93 @@
   color: #777;
 }
 
+/* Form container */
+.user-signin-out {
+  width: 100%;
+  max-width: 400px; /* Limit the form width for better appearance */
+  margin: 0 auto; /* Center the form */
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  text-align: center;
+}
+
+/* Heading Style */
+.user-signin-out h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Horizontal line with "or" text */
+.user-signin-out .or-container {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.user-signin-out .or-container::before,
+.user-signin-out .or-container::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.user-signin-out .or-container span {
+  padding: 0 10px;
+  font-size: 16px;
+  color: #888;
+}
+
+/* Form Input Fields */
+.user-signin-out input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+}
+
+/* Focus effect on input fields */
+.user-signin-out input:focus {
+  outline: none;
+  border-color: #fca36f;
+  box-shadow: 0px 0px 8px rgba(245, 158, 87, 0.5); /* Blue shadow */
+}
+
+/* Sign In Button */
+.user-signin-out button {
+
+  width: 100%;
+  padding: 12px;
+  background-color: #fd9d66;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-signin-out button:hover {
+  background-color: #f7924e;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+}
+
+/* Sign-up link */
+.user-signin-out p {
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* GoogleAuth Button container (if needed) */
+.user-signin-out .google-auth {
+  margin-top: 20px;
+}
+
+
 .dates {
   display: flex;
   gap: 10px; /* Adjust the gap as needed */
