@@ -208,8 +208,9 @@ const Home: React.FC<HomeProps> = ({
 
       {/* Part 2: All Posts */}
       <div className="posts-section">
-        <h2 style={{ color: "#ff5722", fontSize: "24px", textAlign: "center" }}>
-          Your Ultimate Superhero Hub
+        <h2 className="homepagePost">
+          Your Health, Your Success: Why Well-being Matters. Be part of the
+          discussion
         </h2>
         {/* If there are no posts to display */}
         {filteredPosts.length === 0 ? (

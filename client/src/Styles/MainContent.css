@@ -290,6 +290,21 @@
   background-color: #0056b3;
 }
 
+.homepagePost{
+    color: #ffffff;
+    font-Size: 32px;
+    font-Weight: bold;
+    text-Align: center;
+    background-Color: #f77d58;
+    padding: 20px;
+    margin-Bottom: 20px;
+    border-Radius: 10px;
+    box-Shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-Transform: uppercase;
+    letter-Spacing: 1px;
+    max-Width: 90%;
+    margin: 2rem auto
+}
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .posts-grid {

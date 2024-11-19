@@ -1,25 +1,18 @@
-import React, { useState, useEffect, MouseEvent, KeyboardEvent } from "react";
+import React, { useState, useEffect, MouseEvent } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Navbar.css";
 import { useUser } from "../utils/UserContext";
-import {
-  FaBell,
-  FaUser,
-  FaPen,
-  FaBars,
-  FaSignOutAlt,
-  FaSearch,
-} from "react-icons/fa";
+import { FaUser, FaPen, FaBars, FaSignOutAlt, FaSearch } from "react-icons/fa";
 import { removeFromSession } from "../utils/session";
 import { toast } from "react-toastify";
 import { Post, wikiPostSearch } from "../Common/interfaces";
 
 const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State to store the search input
-  const [searchResults, setSearchResults] = useState<Post[]>([]);
-  const [error, setError] = useState<string | null>(null); // State for error handling
-  const [loading, setLoading] = useState(false); // State for loading indicator
+  // const [searchResults, setSearchResults] = useState<Post[]>([]);
+  // const [error, setError] = useState<string | null>(null); // State for error handling
+  // const [loading, setLoading] = useState(false); // State for loading indicator
   const { signedUser, setSignedUser } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -105,8 +98,10 @@ const Navbar: React.FC = () => {
         {/* Left side - Logo */}
         <div className="navbar-left">
           <Link to="/" className="navbar-logo">
-            <img src="your-logo.png" alt="" />
-            <span className="logo">SuperBlog</span>
+            {/* <img src="/logo.webp" alt="" /> */}
+            <span className="logo1">Health</span>
+            <br />
+            <span className="logo">Wellbeing</span>
           </Link>
         </div>
 
